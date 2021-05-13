@@ -1,0 +1,3 @@
+[submodule "other_works/ST-VQA_Loc"]
+	path = other_works/ST-VQA_Loc
+	url = git@github.com:brugues/ST-VQA_Loc.git
