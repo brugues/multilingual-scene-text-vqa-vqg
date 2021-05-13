@@ -1,3 +1,8 @@
+# Own things
+other_works/ST-VQA_Loc/
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
