@@ -499,14 +499,6 @@ Your keywords here,...
 
 
 
-% Can use something like this to put references on a page
-% by themselves when using endfloat and the captionsoff option.
-\ifCLASSOPTIONcaptionsoff
-  \newpage
-\fi
-
-
-
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
 % adjust value as needed - may need to be readjusted if
@@ -529,13 +521,9 @@ Your keywords here,...
 % <OR> manually copy in the resultant .bbl file
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
-\begin{thebibliography}{1}
 
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
-
-\end{thebibliography}
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,MasterThesis}
 
 % biography section
 % 
