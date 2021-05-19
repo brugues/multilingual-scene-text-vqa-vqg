@@ -1,3 +1,9 @@
 [submodule "other_works/ST-VQA_Loc"]
 	path = other_works/ST-VQA_Loc
 	url = git@github.com:brugues/ST-VQA_Loc.git
+[submodule "other_works/geomm"]
+	path = other_works/geomm
+	url = git@github.com:brugues/geomm.git
+[submodule "umwe"]
+	path = umwe
+	url = https://github.com/ccsasuke/umwe
