@@ -84,9 +84,9 @@ Y.~Jiang, V.~Natarajan, X.~Chen, M.~Rohrbach, D.~Batra, and D.~Parikh, ``Pythia
 \BIBentrySTDinterwordspacing
 
 \bibitem{singh2018pythia}
-A.~Singh, V.~Natarajan, Y.~Jiang, X.~Chen, M.~Shah, M.~Rohrbach, D.~Batra, and
-  D.~Parikh, ``Pythia-a platform for vision \& language research,'' in
-  \emph{SysML Workshop, NeurIPS}, vol. 2018, 2018.
+A.~Singh, Y.~Natarajan, Vivand ek~Jiang, X.~Chen, M.~Shah, M.~Rohrbach,
+  D.~Batra, and D.~Parikh, ``Pythia-a platform for vision \& language
+  research,'' in \emph{SysML Workshop, NeurIPS}, vol. 2018, 2018.
 
 \bibitem{wang2010word}
 K.~Wang and S.~Belongie, ``Word spotting in the wild,'' in \emph{European
@@ -115,5 +115,64 @@ J.~Johnson, B.~Hariharan, L.~van~der Maaten, L.~Fei-Fei, C.~Lawrence~Zitnick,
   and R.~Girshick, ``Clevr: A diagnostic dataset for compositional language and
   elementary visual reasoning,'' in \emph{Proceedings of the IEEE Conference on
   Computer Vision and Pattern Recognition (CVPR)}, July 2017.
+
+\bibitem{DBLP:journals/corr/abs-1810-04805}
+\BIBentryALTinterwordspacing
+J.~Devlin, M.~Chang, K.~Lee, and K.~Toutanova, ``{BERT:} pre-training of deep
+  bidirectional transformers for language understanding,'' \emph{CoRR}, vol.
+  abs/1810.04805, 2018. [Online]. Available:
+  \url{http://arxiv.org/abs/1810.04805}
+\BIBentrySTDinterwordspacing
+
+\bibitem{krishnavisualgenome}
+\BIBentryALTinterwordspacing
+R.~Krishna, Y.~Zhu, O.~Groth, J.~Johnson, K.~Hata, J.~Kravitz, S.~Chen,
+  Y.~Kalantidis, L.-J. Li, D.~A. Shamma, M.~Bernstein, and L.~Fei-Fei, ``Visual
+  genome: Connecting language and vision using crowdsourced dense image
+  annotations,'' 2016. [Online]. Available:
+  \url{https://arxiv.org/abs/1602.07332}
+\BIBentrySTDinterwordspacing
+
+\bibitem{pennington2014glove}
+J.~Pennington, R.~Socher, and C.~D. Manning, ``Glove: Global vectors for word
+  representation,'' in \emph{Proceedings of the 2014 conference on empirical
+  methods in natural language processing (EMNLP)}, 2014, pp. 1532--1543.
+
+\bibitem{jawanpuria2019learning}
+P.~Jawanpuria, A.~Balgovind, A.~Kunchukuttan, and B.~Mishra, ``Learning
+  multilingual word embeddings in latent metric space: a geometric approach,''
+  \emph{Transactions of the Association for Computational Linguistics}, vol.~7,
+  pp. 107--120, 2019.
+
+\bibitem{10.1162/tacl_a_00288}
+\BIBentryALTinterwordspacing
+M.~Artetxe and H.~Schwenk, ``{Massively Multilingual Sentence Embeddings for
+  Zero-Shot Cross-Lingual Transfer and Beyond},'' \emph{Transactions of the
+  Association for Computational Linguistics}, vol.~7, pp. 597--610, 09 2019.
+  [Online]. Available: \url{https://doi.org/10.1162/tacl\_a\_00288}
+\BIBentrySTDinterwordspacing
+
+\bibitem{chen2018unsupervised}
+X.~Chen and C.~Cardie, ``Unsupervised multilingual word embeddings,''
+  \emph{arXiv preprint arXiv:1808.08933}, 2018.
+
+\bibitem{TIEDEMANN12.463}
+J.~Tiedemann, ``\BIBforeignlanguage{english}{Parallel data, tools and
+  interfaces in opus},'' in \emph{\BIBforeignlanguage{english}{Proceedings of
+  the Eight International Conference on Language Resources and Evaluation
+  (LREC'12)}}, N.~C.~C. Chair), K.~Choukri, T.~Declerck, M.~U. Dogan,
+  B.~Maegaard, J.~Mariani, J.~Odijk, and S.~Piperidis, Eds.\hskip 1em plus
+  0.5em minus 0.4em\relax Istanbul, Turkey: European Language Resources
+  Association (ELRA), may 2012.
+
+\bibitem{conneau2017word}
+A.~Conneau, G.~Lample, M.~Ranzato, L.~Denoyer, and H.~J{\'e}gou, ``Word
+  translation without parallel data,'' \emph{arXiv preprint arXiv:1710.04087},
+  2017.
+
+\bibitem{speer2017conceptnet}
+R.~Speer and J.~Lowry-Duda, ``Conceptnet at semeval-2017 task 2: Extending word
+  embeddings with multilingual relational knowledge,'' \emph{arXiv preprint
+  arXiv:1704.03560}, 2017.
 
 \end{thebibliography}

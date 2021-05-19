@@ -12,46 +12,48 @@ Database file #2: MasterThesis.bib
 -- IEEEtran.bst version 1.14 (2015/08/26) by Michael Shell.
 -- http://www.michaelshell.org/tex/ieeetran/bibtex/
 -- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty booktitle in krishnavisualgenome
 
 Done.
-You've used 15 entries,
+You've used 24 entries,
             4087 wiz_defined-function locations,
-            1276 strings with 18077 characters,
-and the built_in function-call counts, 9968 in all, are:
-= -- 682
-> -- 352
-< -- 29
-+ -- 174
-- -- 79
-* -- 511
-:= -- 1498
-add.period$ -- 32
-call.type$ -- 15
-change.case$ -- 15
-chr.to.int$ -- 63
-cite$ -- 15
-duplicate$ -- 763
-empty$ -- 926
-format.name$ -- 94
-if$ -- 2301
+            1325 strings with 20321 characters,
+and the built_in function-call counts, 16125 in all, are:
+= -- 1143
+> -- 554
+< -- 60
++ -- 277
+- -- 121
+* -- 819
+:= -- 2435
+add.period$ -- 51
+call.type$ -- 24
+change.case$ -- 26
+chr.to.int$ -- 138
+cite$ -- 25
+duplicate$ -- 1224
+empty$ -- 1443
+format.name$ -- 145
+if$ -- 3722
 int.to.chr$ -- 0
-int.to.str$ -- 15
-missing$ -- 176
-newline$ -- 78
-num.names$ -- 15
-pop$ -- 481
+int.to.str$ -- 24
+missing$ -- 267
+newline$ -- 111
+num.names$ -- 26
+pop$ -- 722
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 2
-skip$ -- 737
+skip$ -- 1196
 stack$ -- 0
-substring$ -- 162
-swap$ -- 517
-text.length$ -- 8
+substring$ -- 346
+swap$ -- 855
+text.length$ -- 14
 text.prefix$ -- 0
 top$ -- 5
-type$ -- 15
-warning$ -- 0
-while$ -- 26
-width$ -- 17
-write$ -- 164
+type$ -- 24
+warning$ -- 1
+while$ -- 47
+width$ -- 26
+write$ -- 251
+(There was 1 warning)
