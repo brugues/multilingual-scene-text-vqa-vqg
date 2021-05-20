@@ -7,3 +7,6 @@
 [submodule "umwe"]
 	path = umwe
 	url = https://github.com/ccsasuke/umwe
+[submodule "other_works/laser"]
+	path = other_works/laser
+	url = git@github.com:brugues/LASER.git
