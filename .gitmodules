@@ -6,7 +6,7 @@
 	url = git@github.com:brugues/geomm.git
 [submodule "other_works/umwe"]
 	path = other_works/umwe
-	url = https://github.com/ccsasuke/umwe
+	url = git@github.com:ccsasuke/umwe.git
 [submodule "other_works/laser"]
 	path = other_works/laser
 	url = git@github.com:brugues/LASER.git
