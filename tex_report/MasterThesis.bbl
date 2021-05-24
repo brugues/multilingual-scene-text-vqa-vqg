@@ -175,4 +175,16 @@ R.~Speer and J.~Lowry-Duda, ``Conceptnet at semeval-2017 task 2: Extending word
   embeddings with multilingual relational knowledge,'' \emph{arXiv preprint
   arXiv:1704.03560}, 2017.
 
+\bibitem{joulin2016bag}
+A.~Joulin, E.~Grave, P.~Bojanowski, and T.~Mikolov, ``Bag of tricks for
+  efficient text classification,'' 2016.
+
+\bibitem{bojanowski2017enriching}
+P.~Bojanowski, E.~Grave, A.~Joulin, and T.~Mikolov, ``Enriching word vectors
+  with subword information,'' 2017.
+
+\bibitem{mikolov2013exploiting}
+T.~Mikolov, Q.~V. Le, and I.~Sutskever, ``Exploiting similarities among
+  languages for machine translation,'' 2013.
+
 \end{thebibliography}
