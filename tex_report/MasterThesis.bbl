@@ -21,6 +21,10 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
+\bibitem{chen2018unsupervised}
+X.~Chen and C.~Cardie, ``Unsupervised multilingual word embeddings,''
+  \emph{arXiv preprint arXiv:1808.08933}, 2018.
+
 \bibitem{DBLP:journals/corr/abs-2006-00923}
 \BIBentryALTinterwordspacing
 L.~G{\'{o}}mez, A.~F. Biten, R.~Tito, A.~Mafla, M.~Rusi{\~{n}}ol, E.~Valveny,
@@ -152,10 +156,6 @@ M.~Artetxe and H.~Schwenk, ``{Massively Multilingual Sentence Embeddings for
   [Online]. Available: \url{https://doi.org/10.1162/tacl\_a\_00288}
 \BIBentrySTDinterwordspacing
 
-\bibitem{chen2018unsupervised}
-X.~Chen and C.~Cardie, ``Unsupervised multilingual word embeddings,''
-  \emph{arXiv preprint arXiv:1808.08933}, 2018.
-
 \bibitem{TIEDEMANN12.463}
 J.~Tiedemann, ``\BIBforeignlanguage{english}{Parallel data, tools and
   interfaces in opus},'' in \emph{\BIBforeignlanguage{english}{Proceedings of
@@ -186,5 +186,52 @@ P.~Bojanowski, E.~Grave, A.~Joulin, and T.~Mikolov, ``Enriching word vectors
 \bibitem{mikolov2013exploiting}
 T.~Mikolov, Q.~V. Le, and I.~Sutskever, ``Exploiting similarities among
   languages for machine translation,'' 2013.
+
+\bibitem{ferreira2016jointly}
+D.~C. Ferreira, A.~F. Martins, and M.~S. Almeida, ``Jointly learning to embed
+  and predict with multiple languages,'' in \emph{Proceedings of the 54th
+  Annual Meeting of the Association for Computational Linguistics (Volume 1:
+  Long Papers)}, 2016, pp. 2019--2028.
+
+\bibitem{levy2015improving}
+O.~Levy, Y.~Goldberg, and I.~Dagan, ``Improving distributional similarity with
+  lessons learned from word embeddings,'' \emph{Transactions of the Association
+  for Computational Linguistics}, vol.~3, pp. 211--225, 2015.
+
+\bibitem{klementiev2012inducing}
+A.~Klementiev, I.~Titov, and B.~Bhattarai, ``Inducing crosslingual distributed
+  representations of words,'' in \emph{Proceedings of COLING 2012}, 2012, pp.
+  1459--1474.
+
+\bibitem{hermann2014multilingual}
+K.~M. Hermann and P.~Blunsom, ``Multilingual models for compositional
+  distributed semantics,'' \emph{arXiv preprint arXiv:1404.4641}, 2014.
+
+\bibitem{lauly2014autoencoder}
+S.~Lauly, H.~Larochelle, M.~M. Khapra, B.~Ravindran, V.~Raykar, A.~Saha
+  \emph{et~al.}, ``An autoencoder approach to learning bilingual word
+  representations,'' \emph{arXiv preprint arXiv:1402.1454}, 2014.
+
+\bibitem{faruqui2014improving}
+M.~Faruqui and C.~Dyer, ``Improving vector space word representations using
+  multilingual correlation,'' in \emph{Proceedings of the 14th Conference of
+  the European Chapter of the Association for Computational Linguistics}, 2014,
+  pp. 462--471.
+
+\bibitem{gouws2015bilbowa}
+S.~Gouws, Y.~Bengio, and G.~Corrado, ``Bilbowa: Fast bilingual distributed
+  representations without word alignments,'' in \emph{International Conference
+  on Machine Learning}.\hskip 1em plus 0.5em minus 0.4em\relax PMLR, 2015, pp.
+  748--756.
+
+\bibitem{luong2015bilingual}
+M.-T. Luong, H.~Pham, and C.~D. Manning, ``Bilingual word representations with
+  monolingual quality in mind,'' in \emph{Proceedings of the 1st Workshop on
+  Vector Space Modeling for Natural Language Processing}, 2015, pp. 151--159.
+
+\bibitem{le2014distributed}
+Q.~Le and T.~Mikolov, ``Distributed representations of sentences and
+  documents,'' in \emph{International conference on machine learning}.\hskip
+  1em plus 0.5em minus 0.4em\relax PMLR, 2014, pp. 1188--1196.
 
 \end{thebibliography}

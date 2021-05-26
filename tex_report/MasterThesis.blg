@@ -15,45 +15,45 @@ Database file #2: MasterThesis.bib
 Warning--empty booktitle in krishnavisualgenome
 
 Done.
-You've used 27 entries,
+You've used 36 entries,
             4087 wiz_defined-function locations,
-            1335 strings with 20726 characters,
-and the built_in function-call counts, 17411 in all, are:
-= -- 1226
-> -- 601
-< -- 60
-+ -- 299
-- -- 132
-* -- 868
-:= -- 2627
-add.period$ -- 57
-call.type$ -- 27
-change.case$ -- 29
-chr.to.int$ -- 138
-cite$ -- 28
-duplicate$ -- 1333
-empty$ -- 1567
-format.name$ -- 159
-if$ -- 4014
+            1379 strings with 22540 characters,
+and the built_in function-call counts, 24943 in all, are:
+= -- 1810
+> -- 783
+< -- 130
++ -- 403
+- -- 160
+* -- 1213
+:= -- 3661
+add.period$ -- 77
+call.type$ -- 36
+change.case$ -- 38
+chr.to.int$ -- 324
+cite$ -- 37
+duplicate$ -- 1859
+empty$ -- 2215
+format.name$ -- 196
+if$ -- 5812
 int.to.chr$ -- 0
-int.to.str$ -- 27
-missing$ -- 296
-newline$ -- 120
-num.names$ -- 29
-pop$ -- 812
+int.to.str$ -- 36
+missing$ -- 380
+newline$ -- 147
+num.names$ -- 38
+pop$ -- 1029
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 2
-skip$ -- 1293
+skip$ -- 1879
 stack$ -- 0
-substring$ -- 349
-swap$ -- 919
-text.length$ -- 14
+substring$ -- 792
+swap$ -- 1344
+text.length$ -- 22
 text.prefix$ -- 0
 top$ -- 5
-type$ -- 27
+type$ -- 36
 warning$ -- 1
-while$ -- 50
-width$ -- 29
-write$ -- 272
+while$ -- 87
+width$ -- 38
+write$ -- 352
 (There was 1 warning)
