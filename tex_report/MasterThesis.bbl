@@ -21,9 +21,32 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
-\bibitem{chen2018unsupervised}
-X.~Chen and C.~Cardie, ``Unsupervised multilingual word embeddings,''
-  \emph{arXiv preprint arXiv:1808.08933}, 2018.
+\bibitem{vinyals2017pointer}
+O.~Vinyals, M.~Fortunato, and N.~Jaitly, ``Pointer networks,'' 2017.
+
+\bibitem{DBLP:journals/corr/abs-1807-09956}
+\BIBentryALTinterwordspacing
+Y.~Jiang, V.~Natarajan, X.~Chen, M.~Rohrbach, D.~Batra, and D.~Parikh, ``Pythia
+  v0.1: the winning entry to the {VQA} challenge 2018,'' \emph{CoRR}, vol.
+  abs/1807.09956, 2018. [Online]. Available:
+  \url{http://arxiv.org/abs/1807.09956}
+\BIBentrySTDinterwordspacing
+
+\bibitem{singh2018pythia}
+A.~Singh, Y.~Natarajan, Vivand ek~Jiang, X.~Chen, M.~Shah, M.~Rohrbach,
+  D.~Batra, and D.~Parikh, ``Pythia-a platform for vision \& language
+  research,'' in \emph{SysML Workshop, NeurIPS}, vol. 2018, 2018.
+
+\bibitem{Singh_2019_CVPR}
+A.~Singh, V.~Natarajan, M.~Shah, Y.~Jiang, X.~Chen, D.~Batra, D.~Parikh, and
+  M.~Rohrbach, ``Towards vqa models that can read,'' in \emph{Proceedings of
+  the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  June 2019.
+
+\bibitem{8978122}
+A.~Mishra, S.~Shekhar, A.~K. Singh, and A.~Chakraborty, ``Ocr-vqa: Visual
+  question answering by reading text in images,'' in \emph{2019 International
+  Conference on Document Analysis and Recognition (ICDAR)}, 2019, pp. 947--952.
 
 \bibitem{DBLP:journals/corr/abs-2006-00923}
 \BIBentryALTinterwordspacing
@@ -39,94 +62,10 @@ R.~Hu, A.~Singh, T.~Darrell, and M.~Rohrbach, ``Iterative answer prediction
   \emph{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
   Recognition (CVPR)}, June 2020.
 
-\bibitem{vinyals2017pointer}
-O.~Vinyals, M.~Fortunato, and N.~Jaitly, ``Pointer networks,'' 2017.
-
-\bibitem{DBLP:journals/corr/SmithTHH17}
-\BIBentryALTinterwordspacing
-S.~L. Smith, D.~H.~P. Turban, S.~Hamblin, and N.~Y. Hammerla, ``Offline
-  bilingual word vectors, orthogonal transformations and the inverted
-  softmax,'' \emph{CoRR}, vol. abs/1702.03859, 2017. [Online]. Available:
-  \url{http://arxiv.org/abs/1702.03859}
-\BIBentrySTDinterwordspacing
-
-\bibitem{Biten_2019_ICCV}
-A.~F. Biten, R.~Tito, A.~Mafla, L.~Gomez, M.~Rusinol, E.~Valveny, C.~Jawahar,
-  and D.~Karatzas, ``Scene text visual question answering,'' in
-  \emph{Proceedings of the IEEE/CVF International Conference on Computer Vision
-  (ICCV)}, October 2019.
-
-\bibitem{Singh_2019_CVPR}
-A.~Singh, V.~Natarajan, M.~Shah, Y.~Jiang, X.~Chen, D.~Batra, D.~Parikh, and
-  M.~Rohrbach, ``Towards vqa models that can read,'' in \emph{Proceedings of
-  the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
-  June 2019.
-
-\bibitem{Gurari_2018_CVPR}
-D.~Gurari, Q.~Li, A.~J. Stangl, A.~Guo, C.~Lin, K.~Grauman, J.~Luo, and J.~P.
-  Bigham, ``Vizwiz grand challenge: Answering visual questions from blind
-  people,'' in \emph{Proceedings of the IEEE Conference on Computer Vision and
-  Pattern Recognition (CVPR)}, June 2018.
-
-\bibitem{borisyuk2018rosetta}
-F.~Borisyuk, A.~Gordo, and V.~Sivakumar, ``Rosetta: Large scale system for text
-  detection and recognition in images,'' in \emph{Proceedings of the 24th ACM
-  SIGKDD International Conference on Knowledge Discovery \& Data Mining}, 2018,
-  pp. 71--79.
-
-\bibitem{8978122}
-A.~Mishra, S.~Shekhar, A.~K. Singh, and A.~Chakraborty, ``Ocr-vqa: Visual
-  question answering by reading text in images,'' in \emph{2019 International
-  Conference on Document Analysis and Recognition (ICDAR)}, 2019, pp. 947--952.
-
-\bibitem{DBLP:journals/corr/abs-1807-09956}
-\BIBentryALTinterwordspacing
-Y.~Jiang, V.~Natarajan, X.~Chen, M.~Rohrbach, D.~Batra, and D.~Parikh, ``Pythia
-  v0.1: the winning entry to the {VQA} challenge 2018,'' \emph{CoRR}, vol.
-  abs/1807.09956, 2018. [Online]. Available:
-  \url{http://arxiv.org/abs/1807.09956}
-\BIBentrySTDinterwordspacing
-
-\bibitem{singh2018pythia}
-A.~Singh, Y.~Natarajan, Vivand ek~Jiang, X.~Chen, M.~Shah, M.~Rohrbach,
-  D.~Batra, and D.~Parikh, ``Pythia-a platform for vision \& language
-  research,'' in \emph{SysML Workshop, NeurIPS}, vol. 2018, 2018.
-
-\bibitem{wang2010word}
-K.~Wang and S.~Belongie, ``Word spotting in the wild,'' in \emph{European
-  conference on computer vision}.\hskip 1em plus 0.5em minus 0.4em\relax
-  Springer, 2010, pp. 591--604.
-
-\bibitem{DBLP:journals/corr/VeitMNMB16}
-\BIBentryALTinterwordspacing
-A.~Veit, T.~Matera, L.~Neumann, J.~Matas, and S.~J. Belongie, ``Coco-text:
-  Dataset and benchmark for text detection and recognition in natural images,''
-  \emph{CoRR}, vol. abs/1601.07140, 2016. [Online]. Available:
-  \url{http://arxiv.org/abs/1601.07140}
-\BIBentrySTDinterwordspacing
-
-\bibitem{mishra:hal-00818183}
-\BIBentryALTinterwordspacing
-A.~Mishra, K.~Alahari, and C.~Jawahar, ``{Scene Text Recognition using Higher
-  Order Language Priors},'' in \emph{{BMVC - British Machine Vision
-  Conference}}.\hskip 1em plus 0.5em minus 0.4em\relax Surrey, United Kingdom:
-  {BMVA}, Sep. 2012. [Online]. Available:
-  \url{https://hal.inria.fr/hal-00818183}
-\BIBentrySTDinterwordspacing
-
-\bibitem{Johnson_2017_CVPR}
-J.~Johnson, B.~Hariharan, L.~van~der Maaten, L.~Fei-Fei, C.~Lawrence~Zitnick,
-  and R.~Girshick, ``Clevr: A diagnostic dataset for compositional language and
-  elementary visual reasoning,'' in \emph{Proceedings of the IEEE Conference on
-  Computer Vision and Pattern Recognition (CVPR)}, July 2017.
-
-\bibitem{DBLP:journals/corr/abs-1810-04805}
-\BIBentryALTinterwordspacing
-J.~Devlin, M.~Chang, K.~Lee, and K.~Toutanova, ``{BERT:} pre-training of deep
-  bidirectional transformers for language understanding,'' \emph{CoRR}, vol.
-  abs/1810.04805, 2018. [Online]. Available:
-  \url{http://arxiv.org/abs/1810.04805}
-\BIBentrySTDinterwordspacing
+\bibitem{pennington2014glove}
+J.~Pennington, R.~Socher, and C.~D. Manning, ``Glove: Global vectors for word
+  representation,'' in \emph{Proceedings of the 2014 conference on empirical
+  methods in natural language processing (EMNLP)}, 2014, pp. 1532--1543.
 
 \bibitem{krishnavisualgenome}
 \BIBentryALTinterwordspacing
@@ -137,24 +76,55 @@ R.~Krishna, Y.~Zhu, O.~Groth, J.~Johnson, K.~Hata, J.~Kravitz, S.~Chen,
   \url{https://arxiv.org/abs/1602.07332}
 \BIBentrySTDinterwordspacing
 
-\bibitem{pennington2014glove}
-J.~Pennington, R.~Socher, and C.~D. Manning, ``Glove: Global vectors for word
-  representation,'' in \emph{Proceedings of the 2014 conference on empirical
-  methods in natural language processing (EMNLP)}, 2014, pp. 1532--1543.
-
-\bibitem{jawanpuria2019learning}
-P.~Jawanpuria, A.~Balgovind, A.~Kunchukuttan, and B.~Mishra, ``Learning
-  multilingual word embeddings in latent metric space: a geometric approach,''
-  \emph{Transactions of the Association for Computational Linguistics}, vol.~7,
-  pp. 107--120, 2019.
-
-\bibitem{10.1162/tacl_a_00288}
+\bibitem{DBLP:journals/corr/VeitMNMB16}
 \BIBentryALTinterwordspacing
-M.~Artetxe and H.~Schwenk, ``{Massively Multilingual Sentence Embeddings for
-  Zero-Shot Cross-Lingual Transfer and Beyond},'' \emph{Transactions of the
-  Association for Computational Linguistics}, vol.~7, pp. 597--610, 09 2019.
-  [Online]. Available: \url{https://doi.org/10.1162/tacl\_a\_00288}
+A.~Veit, T.~Matera, L.~Neumann, J.~Matas, and S.~J. Belongie, ``Coco-text:
+  Dataset and benchmark for text detection and recognition in natural images,''
+  \emph{CoRR}, vol. abs/1601.07140, 2016. [Online]. Available:
+  \url{http://arxiv.org/abs/1601.07140}
 \BIBentrySTDinterwordspacing
+
+\bibitem{Johnson_2017_CVPR}
+J.~Johnson, B.~Hariharan, L.~van~der Maaten, L.~Fei-Fei, C.~Lawrence~Zitnick,
+  and R.~Girshick, ``Clevr: A diagnostic dataset for compositional language and
+  elementary visual reasoning,'' in \emph{Proceedings of the IEEE Conference on
+  Computer Vision and Pattern Recognition (CVPR)}, July 2017.
+
+\bibitem{Gurari_2018_CVPR}
+D.~Gurari, Q.~Li, A.~J. Stangl, A.~Guo, C.~Lin, K.~Grauman, J.~Luo, and J.~P.
+  Bigham, ``Vizwiz grand challenge: Answering visual questions from blind
+  people,'' in \emph{Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition (CVPR)}, June 2018.
+
+\bibitem{Biten_2019_ICCV}
+A.~F. Biten, R.~Tito, A.~Mafla, L.~Gomez, M.~Rusinol, E.~Valveny, C.~Jawahar,
+  and D.~Karatzas, ``Scene text visual question answering,'' in
+  \emph{Proceedings of the IEEE/CVF International Conference on Computer Vision
+  (ICCV)}, October 2019.
+
+\bibitem{wang2010word}
+K.~Wang and S.~Belongie, ``Word spotting in the wild,'' in \emph{European
+  conference on computer vision}.\hskip 1em plus 0.5em minus 0.4em\relax
+  Springer, 2010, pp. 591--604.
+
+\bibitem{mishra:hal-00818183}
+\BIBentryALTinterwordspacing
+A.~Mishra, K.~Alahari, and C.~Jawahar, ``{Scene Text Recognition using Higher
+  Order Language Priors},'' in \emph{{BMVC - British Machine Vision
+  Conference}}.\hskip 1em plus 0.5em minus 0.4em\relax Surrey, United Kingdom:
+  {BMVA}, Sep. 2012. [Online]. Available:
+  \url{https://hal.inria.fr/hal-00818183}
+\BIBentrySTDinterwordspacing
+
+\bibitem{borisyuk2018rosetta}
+F.~Borisyuk, A.~Gordo, and V.~Sivakumar, ``Rosetta: Large scale system for text
+  detection and recognition in images,'' in \emph{Proceedings of the 24th ACM
+  SIGKDD International Conference on Knowledge Discovery \& Data Mining}, 2018,
+  pp. 71--79.
+
+\bibitem{chen2018unsupervised}
+X.~Chen and C.~Cardie, ``Unsupervised multilingual word embeddings,''
+  \emph{arXiv preprint arXiv:1808.08933}, 2018.
 
 \bibitem{TIEDEMANN12.463}
 J.~Tiedemann, ``\BIBforeignlanguage{english}{Parallel data, tools and
@@ -164,24 +134,6 @@ J.~Tiedemann, ``\BIBforeignlanguage{english}{Parallel data, tools and
   B.~Maegaard, J.~Mariani, J.~Odijk, and S.~Piperidis, Eds.\hskip 1em plus
   0.5em minus 0.4em\relax Istanbul, Turkey: European Language Resources
   Association (ELRA), may 2012.
-
-\bibitem{conneau2017word}
-A.~Conneau, G.~Lample, M.~Ranzato, L.~Denoyer, and H.~J{\'e}gou, ``Word
-  translation without parallel data,'' \emph{arXiv preprint arXiv:1710.04087},
-  2017.
-
-\bibitem{speer2017conceptnet}
-R.~Speer and J.~Lowry-Duda, ``Conceptnet at semeval-2017 task 2: Extending word
-  embeddings with multilingual relational knowledge,'' \emph{arXiv preprint
-  arXiv:1704.03560}, 2017.
-
-\bibitem{joulin2016bag}
-A.~Joulin, E.~Grave, P.~Bojanowski, and T.~Mikolov, ``Bag of tricks for
-  efficient text classification,'' 2016.
-
-\bibitem{bojanowski2017enriching}
-P.~Bojanowski, E.~Grave, A.~Joulin, and T.~Mikolov, ``Enriching word vectors
-  with subword information,'' 2017.
 
 \bibitem{mikolov2013exploiting}
 T.~Mikolov, Q.~V. Le, and I.~Sutskever, ``Exploiting similarities among
@@ -193,15 +145,24 @@ D.~C. Ferreira, A.~F. Martins, and M.~S. Almeida, ``Jointly learning to embed
   Annual Meeting of the Association for Computational Linguistics (Volume 1:
   Long Papers)}, 2016, pp. 2019--2028.
 
-\bibitem{levy2015improving}
-O.~Levy, Y.~Goldberg, and I.~Dagan, ``Improving distributional similarity with
-  lessons learned from word embeddings,'' \emph{Transactions of the Association
-  for Computational Linguistics}, vol.~3, pp. 211--225, 2015.
+\bibitem{DBLP:journals/corr/abs-1810-04805}
+\BIBentryALTinterwordspacing
+J.~Devlin, M.~Chang, K.~Lee, and K.~Toutanova, ``{BERT:} pre-training of deep
+  bidirectional transformers for language understanding,'' \emph{CoRR}, vol.
+  abs/1810.04805, 2018. [Online]. Available:
+  \url{http://arxiv.org/abs/1810.04805}
+\BIBentrySTDinterwordspacing
 
 \bibitem{klementiev2012inducing}
 A.~Klementiev, I.~Titov, and B.~Bhattarai, ``Inducing crosslingual distributed
   representations of words,'' in \emph{Proceedings of COLING 2012}, 2012, pp.
   1459--1474.
+
+\bibitem{faruqui2014improving}
+M.~Faruqui and C.~Dyer, ``Improving vector space word representations using
+  multilingual correlation,'' in \emph{Proceedings of the 14th Conference of
+  the European Chapter of the Association for Computational Linguistics}, 2014,
+  pp. 462--471.
 
 \bibitem{hermann2014multilingual}
 K.~M. Hermann and P.~Blunsom, ``Multilingual models for compositional
@@ -212,26 +173,65 @@ S.~Lauly, H.~Larochelle, M.~M. Khapra, B.~Ravindran, V.~Raykar, A.~Saha
   \emph{et~al.}, ``An autoencoder approach to learning bilingual word
   representations,'' \emph{arXiv preprint arXiv:1402.1454}, 2014.
 
-\bibitem{faruqui2014improving}
-M.~Faruqui and C.~Dyer, ``Improving vector space word representations using
-  multilingual correlation,'' in \emph{Proceedings of the 14th Conference of
-  the European Chapter of the Association for Computational Linguistics}, 2014,
-  pp. 462--471.
-
 \bibitem{gouws2015bilbowa}
 S.~Gouws, Y.~Bengio, and G.~Corrado, ``Bilbowa: Fast bilingual distributed
   representations without word alignments,'' in \emph{International Conference
   on Machine Learning}.\hskip 1em plus 0.5em minus 0.4em\relax PMLR, 2015, pp.
   748--756.
 
+\bibitem{levy2015improving}
+O.~Levy, Y.~Goldberg, and I.~Dagan, ``Improving distributional similarity with
+  lessons learned from word embeddings,'' \emph{Transactions of the Association
+  for Computational Linguistics}, vol.~3, pp. 211--225, 2015.
+
 \bibitem{luong2015bilingual}
 M.-T. Luong, H.~Pham, and C.~D. Manning, ``Bilingual word representations with
   monolingual quality in mind,'' in \emph{Proceedings of the 1st Workshop on
   Vector Space Modeling for Natural Language Processing}, 2015, pp. 151--159.
 
+\bibitem{joulin2016bag}
+A.~Joulin, E.~Grave, P.~Bojanowski, and T.~Mikolov, ``Bag of tricks for
+  efficient text classification,'' 2016.
+
+\bibitem{DBLP:journals/corr/SmithTHH17}
+\BIBentryALTinterwordspacing
+S.~L. Smith, D.~H.~P. Turban, S.~Hamblin, and N.~Y. Hammerla, ``Offline
+  bilingual word vectors, orthogonal transformations and the inverted
+  softmax,'' \emph{CoRR}, vol. abs/1702.03859, 2017. [Online]. Available:
+  \url{http://arxiv.org/abs/1702.03859}
+\BIBentrySTDinterwordspacing
+
+\bibitem{conneau2017word}
+A.~Conneau, G.~Lample, M.~Ranzato, L.~Denoyer, and H.~J{\'e}gou, ``Word
+  translation without parallel data,'' \emph{arXiv preprint arXiv:1710.04087},
+  2017.
+
+\bibitem{speer2017conceptnet}
+R.~Speer and J.~Lowry-Duda, ``Conceptnet at semeval-2017 task 2: Extending word
+  embeddings with multilingual relational knowledge,'' \emph{arXiv preprint
+  arXiv:1704.03560}, 2017.
+
+\bibitem{bojanowski2017enriching}
+P.~Bojanowski, E.~Grave, A.~Joulin, and T.~Mikolov, ``Enriching word vectors
+  with subword information,'' 2017.
+
+\bibitem{jawanpuria2019learning}
+P.~Jawanpuria, A.~Balgovind, A.~Kunchukuttan, and B.~Mishra, ``Learning
+  multilingual word embeddings in latent metric space: a geometric approach,''
+  \emph{Transactions of the Association for Computational Linguistics}, vol.~7,
+  pp. 107--120, 2019.
+
 \bibitem{le2014distributed}
 Q.~Le and T.~Mikolov, ``Distributed representations of sentences and
   documents,'' in \emph{International conference on machine learning}.\hskip
   1em plus 0.5em minus 0.4em\relax PMLR, 2014, pp. 1188--1196.
+
+\bibitem{10.1162/tacl_a_00288}
+\BIBentryALTinterwordspacing
+M.~Artetxe and H.~Schwenk, ``{Massively Multilingual Sentence Embeddings for
+  Zero-Shot Cross-Lingual Transfer and Beyond},'' \emph{Transactions of the
+  Association for Computational Linguistics}, vol.~7, pp. 597--610, 09 2019.
+  [Online]. Available: \url{https://doi.org/10.1162/tacl\_a\_00288}
+\BIBentrySTDinterwordspacing
 
 \end{thebibliography}
