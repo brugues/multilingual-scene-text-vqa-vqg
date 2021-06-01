@@ -1,5 +1,10 @@
 # Own things
 other_works/ST-VQA_Loc/STVQA_v2
+src/models/bin/
+src/models/ckpt/
+src/models/pb/
+src/data
+src/outputs
 
 .DS_Store
 
