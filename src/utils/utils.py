@@ -2,18 +2,15 @@
 import sys
 
 
-<<<<<<< HEAD
 def update_progress_bar(progress_bar, epoch, total_epoch, current_batch, total_batch, loss):
     progress_bar.set_postfix(
-        epoch='{}/{}'.format(epoch, total_epoch),
-        batch='{}/{}'.format(current_batch, total_batch),
+        epoch='{}/{}'.format(epoch + 1, total_epoch),
+        batch='{}/{}'.format(current_batch + 1, total_batch),
         loss='{:.5f}'.format(float(loss)))
 
     progress_bar.update(1)
 
 
-=======
->>>>>>> parent of 6fb6c3e (add yolov4 tensorflow code)
 class tcolors:
     INFO = '\033[94m'
     ERROR = '\033[91m'
@@ -28,10 +25,6 @@ def print_info(msg):
 
 
 def print_err(msg):
-<<<<<<< HEAD
-
-=======
->>>>>>> parent of 6fb6c3e (add yolov4 tensorflow code)
     sys.stdout.write(tcolors.ERROR + msg + tcolors.ENDC)
     sys.stdout.flush()
 

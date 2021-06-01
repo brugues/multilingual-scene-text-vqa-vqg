@@ -56,4 +56,5 @@ if __name__ == '__main__':
 
             step += 1
 
+        stvqa_model.save_attention_checkpoint()
         stvqa_model.save_attention_model()
