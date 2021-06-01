@@ -1,50 +1,17 @@
 import os
 import json
-<<<<<<< HEAD
-import fasttext
-import cv2
-import numpy as np
-
-from utils.utils import print_info, print_ok
-from utils.yolo_utils import yolo_image_preprocess
-=======
 import numpy as np
 import cv2
 import fasttext
 
-from utils import *
-
-try:
-    from yolo_utils import *
-except:
-    from utils.yolo_utils import *
+from utils_tf1 import *
+from yolo_utils_tf1 import *
 
 import tensorflow as tf
->>>>>>> parent of 6fb6c3e (add yolov4 tensorflow code)
 
 
 class STVQADataGenerator:
 
-<<<<<<< HEAD
-    def __init__(self, config, training=True):
-
-        self.training = training
-        self.batch_size = config.batch_size
-        self.shuffle = config.shuffle
-        self.max_len = config.max_len
-        self.image_path = config.image_path
-        self.fasttext_model = fasttext.load_model(config.fasttext_file)
-        self.fasttext_dim = self.fasttext_model.get_dimension()
-        self.curr_idx = 0
-        self.input_size = config.img_size
-
-        # load gt file
-        print_info('Loading GT file...')
-        with open(config.gt_file) as f:
-            self.gt = json.load(f)
-        print_ok('Done!\n')
-
-=======
     def __init__(self, gt_file, maxlen, image_path, input_size, fasttext_model, batch_size=32, training=True,
                  shuffle=True):
 
@@ -63,7 +30,6 @@ class STVQADataGenerator:
         with open(gt_file) as f:
             self.gt = json.load(f)
         print_ok('Done!\n')
->>>>>>> parent of 6fb6c3e (add yolov4 tensorflow code)
         # TODO filter questions by maxlen?
 
     def len(self):
@@ -83,11 +49,7 @@ class STVQADataGenerator:
 
         batch_x_image = []
         batch_x_textual = np.zeros((self.batch_size, 38, 38, self.fasttext_dim))  # TODO do not hardcode contants
-<<<<<<< HEAD
-        batch_x_questions = np.zeros((self.batch_size, self.max_len, self.fasttext_dim))
-=======
         batch_x_questions = np.zeros((self.batch_size, self.maxlen, self.fasttext_dim))
->>>>>>> parent of 6fb6c3e (add yolov4 tensorflow code)
         batch_y = np.zeros((self.batch_size, 38, 38), dtype=np.int8)
 
         if not self.training:
@@ -116,35 +78,20 @@ class STVQADataGenerator:
 
             # TODO data augmentation?
 
-<<<<<<< HEAD
-            # preprocess image
-            if len(gt_boxes) > 0:
-                image_data, gt_boxes = yolo_image_preprocess(image, [self.input_size, self.input_size],
-                                                             gt_boxes=gt_boxes)
-            else:
-                image_data = yolo_image_preprocess(image, [self.input_size, self.input_size])
-=======
             # preprocess image 
             if len(gt_boxes) > 0:
                 image_data, gt_boxes = yolo_image_preporcess(image, [self.input_size, self.input_size],
                                                              gt_boxes=gt_boxes)
             else:
                 image_data = yolo_image_preporcess(image, [self.input_size, self.input_size])
->>>>>>> parent of 6fb6c3e (add yolov4 tensorflow code)
                 gt_boxes = np.array(())
             batch_x_image.append(image_data)
 
             # assign fasttext vectors to cells in a 38x38 grid
             for w in range(gt_boxes.shape[0]):
-<<<<<<< HEAD
-                cell_coords = gt_boxes[w, :] // 16  # TODO do not hardcode constants
-                batch_x_textual[i, cell_coords[1]:cell_coords[3] + 1, cell_coords[0]:cell_coords[2] + 1, :] = \
-                    gt_text_vectors[w]
-=======
                 cell_coords = gt_boxes[w, :] / 16  # TODO do not hardcode contants
                 batch_x_textual[i, cell_coords[1]:cell_coords[3] + 1, cell_coords[0]:cell_coords[2] + 1, :] = \
                 gt_text_vectors[w]
->>>>>>> parent of 6fb6c3e (add yolov4 tensorflow code)
                 if w in gt_ans_idxs:
                     batch_y[i, cell_coords[1]:cell_coords[3] + 1, cell_coords[0]:cell_coords[2] + 1] = 1
                 if not self.training:
@@ -152,15 +99,9 @@ class STVQADataGenerator:
 
             # question encode with fasttext
             question = self.gt[idx]['question']
-<<<<<<< HEAD
-            for w in range(self.max_len - len(question), self.max_len):
-                batch_x_questions[i, w, :] = self.fasttext_model.get_word_vector(
-                    question[w - (self.max_len - len(question))])
-=======
             for w in range(self.maxlen - len(question), self.maxlen):
                 batch_x_questions[i, w, :] = self.fasttext_model.get_word_vector(
                     question[w - (self.maxlen - len(question))])
->>>>>>> parent of 6fb6c3e (add yolov4 tensorflow code)
 
             # if not training return gt for evaluation
             if not self.training:

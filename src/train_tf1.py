@@ -1,9 +1,11 @@
+
 import time
 import numpy as np
 import tensorflow as tf
 from models.attention import *
-from utils.data_loader import *
-from utils.utils import *
+from utils.data_loader_tf1 import *
+from utils.utils_tf1 import *
+
 
 gt_file_train = 'data/stvqa_train.json'
 image_path = 'data/ST-VQA/'
