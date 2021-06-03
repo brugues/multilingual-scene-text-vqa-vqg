@@ -2,8 +2,17 @@
 import tensorflow as tf
 
 # Tensorflow 2.5 >
-from tensorflow.keras.experimental import PeepholeLSTMCell
+# from tensorflow.keras.experimental import PeepholeLSTMCell
+from tensorflow_addons.rnn import PeepholeLSTMCell
 from tensorflow.keras.layers import StackedRNNCells, Dropout
+
+
+class SigmoidLayer(tf.keras.layers.Layer):
+    def __init__(self):
+        super(SigmoidLayer, self).__init__()
+
+    def call(self, inputs):
+        return tf.math.sigmoid(inputs)
 
 
 class Attention:
@@ -77,7 +86,9 @@ class Attention:
         output_att = tf.keras.activations.tanh(image_att + question_att)
         output_att = tf.keras.layers.Dropout(1 - self.drop_out_rate)(output_att)
 
-        prob_att1 = tf.keras.layers.Conv2D(1, (1, 1))(output_att)
+        prob_att1 = tf.keras.layers.Conv2D(1,
+                                           (1, 1),
+                                           activation=None)(output_att)
         prob_att1 = tf.reshape(prob_att1, (self.batch_size, self.dim_emb[0] * self.dim_emb[1]))
 
         prob_att1 = tf.keras.activations.softmax(prob_att1)
@@ -110,16 +121,16 @@ class Attention:
         output_att = tf.keras.activations.tanh(image_att + comb_att)
         output_att = tf.keras.layers.Dropout(1 - self.drop_out_rate)(output_att)
 
-        prob_att2 = tf.keras.layers.Conv2D(1, (1, 1))(output_att)
+        prob_att2 = tf.keras.layers.Conv2D(1,
+                                           (1, 1),
+                                           activation=None)(output_att)
         prob_att2 = tf.reshape(prob_att2, (self.batch_size, self.dim_emb[0] * self.dim_emb[1]))
-
-        prob_att2 = tf.keras.activations.softmax(prob_att2)
 
         # END OF ATTENTION ===============================================================
 
         # activation in the loss function during training
         if not self.training:
-            prob_att2 = tf.math.sigmoid(prob_att2)
+            prob_att2 = SigmoidLayer()(prob_att2)
 
         prob_att2 = tf.reshape(prob_att2, [-1, 38, 38])
 

@@ -8,10 +8,6 @@ import numpy as np
 from utils.utils import print_info, print_ok
 from utils.yolo_utils import yolo_image_preprocess
 
-import numpy as np
-import cv2
-import fasttext
-
 
 class STVQADataGenerator:
 
@@ -29,29 +25,15 @@ class STVQADataGenerator:
 
         # load gt file
         print_info('Loading GT file...')
-        with open(config.gt_file) as f:
-            self.gt = json.load(f)
+        if training:
+            with open(config.gt_file) as f:
+                self.gt = json.load(f)
+        else:
+            with open(config.gt_eval_file) as f:
+                self.gt = json.load(f)
         print_ok('Done!\n')
 
-    def __init__(self, config, training=True):
-
-        self.training = training
-        self.batch_size = config.batch_size
-        self.shuffle = config.shuffle
-        self.max_len = config.max_len
-        self.image_path = config.image_path
-        self.fasttext_model = fasttext.load_model(config.fasttext_file)
-        self.fasttext_dim = self.fasttext_model.get_dimension()
-        self.curr_idx = 0
-        self.input_size = config.img_size
-
-        # load gt file
-        print_info('Loading GT file...')
-        with open(config.gt_file) as f:
-            self.gt = json.load(f)
-        print_ok('Done!\n')
-
-        # TODO filter questions by maxlen?
+        # TODO filter questions by max_len?
 
     def len(self):
         """Denotes the number of batches per epoch

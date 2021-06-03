@@ -18,7 +18,7 @@ class VQAModel:
     def __init__(self, config, training=True):
         self.config = config
         self.training = training
-        self.attention_model = Attention(config, training=True)
+        self.attention_model = Attention(config, training=self.training)
         self.attention_model.build_model()
         self.yolo_model = self.load_yolo()
         self.models_path = config.models_path
@@ -39,6 +39,16 @@ class VQAModel:
             os.makedirs(os.path.join(self.models_path, 'checkpoints'), exist_ok=True)
             os.makedirs(os.path.join(self.logging_path, 'train'), exist_ok=True)
             os.makedirs(os.path.join(self.logging_path, 'val'), exist_ok=True)
+
+            if config.load_checkpoint:
+                folders = os.listdir(self.models_path)
+                folders.sort()
+                previous_model_folder = folders[-2]
+
+                self.attention_model.keras_model.load_weights(os.path.join(previous_model_folder,
+                                                                           'checkpoints'))
+        else:
+            self.attention_model.keras_model.load_weights(os.path.join(config.model_to_evaluate, 'checkpoints'))
 
         self.tensorboard = TensorBoardLogger(self.logging_path)
 
@@ -71,13 +81,20 @@ class VQAModel:
 
         return loss
 
+    def attention_eval_step(self, img_features, txt_features, question, labels):
+        image_emb = tf.concat([img_features, txt_features], 3)
+
+        model_outputs = self.attention_model.keras_model([question, image_emb])
+        loss = self.loss(labels, model_outputs)
+
+        return model_outputs, loss
+
     def save_attention_checkpoint(self):
         path = os.path.join(self.models_path, 'checkpoints')
         self.attention_model.keras_model.save_weights(path)
 
     def save_attention_model(self):
-        tf.keras.models.save_model(self.attention_model.keras_model,
-                                   self.models_path)
+        self.attention_model.keras_model.save(os.path.join(self.models_path, 'model.h5'))
 
     def log_to_tensorboard(self, step, loss, task='train'):
         def _decayed_learning_rate():
@@ -92,6 +109,6 @@ class VQAModel:
                 tf.summary.scalar('lr', _decayed_learning_rate(), step=step)
 
         elif task == 'val':
-            pass
-
-
+            with self.tensorboard.train_summary_writer.as_default():
+                # Loss
+                tf.summary.scalar('loss', loss, step=step)

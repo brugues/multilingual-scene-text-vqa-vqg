@@ -25,21 +25,28 @@ class Config:
                                                                               'dimension')
         args.add_argument('--max_len', type=int, default=25, help='Question maximum length')
         args.add_argument('--dropout', type=float, default=0.5, help='Dropout rate')
+        args.add_argument('--num_grids', type=int, default=38, help='Num grids per dimension on the image')
 
         # ------------------------------  DATALOADER  -----------------------------
-        args.add_argument('--shuffle', type=bool, default=True, help='Shuffle data')
+        args.add_argument('--shuffle', type=bool, default=False, help='Shuffle data')
         args.add_argument('--gt_file', type=str, default='data/stvqa_train.json', help='GT file path')
+        args.add_argument('--gt_eval_file', type=str, default='data/stvqa_eval.json', help='GT eval file path')
 
         # -------------------------------  TRAINING  ------------------------------
         args.add_argument('--lr', type=float, default=0.0003, help='Learning rate')
         args.add_argument('--decay_steps', type=int, default=50, help='Decay LR every X steps')
         args.add_argument('--decay_factor', type=float, default=0.99997592083, help='Learning rate decay factor')
         args.add_argument('--batch_size', type=int, default=32, help='batch size')
-        args.add_argument('--n_epochs', type=int, default=100, help='Number of epochs for which to train the net for')
+        args.add_argument('--n_epochs', type=int, default=5, help='Number of epochs for which to train the net for')
         args.add_argument('--models_path', type=str, default='outputs/models', help='models directory')
         args.add_argument('--logging_path', type=str, default='outputs/logs', help='path to save logs')
         args.add_argument('--checkpoint_period', type=int, default=200, help='save checkpoint every X steps')
         args.add_argument('--logging_period', type=int, default=50, help='log to tensorboard every X steps')
+        args.add_argument('--load_checkpoint', type=bool, default=False, help='Continue last training by loading '
+                                                                              'checkpoint')
+
+        # ------------------------------  EVALUATION  ----------------------------
+        args.add_argument('--model_to_evaluate', type=str, default='./outputs/models/005')
 
         # --------------------------------  PATHS  -------------------------------
         args.add_argument('--gt_file_train', type=str, default='data/stvqa_train.json', help='Ground Truth data files')
