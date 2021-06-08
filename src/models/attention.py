@@ -132,7 +132,8 @@ class Attention:
         if not self.training:
             prob_att2 = SigmoidLayer()(prob_att2)
 
-        prob_att2 = tf.reshape(prob_att2, [-1, 38, 38])
+        prob_att2 = tf.reshape(prob_att2, [-1, 38, 38],
+                               name='output')
 
         self.keras_model = tf.keras.Model([question_input_lstm, image_emb_input],
                                           prob_att2,

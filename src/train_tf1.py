@@ -2,7 +2,7 @@
 import time
 import numpy as np
 import tensorflow as tf
-from models.attention import *
+from models.attention_tf1 import *
 from utils.data_loader_tf1 import *
 from utils.utils_tf1 import *
 

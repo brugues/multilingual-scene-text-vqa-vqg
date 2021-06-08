@@ -31,10 +31,16 @@ class GoogleCloudTranslate:
         dataset_new_data = []
 
         for entry in tqdm(self.dataset_original_data, 'Translating {} dataset'.format(self.dataset)):
-            new_entry = {
-                'file_path': entry['file_path'],
-                'question_id': entry['question_id']
-            }
+
+            if self.dataset == 'eval':
+                new_entry = {
+                    'file_path': entry['file_path'],
+                    'question_id': entry['question_id']
+                }
+            else:
+                new_entry = {
+                    'file_path': entry['file_path']
+                }
 
             # Translate step by step
             # Ans Boxes
@@ -54,6 +60,8 @@ class GoogleCloudTranslate:
                 response = self.client.translate(text,
                                                  source_language=self.source_language,
                                                  target_language=self.dest_language)
+                # if "&#39;" in response['translatedText']:
+                #     print("A")
                 new_box['text'] = response['translatedText']
                 ans_bboxes.append(new_box)
 

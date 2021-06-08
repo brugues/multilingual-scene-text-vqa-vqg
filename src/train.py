@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 from tqdm import tqdm
 import tensorflow as tf
@@ -21,7 +22,6 @@ if __name__ == '__main__':
 
     print_info('Preparing data generator')
     train_data_generator = STVQADataGenerator(config)
-    eval_data_generator = STVQADataGenerator(config, training=False)
     print_ok('Done!\n')
 
     print_info('Starting training \n')
@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
         progress_bar = tqdm(range(num_batches),
                             total=num_batches, desc='Training Progress')
-
+        stvqa_model.save_attention_model()
         for batch in range(num_batches):
             # Get data for this batch
             batch_data = train_data_generator.next()
@@ -47,9 +47,7 @@ if __name__ == '__main__':
             loss = stvqa_model.attention_train_step(img_features, batch_data[1], batch_data[2], batch_data[3])
 
             if batch % config.logging_period == 0:
-                _, val_loss = evaluate_batch(stvqa_model, eval_data_generator.next())
                 stvqa_model.log_to_tensorboard(step, loss)
-                stvqa_model.log_to_tensorboard(step, val_loss, task='val')
 
             if batch % config.checkpoint_period == 0:
                 stvqa_model.save_attention_checkpoint()

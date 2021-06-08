@@ -83,7 +83,8 @@ class STVQADataGenerator:
 
             # preprocess image
             if len(gt_boxes) > 0:
-                image_data, gt_boxes = yolo_image_preprocess(image, [self.input_size, self.input_size],
+                image_data, gt_boxes = yolo_image_preprocess(image,
+                                                             [self.input_size, self.input_size],
                                                              gt_boxes=gt_boxes)
             else:
                 image_data = yolo_image_preprocess(image, [self.input_size, self.input_size])

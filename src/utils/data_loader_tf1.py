@@ -13,7 +13,7 @@ import tensorflow as tf
 class STVQADataGenerator:
 
     def __init__(self, gt_file, maxlen, image_path, input_size, fasttext_model, batch_size=32, training=True,
-                 shuffle=True):
+                 shuffle=False):
 
         self.training = training
         self.batch_size = batch_size

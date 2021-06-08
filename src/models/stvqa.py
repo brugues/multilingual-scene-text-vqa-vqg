@@ -46,9 +46,9 @@ class VQAModel:
                 previous_model_folder = folders[-2]
 
                 self.attention_model.keras_model.load_weights(os.path.join(previous_model_folder,
-                                                                           'checkpoints'))
+                                                                           'checkpoints', 'ckpt'))
         else:
-            self.attention_model.keras_model.load_weights(os.path.join(config.model_to_evaluate, 'checkpoints'))
+            self.attention_model.keras_model.load_weights(os.path.join(config.model_to_evaluate, 'checkpoints', 'ckpt'))
 
         self.tensorboard = TensorBoardLogger(self.logging_path)
 
@@ -90,7 +90,7 @@ class VQAModel:
         return model_outputs, loss
 
     def save_attention_checkpoint(self):
-        path = os.path.join(self.models_path, 'checkpoints')
+        path = os.path.join(self.models_path, 'checkpoints', 'ckpt')
         self.attention_model.keras_model.save_weights(path)
 
     def save_attention_model(self):
