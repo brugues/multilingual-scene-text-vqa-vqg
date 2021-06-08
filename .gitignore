@@ -3,6 +3,7 @@ other_works/ST-VQA_Loc/STVQA_v2
 src/models/bin/
 src/models/ckpt/
 src/models/pb/
+src/models/fasttext
 src/data
 src/outputs
 
