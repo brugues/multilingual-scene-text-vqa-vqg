@@ -37,7 +37,7 @@ class Config:
         args.add_argument('--decay_steps', type=int, default=50, help='Decay LR every X steps')
         args.add_argument('--decay_factor', type=float, default=0.99997592083, help='Learning rate decay factor')
         args.add_argument('--batch_size', type=int, default=32, help='batch size')
-        args.add_argument('--n_epochs', type=int, default=5, help='Number of epochs for which to train the net for')
+        args.add_argument('--n_epochs', type=int, default=10, help='Number of epochs for which to train the net for')
         args.add_argument('--models_path', type=str, default='outputs/models', help='models directory')
         args.add_argument('--logging_path', type=str, default='outputs/logs', help='path to save logs')
         args.add_argument('--checkpoint_period', type=int, default=200, help='save checkpoint every X steps')
@@ -46,12 +46,12 @@ class Config:
                                                                               'checkpoint')
 
         # ------------------------------  EVALUATION  ----------------------------
-        args.add_argument('--model_to_evaluate', type=str, default='./outputs/models/005')
+        args.add_argument('--model_to_evaluate', type=str, default='./outputs/models/001')
 
         # --------------------------------  PATHS  -------------------------------
         args.add_argument('--gt_file_train', type=str, default='data/stvqa_train.json', help='Ground Truth data files')
         args.add_argument('--image_path', type=str, default='data/ST-VQA', help='Image paths')
-        args.add_argument('--yolo_file', type=str, default='models/bin/yolov4.h5', help='Yolo weight file')
+        args.add_argument('--yolo_file', type=str, default='models/bin/yolov4_tf231.h5', help='Yolo weight file')
         args.add_argument('--fasttext_file', type=str, default='models/bin/wiki-news-300d-1M-subword.bin',
                           help='FastText files')
 
