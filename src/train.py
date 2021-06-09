@@ -32,9 +32,9 @@ if __name__ == '__main__':
     for epoch in range(config.n_epochs):
         print_ok('Starting epoch number {}\n'.format(epoch))
 
-        progress_bar = tqdm(range(num_batches),
-                            total=num_batches, desc='Training Progress')
-        stvqa_model.save_attention_model()
+        #progress_bar = tqdm(range(num_batches),
+        #                    total=num_batches, desc='Training Progress')
+
         for batch in range(num_batches):
             # Get data for this batch
             batch_data = train_data_generator.next()
@@ -52,11 +52,11 @@ if __name__ == '__main__':
             if batch % config.checkpoint_period == 0:
                 stvqa_model.save_attention_checkpoint()
 
-            update_train_progress_bar(progress_bar, epoch, config.n_epochs, batch, num_batches, loss)
-
+            #update_train_progress_bar(progress_bar, epoch, config.n_epochs, batch, num_batches, loss)
+            print("End of step {}/{} of epoch {}. Loss: {}".format(batch + 1, num_batches, epoch + 1, loss))
             step += 1
 
         stvqa_model.save_attention_checkpoint()
         stvqa_model.save_attention_model()
         tf.keras.backend.clear_session()  # Just in case there a memory leak or sth
-        del progress_bar
+        #del progress_bar

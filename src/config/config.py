@@ -26,6 +26,7 @@ class Config:
         args.add_argument('--max_len', type=int, default=25, help='Question maximum length')
         args.add_argument('--dropout', type=float, default=0.5, help='Dropout rate')
         args.add_argument('--num_grids', type=int, default=38, help='Num grids per dimension on the image')
+        args.add_argument('--loss_with_logits', type=bool, default=True, help='')
 
         # ------------------------------  DATALOADER  -----------------------------
         args.add_argument('--shuffle', type=bool, default=False, help='Shuffle data')
@@ -37,7 +38,7 @@ class Config:
         args.add_argument('--decay_steps', type=int, default=50, help='Decay LR every X steps')
         args.add_argument('--decay_factor', type=float, default=0.99997592083, help='Learning rate decay factor')
         args.add_argument('--batch_size', type=int, default=32, help='batch size')
-        args.add_argument('--n_epochs', type=int, default=10, help='Number of epochs for which to train the net for')
+        args.add_argument('--n_epochs', type=int, default=100, help='Number of epochs for which to train the net for')
         args.add_argument('--models_path', type=str, default='outputs/models', help='models directory')
         args.add_argument('--logging_path', type=str, default='outputs/logs', help='path to save logs')
         args.add_argument('--checkpoint_period', type=int, default=200, help='save checkpoint every X steps')
