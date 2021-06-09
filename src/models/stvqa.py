@@ -52,7 +52,10 @@ class VQAModel:
 
         self.tensorboard = TensorBoardLogger(self.logging_path)
 
-        self.loss = tf.keras.losses.BinaryCrossentropy()
+        if self.config.loss_with_logits:
+            self.loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+        else:
+            self.loss = tf.keras.losses.BinaryCrossentropy()
         self.scheduler = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=config.lr,
                                                                         decay_rate=config.decay_factor,
                                                                         decay_steps=config.decay_steps,
