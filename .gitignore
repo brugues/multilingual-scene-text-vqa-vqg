@@ -6,6 +6,7 @@ src/models/pb/
 src/models/fasttext
 src/data
 src/outputs
+src/fastText/data
 
 .DS_Store
 
