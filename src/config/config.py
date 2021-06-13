@@ -30,8 +30,8 @@ class Config:
 
         # ------------------------------  DATALOADER  -----------------------------
         args.add_argument('--shuffle', type=bool, default=False, help='Shuffle data')
-        args.add_argument('--gt_file', type=str, default='data/stvqa_train.json', help='GT file path')
-        args.add_argument('--gt_eval_file', type=str, default='data/stvqa_eval.json', help='GT eval file path')
+        args.add_argument('--gt_file', type=str, default='data/stvqa_train_subset.json', help='GT file path')
+        args.add_argument('--gt_eval_file', type=str, default='data/stvqa_train_subset.json', help='GT eval file path')
 
         # -------------------------------  TRAINING  ------------------------------
         args.add_argument('--lr', type=float, default=0.0003, help='Learning rate')

@@ -70,7 +70,8 @@ class Attention:
                                          padding='same',
                                          activation='tanh',
                                          kernel_initializer='glorot_uniform',
-                                         use_bias=True)(image_emb_input)
+                                         use_bias=True,
+                                         )(image_emb_input)
 
         # attention layers
         # attention layer 1
@@ -94,11 +95,11 @@ class Attention:
         prob_att1 = tf.keras.activations.softmax(prob_att1)
 
         image_att = []
-        image_emb = tf.reshape(img_emb, [self.batch_size, self.dim_emb[0] * self.dim_emb[1],
-                                         self.dim_hidden])
+        image_emb1 = tf.reshape(img_emb, [self.batch_size, self.dim_emb[0] * self.dim_emb[1],
+                                          self.dim_hidden])
 
         for b in range(self.batch_size):
-            image_att.append(tf.linalg.matmul(tf.expand_dims(prob_att1[b, :], 0), image_emb[b, :, :]))
+            image_att.append(tf.linalg.matmul(tf.expand_dims(prob_att1[b, :], 0), image_emb1[b, :, :]))
 
         image_att = tf.stack(image_att)
         image_att = tf.reduce_sum(image_att, 1)
