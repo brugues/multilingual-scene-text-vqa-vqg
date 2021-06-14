@@ -26,7 +26,7 @@ class Config:
         args.add_argument('--max_len', type=int, default=25, help='Question maximum length')
         args.add_argument('--dropout', type=float, default=0.5, help='Dropout rate')
         args.add_argument('--num_grids', type=int, default=38, help='Num grids per dimension on the image')
-        args.add_argument('--loss_with_logits', type=bool, default=True, help='')
+        args.add_argument('--loss_with_logits', type=bool, default=False, help='')
 
         # ------------------------------  DATALOADER  -----------------------------
         args.add_argument('--shuffle', type=bool, default=False, help='Shuffle data')
@@ -47,10 +47,9 @@ class Config:
                                                                               'checkpoint')
 
         # ------------------------------  EVALUATION  ----------------------------
-        args.add_argument('--model_to_evaluate', type=str, default='./outputs/models/001')
+        args.add_argument('--model_to_evaluate', type=str, default='./outputs/models/004')
 
         # --------------------------------  PATHS  -------------------------------
-        args.add_argument('--gt_file_train', type=str, default='data/stvqa_train.json', help='Ground Truth data files')
         args.add_argument('--image_path', type=str, default='data/ST-VQA', help='Image paths')
         args.add_argument('--yolo_file', type=str, default='models/bin/yolov4_tf231.h5', help='Yolo weight file')
         args.add_argument('--fasttext_file', type=str, default='models/bin/wiki-news-300d-1M-subword.bin',

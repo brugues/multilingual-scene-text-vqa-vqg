@@ -8,8 +8,8 @@ from tensorflow.keras.layers import StackedRNNCells, Dropout
 
 
 class SigmoidLayer(tf.keras.layers.Layer):
-    def __init__(self):
-        super(SigmoidLayer, self).__init__()
+    def __init__(self, **kwargs):
+        super(SigmoidLayer, self).__init__(**kwargs)
 
     def call(self, inputs):
         return tf.math.sigmoid(inputs)
@@ -69,8 +69,7 @@ class Attention:
                                          strides=(1, 1),
                                          padding='same',
                                          activation='tanh',
-                                         kernel_initializer='glorot_uniform',
-                                         use_bias=True,
+                                         kernel_initializer='glorot_uniform'
                                          )(image_emb_input)
 
         # attention layers
@@ -80,15 +79,18 @@ class Attention:
         question_att = tf.reshape(question_att, [-1, 38, 38, self.dim_hidden])
         question_att = tf.keras.layers.Conv2D(512,
                                               (1, 1),
+                                              padding='same',
                                               activation='tanh')(question_att)
         image_att = tf.keras.layers.Conv2D(512,
                                            (1, 1),
+                                           padding='same',
                                            activation=None)(img_emb)
         output_att = tf.keras.activations.tanh(image_att + question_att)
         output_att = tf.keras.layers.Dropout(1 - self.drop_out_rate)(output_att)
 
         prob_att1 = tf.keras.layers.Conv2D(1,
                                            (1, 1),
+                                           padding='same',
                                            activation=None)(output_att)
         prob_att1 = tf.reshape(prob_att1, (self.batch_size, self.dim_emb[0] * self.dim_emb[1]))
 
@@ -115,23 +117,26 @@ class Attention:
         comb_att = tf.reshape(comb_att, [-1, 38, 38, self.dim_hidden])
         comb_att = tf.keras.layers.Conv2D(512,
                                           (1, 1),
+                                          padding='same',
                                           activation='tanh')(comb_att)
         image_att = tf.keras.layers.Conv2D(512,
                                            (1, 1),
+                                           padding='same',
                                            activation=None)(img_emb)
         output_att = tf.keras.activations.tanh(image_att + comb_att)
         output_att = tf.keras.layers.Dropout(1 - self.drop_out_rate)(output_att)
 
         prob_att2 = tf.keras.layers.Conv2D(1,
                                            (1, 1),
+                                           padding='same',
                                            activation=None)(output_att)
         prob_att2 = tf.reshape(prob_att2, (self.batch_size, self.dim_emb[0] * self.dim_emb[1]))
 
         # END OF ATTENTION ===============================================================
 
         # activation in the loss function during training
-        if not self.training:
-            prob_att2 = SigmoidLayer()(prob_att2)
+        # if not self.training:
+        prob_att2 = SigmoidLayer(name="sigmoid")(prob_att2)
 
         prob_att2 = tf.reshape(prob_att2, [-1, 38, 38],
                                name='output')
