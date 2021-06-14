@@ -75,7 +75,8 @@ class VQAModel:
         image_emb = tf.concat([img_features, txt_features], 3)
 
         with tf.GradientTape() as tape:
-            model_outputs = self.attention_model.keras_model([question, image_emb])
+            model_outputs = self.attention_model.keras_model([question, image_emb],
+                                                             training=True)
             loss = self.loss(labels, model_outputs)
 
         # Apply gradients
@@ -84,10 +85,12 @@ class VQAModel:
 
         return loss
 
+    @tf.function
     def attention_eval_step(self, img_features, txt_features, question, labels):
         image_emb = tf.concat([img_features, txt_features], 3)
 
-        model_outputs = self.attention_model.keras_model([question, image_emb])
+        model_outputs = self.attention_model.keras_model([question, image_emb],
+                                                         training=False)
         loss = self.loss(labels, model_outputs)
 
         return model_outputs, loss
@@ -112,6 +115,7 @@ class VQAModel:
                 tf.summary.scalar('lr', _decayed_learning_rate(), step=step)
 
         elif task == 'val':
-            with self.tensorboard.train_summary_writer.as_default():
-                # Loss
-                tf.summary.scalar('loss', loss, step=step)
+            pass
+            # with self.tensorboard.train_summary_writer.as_default():
+            #     # Loss
+            #     tf.summary.scalar('loss', loss, step=step)
