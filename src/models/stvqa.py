@@ -55,11 +55,6 @@ class VQAModel:
 
         self.tensorboard = TensorBoardLogger(self.logging_path)
 
-        # if self.config.loss_with_logits:
-        #     self.loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)
-        # else:
-        #     self.loss = tf.keras.losses.BinaryCrossentropy()
-
         self.loss = None
 
         self.scheduler = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=config.lr,
@@ -86,7 +81,8 @@ class VQAModel:
             if self.loss is not None:
                 loss = self.loss(labels, model_outputs)
             else:
-                loss = tf.compat.v1.losses.sigmoid_cross_entropy(labels, model_outputs)
+                # loss = tf.compat.v1.losses.sigmoid_cross_entropy(labels, model_outputs)
+                loss = tf.nn.sigmoid_cross_entropy_with_logits(labels=labels, logits=model_outputs)
 
         # Apply gradients
         gradients = tape.gradient(loss, self.attention_model.keras_model.trainable_variables)
@@ -94,7 +90,6 @@ class VQAModel:
 
         return loss
 
-    @tf.function
     def attention_eval_step(self, img_features, txt_features, question, labels):
         image_emb = tf.concat([img_features, txt_features], 3)
         model_outputs = self.attention_model.keras_model.predict_on_batch([question, image_emb])

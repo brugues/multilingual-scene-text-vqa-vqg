@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 import tensorflow as tf
 
-# Tensorflow 2.5 >
+# Tensorflow 2.3 >
 from tensorflow.keras.experimental import PeepholeLSTMCell
-# from tensorflow_addons.rnn import PeepholeLSTMCell
-from tensorflow.keras.layers import StackedRNNCells, Dropout
+from tensorflow.keras.layers import StackedRNNCells
 
 
 class SigmoidLayer(tf.keras.layers.Layer):
@@ -141,11 +140,6 @@ class Attention:
         prob_att2 = tf.reshape(prob_att2, (self.batch_size, self.dim_emb[0] * self.dim_emb[1]))
 
         # END OF ATTENTION ===============================================================
-
-        # activation in the loss function during training
-        if not self.training:
-            prob_att2 = SigmoidLayer(name="sigmoid")(prob_att2)
-
         prob_att2 = tf.reshape(prob_att2, [-1, 38, 38],
                                name='output')
 
