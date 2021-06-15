@@ -58,6 +58,7 @@ if __name__ == '__main__':
             batch_data[2] = np.resize(batch_data[2], (config.batch_size, config.max_len, config.text_embedding_dim))
 
         stvqa_output, _ = evaluate_batch(stvqa_model, batch_data)
+        stvqa_output = stvqa_output.numpy()
 
         batch_ocr = batch_data[4]
         gt_ids = batch_data[7]
