@@ -83,7 +83,10 @@ class VQAModel:
         with tf.GradientTape() as tape:
             model_outputs = self.attention_model.keras_model([question, image_emb],
                                                              training=True)
-            loss = self.loss(labels, model_outputs)
+            if self.loss is not None:
+                loss = self.loss(labels, model_outputs)
+            else:
+                loss = tf.compat.v1.losses.sigmoid_cross_entropy(labels, model_outputs)
 
         # Apply gradients
         gradients = tape.gradient(loss, self.attention_model.keras_model.trainable_variables)
