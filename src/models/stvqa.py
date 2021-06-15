@@ -82,6 +82,7 @@ class VQAModel:
                 loss = self.loss(labels, model_outputs)
             else:
                 # loss = tf.compat.v1.losses.sigmoid_cross_entropy(labels, model_outputs)
+                labels = tf.cast(labels, model_outputs.dtype)
                 loss = tf.nn.sigmoid_cross_entropy_with_logits(labels=labels, logits=model_outputs)
 
         # Apply gradients
