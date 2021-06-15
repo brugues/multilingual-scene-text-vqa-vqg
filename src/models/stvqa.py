@@ -53,7 +53,7 @@ class VQAModel:
 
         self.tensorboard = TensorBoardLogger(self.logging_path)
 
-        self.loss = None
+        self.loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)
 
         self.scheduler = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=config.lr,
                                                                         decay_rate=config.decay_factor,
@@ -76,11 +76,11 @@ class VQAModel:
         with tf.GradientTape() as tape:
             model_outputs = self.attention_model.keras_model([question, image_emb],
                                                              training=True)
-            if self.loss is not None:
-                loss = self.loss(labels, model_outputs)
-            else:
-                loss = tf.keras.losses.binary_crossentropy(labels, model_outputs, from_logits=True)
-                # loss = tf.compat.v1.losses.sigmoid_cross_entropy(labels, model_outputs)
+            # if self.loss is not None:
+            #     loss = self.loss(labels, model_outputs)
+            # else:
+            #     loss = tf.compat.v1.losses.sigmoid_cross_entropy(labels, model_outputs)
+            loss = self.loss(labels, model_outputs)
 
         # Apply gradients
         gradients = tape.gradient(loss, self.attention_model.keras_model.trainable_variables)
