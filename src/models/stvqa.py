@@ -55,10 +55,13 @@ class VQAModel:
 
         self.tensorboard = TensorBoardLogger(self.logging_path)
 
-        if self.config.loss_with_logits:
-            self.loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)
-        else:
-            self.loss = tf.keras.losses.BinaryCrossentropy()
+        # if self.config.loss_with_logits:
+        #     self.loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+        # else:
+        #     self.loss = tf.keras.losses.BinaryCrossentropy()
+
+        self.loss = None
+
         self.scheduler = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=config.lr,
                                                                         decay_rate=config.decay_factor,
                                                                         decay_steps=config.decay_steps,
@@ -94,7 +97,10 @@ class VQAModel:
 
         model_outputs = self.attention_model.keras_model([question, image_emb],
                                                          training=False)
-        loss = self.loss(labels, model_outputs)
+        if self.loss is not None:
+            loss = self.loss(labels, model_outputs)
+        else:
+            loss = tf.compat.v1.losses.sigmoid_cross_entropy(labels, model_outputs)
 
         return model_outputs, loss
 

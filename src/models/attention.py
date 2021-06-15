@@ -85,7 +85,8 @@ class Attention:
                                            (1, 1),
                                            padding='same',
                                            activation=None)(img_emb)
-        output_att = tf.keras.activations.tanh(image_att + question_att)
+
+        output_att = tf.math.tanh(image_att + question_att)
         output_att = tf.keras.layers.Dropout(1 - self.drop_out_rate)(output_att)
 
         prob_att1 = tf.keras.layers.Conv2D(1,
@@ -123,6 +124,7 @@ class Attention:
                                            (1, 1),
                                            padding='same',
                                            activation=None)(img_emb)
+
         output_att = tf.keras.activations.tanh(image_att + comb_att)
         output_att = tf.keras.layers.Dropout(1 - self.drop_out_rate)(output_att)
 
@@ -135,8 +137,8 @@ class Attention:
         # END OF ATTENTION ===============================================================
 
         # activation in the loss function during training
-        # if not self.training:
-        prob_att2 = SigmoidLayer(name="sigmoid")(prob_att2)
+        if not self.training:
+            prob_att2 = SigmoidLayer(name="sigmoid")(prob_att2)
 
         prob_att2 = tf.reshape(prob_att2, [-1, 38, 38],
                                name='output')
