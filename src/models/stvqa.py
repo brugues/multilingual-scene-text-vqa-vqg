@@ -97,15 +97,9 @@ class VQAModel:
     @tf.function
     def attention_eval_step(self, img_features, txt_features, question, labels):
         image_emb = tf.concat([img_features, txt_features], 3)
+        model_outputs = self.attention_model.keras_model.predict_on_batch([question, image_emb])
 
-        model_outputs = self.attention_model.keras_model([question, image_emb],
-                                                         training=False)
-        if self.loss is not None:
-            loss = self.loss(labels, model_outputs)
-        else:
-            loss = tf.compat.v1.losses.sigmoid_cross_entropy(labels, model_outputs)
-
-        return model_outputs, loss
+        return model_outputs
 
     def save_attention_checkpoint(self):
         path = os.path.join(self.models_path, 'checkpoints', 'ckpt')

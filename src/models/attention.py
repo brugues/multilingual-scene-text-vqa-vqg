@@ -2,8 +2,8 @@
 import tensorflow as tf
 
 # Tensorflow 2.5 >
-# from tensorflow.keras.experimental import PeepholeLSTMCell
-from tensorflow_addons.rnn import PeepholeLSTMCell
+from tensorflow.keras.experimental import PeepholeLSTMCell
+# from tensorflow_addons.rnn import PeepholeLSTMCell
 from tensorflow.keras.layers import StackedRNNCells, Dropout
 
 
@@ -50,8 +50,14 @@ class Attention:
                                                 dtype=tf.float32)
 
         # Q encoder: RNN body
-        lstm_1 = PeepholeLSTMCell(self.rnn_size, dropout=1 - self.drop_out_rate)
-        lstm_2 = PeepholeLSTMCell(self.rnn_size, dropout=1 - self.drop_out_rate)
+        lstm_1 = PeepholeLSTMCell(self.rnn_size,
+                                  activation='hard_sigmoid',
+                                  dropout=1 - self.drop_out_rate,
+                                  recurrent_dropout=1 - self.drop_out_rate)
+        lstm_2 = PeepholeLSTMCell(self.rnn_size,
+                                  activation='hard_sigmoid',
+                                  dropout=1 - self.drop_out_rate,
+                                  recurrent_dropout=1 - self.drop_out_rate)
         stacked_rnn = StackedRNNCells([lstm_1, lstm_2])
 
         state = stacked_rnn.get_initial_state(question_input_lstm,
