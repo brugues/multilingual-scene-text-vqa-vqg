@@ -51,7 +51,7 @@ class VQAModel:
             # model = tf.keras.models.load_model(os.path.join(config.model_to_evaluate, 'model.h5'))
             # self.attention_model.keras_model = tf.keras.Model(model.input, model.output)
 
-            self.attention_model.keras_model.load_model(os.path.join(config.model_to_evaluate, 'checkpoints', 'ckpt'))
+            self.attention_model.keras_model.load_weights(os.path.join(config.model_to_evaluate, 'checkpoints', 'ckpt'))
 
         self.tensorboard = TensorBoardLogger(self.logging_path)
 
