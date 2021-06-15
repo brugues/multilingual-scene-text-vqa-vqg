@@ -48,10 +48,8 @@ class VQAModel:
                 self.attention_model.keras_model.load_weights(os.path.join(previous_model_folder,
                                                                            'checkpoints', 'ckpt'))
         else:
-            # model = tf.keras.models.load_model(os.path.join(config.model_to_evaluate, 'model.h5'))
-            # self.attention_model.keras_model = tf.keras.Model(model.input, model.output)
-
-            self.attention_model.keras_model.load_weights(os.path.join(config.model_to_evaluate, 'checkpoints', 'ckpt'))
+            self.attention_model.keras_model.load_weights(os.path.join(config.model_to_evaluate,
+                                                                       'checkpoints', 'ckpt'))
 
         self.tensorboard = TensorBoardLogger(self.logging_path)
 
@@ -81,9 +79,8 @@ class VQAModel:
             if self.loss is not None:
                 loss = self.loss(labels, model_outputs)
             else:
+                loss = tf.keras.losses.binary_crossentropy(labels, model_outputs, from_logits=True)
                 # loss = tf.compat.v1.losses.sigmoid_cross_entropy(labels, model_outputs)
-                labels = tf.cast(labels, model_outputs.dtype)
-                loss = tf.nn.sigmoid_cross_entropy_with_logits(labels=labels, logits=model_outputs)
 
         # Apply gradients
         gradients = tape.gradient(loss, self.attention_model.keras_model.trainable_variables)
