@@ -1,3 +1,4 @@
+import six
 import json
 import numpy as np
 from tqdm import tqdm
@@ -14,12 +15,12 @@ def evaluate_batch(model, data):
     img_features = model.yolo_model.predict_on_batch(np.array(data[0]))
     img_features = tf.cast(img_features, tf.float64)
 
-    out, loss = model.attention_eval_step(img_features,
-                                          data[1],
-                                          data[2],
-                                          data[3])
+    out = model.attention_eval_step(img_features,
+                                    data[1],
+                                    data[2],
+                                    data[3])
 
-    return out, loss
+    return out
 
 
 if __name__ == '__main__':
@@ -57,7 +58,8 @@ if __name__ == '__main__':
             batch_data[1] = np.resize(batch_data[1], (config.batch_size, 38, 38, config.text_embedding_dim))
             batch_data[2] = np.resize(batch_data[2], (config.batch_size, config.max_len, config.text_embedding_dim))
 
-        stvqa_output, _ = evaluate_batch(stvqa_model, batch_data)
+        stvqa_output = evaluate_batch(stvqa_model, batch_data)
+        stvqa_output = tf.math.sigmoid(stvqa_output)
         stvqa_output = stvqa_output.numpy()
 
         batch_ocr = batch_data[4]
@@ -78,13 +80,17 @@ if __name__ == '__main__':
                     if stvqa_output[b, i, j] > 0.95 and batch_ocr[b, i, j] not in cmb_pred and batch_ocr[b, i, j] != '':
                         cmb_pred.append(batch_ocr[b, i, j])
 
-            prediction = ''
+            prediction = ""
             if len(cmb_pred) > 0:
                 for element in cmb_pred:
-                    prediction.join(str(element))
+                    if isinstance(element, six.binary_type):
+                        element = element.decode("utf-8")
+                    prediction = prediction.join(element)
             else:
                 for element in one_pred:
-                    prediction.join(str(element))
+                    if isinstance(element, six.binary_type):
+                        element = element.decode("utf-8")
+                    prediction = prediction.join(element)
 
             eval_out.append({'answer': prediction, 'question_id': int(gt_ids[b])})
 
