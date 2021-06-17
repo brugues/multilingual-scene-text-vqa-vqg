@@ -215,6 +215,16 @@ R.~Speer and J.~Lowry-Duda, ``Conceptnet at semeval-2017 task 2: Extending word
 P.~Bojanowski, E.~Grave, A.~Joulin, and T.~Mikolov, ``Enriching word vectors
   with subword information,'' 2017.
 
+\bibitem{heinzerling2018bpemb}
+B.~Heinzerling and M.~Strube, ``\BIBforeignlanguage{english}{{BPEmb:
+  Tokenization-free Pre-trained Subword Embeddings in 275 Languages}},'' in
+  \emph{\BIBforeignlanguage{english}{Proceedings of the Eleventh International
+  Conference on Language Resources and Evaluation (LREC 2018)}}, N.~C.~C.
+  chair), K.~Choukri, C.~Cieri, T.~Declerck, S.~Goggi, K.~Hasida, H.~Isahara,
+  B.~Maegaard, J.~Mariani, H.~Mazo, A.~Moreno, J.~Odijk, S.~Piperidis, and
+  T.~Tokunaga, Eds.\hskip 1em plus 0.5em minus 0.4em\relax Miyazaki, Japan:
+  European Language Resources Association (ELRA), May 7-12, 2018 2018.
+
 \bibitem{jawanpuria2019learning}
 P.~Jawanpuria, A.~Balgovind, A.~Kunchukuttan, and B.~Mishra, ``Learning
   multilingual word embeddings in latent metric space: a geometric approach,''
