@@ -62,7 +62,11 @@ if __name__ == '__main__':
         stvqa_output = tf.math.sigmoid(stvqa_output)
         stvqa_output = stvqa_output.numpy()
 
-        batch_ocr = batch_data[4]
+        if config.language in ['ca', 'es']:
+            batch_ocr = batch_data[8]
+        else:
+            batch_ocr = batch_data[4]
+
         gt_ids = batch_data[7]
 
         for b in range(this_batch_size):
@@ -82,15 +86,19 @@ if __name__ == '__main__':
 
             prediction = ""
             if len(cmb_pred) > 0:
+                cmb_pred_alt = []
                 for element in cmb_pred:
                     if isinstance(element, six.binary_type):
                         element = element.decode("utf-8")
-                    prediction = prediction.join(element)
+                    cmb_pred_alt.append(element)
+                prediction = ' '.join(cmb_pred_alt)
             else:
+                one_pred_alt = []
                 for element in one_pred:
                     if isinstance(element, six.binary_type):
                         element = element.decode("utf-8")
-                    prediction = prediction.join(element)
+                    one_pred_alt.append(element)
+                prediction = ' '.join(one_pred_alt)
 
             eval_out.append({'answer': prediction, 'question_id': int(gt_ids[b])})
 

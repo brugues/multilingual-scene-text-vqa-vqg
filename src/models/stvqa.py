@@ -7,10 +7,7 @@ from models.attention import Attention
 class TensorBoardLogger:
     def __init__(self, log_dir):
         self.train_log_dir = os.path.join(log_dir, 'train')
-        self.validation_log_dir = os.path.join(log_dir, 'val')
-
         self.train_summary_writer = tf.summary.create_file_writer(self.train_log_dir)
-        self.validation_summary_writer = tf.summary.create_file_writer(self.validation_log_dir)
 
 
 class VQAModel:
@@ -31,7 +28,11 @@ class VQAModel:
             os.makedirs(self.logging_path)
 
         if training:
-            self.experiment = '00{}'.format(len(os.listdir(self.models_path)) + 1)
+            if self.config.output_folder is None:
+                self.experiment = '00{}'.format(len(os.listdir(self.models_path)) + 1)
+            else:
+                self.experiment = self.config.output_folder
+
             self.models_path = os.path.join(self.models_path, self.experiment)
             self.logging_path = os.path.join(self.logging_path, self.experiment)
 
@@ -55,11 +56,14 @@ class VQAModel:
 
         self.loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)
 
-        self.scheduler = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=config.lr,
-                                                                        decay_rate=config.decay_factor,
-                                                                        decay_steps=config.decay_steps,
-                                                                        staircase=True)
-        self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.scheduler)
+        if self.config.apply_decay:
+            self.scheduler = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=config.lr,
+                                                                            decay_rate=config.decay_factor,
+                                                                            decay_steps=config.decay_steps,
+                                                                            staircase=True)
+            self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.scheduler)
+        else:
+            self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.config.lr)
 
     def load_yolo(self):
         model = tf.keras.models.load_model(self.config.yolo_file)
@@ -105,16 +109,9 @@ class VQAModel:
         def _decayed_learning_rate():
             return self.config.lr * self.config.decay_factor ** (step / self.config.decay_steps)
 
-        if task == 'train':
-            with self.tensorboard.train_summary_writer.as_default():
-                # Loss
-                tf.summary.scalar('loss', loss, step=step)
+        with self.tensorboard.train_summary_writer.as_default():
+            # Loss
+            tf.summary.scalar('loss', loss, step=step)
 
-                # Learning rate
-                tf.summary.scalar('lr', _decayed_learning_rate(), step=step)
-
-        elif task == 'val':
-            pass
-            # with self.tensorboard.train_summary_writer.as_default():
-            #     # Loss
-            #     tf.summary.scalar('loss', loss, step=step)
+            # Learning rate
+            tf.summary.scalar('lr', _decayed_learning_rate(), step=step)
