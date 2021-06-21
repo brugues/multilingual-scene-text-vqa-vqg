@@ -26,6 +26,7 @@ def evaluate_batch(model, data):
 if __name__ == '__main__':
 
     config = Config().get_config()
+    config.shuffle = False
 
     print_info('Building Attention model ...')
     stvqa_model = VQAModel(config, training=False)
