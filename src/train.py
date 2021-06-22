@@ -20,7 +20,7 @@ if __name__ == '__main__':
     stvqa_model.attention_model.keras_model.summary()
     print_ok('Done!\n')
 
-    print_info('Preparing data generator')
+    print_info('Preparing data generator\n')
     train_data_generator = STVQADataGenerator(config)
     print_ok('Done!\n')
 
@@ -48,12 +48,13 @@ if __name__ == '__main__':
 
             if batch % config.logging_period == 0:
                 stvqa_model.log_to_tensorboard(step, loss)
+                print("End of step {}/{} of epoch {}. Loss: {}".format(batch + 1, num_batches, epoch + 1, loss))
 
             if batch % config.checkpoint_period == 0:
                 stvqa_model.save_attention_checkpoint()
 
             #update_train_progress_bar(progress_bar, epoch, config.n_epochs, batch, num_batches, loss)
-            print("End of step {}/{} of epoch {}. Loss: {}".format(batch + 1, num_batches, epoch + 1, loss))
+
             step += 1
 
         stvqa_model.save_attention_checkpoint()

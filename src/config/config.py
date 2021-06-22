@@ -46,7 +46,7 @@ class Config:
         # -------------------------------  TRAINING  ------------------------------
         args.add_argument('--lr', type=float, default=0.0003, help='Learning rate')
         args.add_argument('--decay_steps', type=int, default=50, help='Decay LR every X steps')
-        args.add_argument('--apply_decay', type=bool, default=False, help='Apply decay rate to learning rate')
+        args.add_argument('--apply_decay', type=bool, default=True, help='Apply decay rate to learning rate')
         args.add_argument('--decay_factor', type=float, default=0.99997592083, help='Learning rate decay factor')
         args.add_argument('--batch_size', type=int, default=32, help='batch size')
         args.add_argument('--n_epochs', type=int, default=100, help='Number of epochs for which to train the net for')
@@ -60,7 +60,7 @@ class Config:
                                                                           'logs')
 
         # ------------------------------  EVALUATION  ----------------------------
-        args.add_argument('--model_to_evaluate', type=str, default='./outputs/models/005')
+        args.add_argument('--model_to_evaluate', type=str, default='./outputs/models/0012')
 
         # --------------------------------  PATHS  -------------------------------
         args.add_argument('--image_path', type=str, default='data/ST-VQA', help='Image paths')

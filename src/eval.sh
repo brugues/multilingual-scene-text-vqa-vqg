@@ -7,6 +7,6 @@
 #SBATCH --gres gpu:Pascal:1 # Para pedir Pascales MAX 8
 #SBATCH -o %x_%u_%j.out # File to which STDOUT will be written
 #SBATCH -e %x_%u_%j.err # File to which STDERR will be written
-python eval.py --model_to_evaluate ./outputs/models/001
-python eval.py --model_to_evaluate ./outputs/models/002
-python eval.py --model_to_evaluate ./outputs/models/003
+python eval.py --model_to_evaluate ./outputs/models/006 --batch_size 55
+python eval.py --model_to_evaluate ./outputs/models/007 --batch_size 55
+python eval.py --model_to_evaluate ./outputs/models/008 --batch_size 55

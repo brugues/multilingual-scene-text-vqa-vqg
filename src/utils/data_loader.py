@@ -50,9 +50,10 @@ class STVQADataGenerator:
                     except:
                         print("Error loading model. Check that the file exists")
                 elif self.fasttext_subtype == 'aligned':
+                    # TO FIX
                     try:
                         self.txt_model = fasttext.load_model(os.path.join(fasttext_path, 'aligned_word_vectors',
-                                                                          'wiki.{}.align.bin'.format(self.language)))
+                                                                          'wiki.{}.align.vec'.format(self.language)))
                     except:
                         print("Error loading model. Check that the file exists")
                 else:
@@ -63,12 +64,13 @@ class STVQADataGenerator:
         elif self.embedding_type == 'bpemb':
             bpemb_path = os.path.join(config.txt_embeddings_path, 'bpemb')
             if self.language == 'en' or self.language == 'ca' or self.language == 'es' or self.language == 'multi':
-                bin_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs200000.d300.w2v.bin'.format(self.language))
 
                 if self.language == 'multi':
-                    model_file = os.path.join(bpemb_path, 'multi.wiki.bpe.vs200000.d300.w2v.bin')
+                    bin_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs1000000.d300.w2v.bin'.format(self.language))
+                    model_file = os.path.join(bpemb_path, 'multi.wiki.bpe.vs1000000.model')
                 else:
-                    model_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs200000.d300.w2v.bin'.format(self.language))
+                    bin_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs200000.d300.w2v.bin'.format(self.language))
+                    model_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs200000.model'.format(self.language))
 
                 assert str(self.dim_txt) in bin_file
 
@@ -151,7 +153,17 @@ class STVQADataGenerator:
             if self.embedding_type == 'fasttext':
                 gt_text_vectors = [self.txt_model.get_word_vector(w['text']) for w in self.gt[idx]['ocr_bboxes']]
             else:
-                gt_text_vectors = [self.txt_model.embed(w['text']) for w in self.gt[idx]['ocr_bboxes']]
+                gt_text_vectors = []
+                for w in self.gt[idx]['ocr_bboxes']:
+                    if len(w['text']) > 0:
+                        gt_text_vectors.append(self.txt_model.embed(w['text'])[-1, :])
+                    else:
+                        gt_text_vectors.append(np.zeros(300, dtype=np.float32))
+
+                # for w in self.gt[idx]['ocr_bboxes']:
+                #     print(w['text'] + str(self.txt_model.embed(w['text']).shape))
+                # gt_text_vectors = [self.txt_model.embed(w['text'])[-1, :] if w is not None else np.zeros(300)
+                #                    for w in self.gt[idx]['ocr_bboxes']]
             gt_texts = [w['text'] for w in self.gt[idx]['ocr_bboxes']]
 
             if self.language in ['ca', 'es']:
@@ -197,12 +209,13 @@ class STVQADataGenerator:
                     batch_x_questions[i, w, :] = self.txt_model.get_word_vector(
                         question[w - (self.max_len - len(question))])
                 else:
-                    if self.bpemb_subtype == 'multi':
-                        batch_x_questions[i, w, :] = self.txt_model.embed(
-                            question[w - (self.max_len - len(question))])[1]
+                    emb = self.txt_model.embed(question[w - (self.max_len - len(question))])
+                    if emb.shape[0] == self.dim_txt:
+                        batch_x_questions[i, w, :] = emb
+                    elif emb.shape[0] > 0:
+                        batch_x_questions[i, w, :] = emb[-1, :]
                     else:
-                        batch_x_questions[i, w, :] = self.txt_model.embed(
-                            question[w - (self.max_len - len(question))])[0]
+                        batch_x_questions[i, w, :] = np.zeros(300)
 
             # if not training return gt for evaluation
             if not self.training:
