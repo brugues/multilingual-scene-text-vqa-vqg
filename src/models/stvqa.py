@@ -59,8 +59,7 @@ class VQAModel:
         if self.config.apply_decay:
             self.scheduler = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=config.lr,
                                                                             decay_rate=config.decay_factor,
-                                                                            decay_steps=config.decay_steps,
-                                                                            staircase=True)
+                                                                            decay_steps=config.decay_steps)
             self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.scheduler)
         else:
             self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.config.lr)
