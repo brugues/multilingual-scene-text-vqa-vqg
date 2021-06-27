@@ -8,5 +8,5 @@
 #SBATCH -o %x_%u_%j.out # File to which STDOUT will be written
 #SBATCH -e %x_%u_%j.err # File to which STDERR will be written
 python train.py --language ca --fasttext_subtype wiki --output_folder wiki_ca
-python train.py --language en --fasttext_subtype wiki --output_folder wiki_en
 python train.py --language es --fasttext_subtype wiki --output_folder wiki_es
+python train.py --language en --fasttext_subtype wiki --output_folder wiki_en
