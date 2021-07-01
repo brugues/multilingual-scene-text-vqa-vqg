@@ -5,9 +5,8 @@ import tensorflow as tf
 
 from config.config import Config
 from models.stvqa import VQAModel
-from eval import evaluate_batch
-from utils.utils import print_info, print_ok, update_train_progress_bar
-from utils.data_loader import STVQADataGenerator
+from dataloader.utils import print_info, print_ok, update_train_progress_bar
+from dataloader.data_loader import STVQADataGenerator
 
 
 if __name__ == '__main__':

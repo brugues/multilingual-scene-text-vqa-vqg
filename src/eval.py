@@ -4,8 +4,8 @@ import numpy as np
 from tqdm import tqdm
 import tensorflow as tf
 
-from utils.data_loader import STVQADataGenerator
-from utils.utils import print_info, print_ok, update_eval_progress_bar
+from dataloader.data_loader import STVQADataGenerator
+from dataloader.utils import print_info, print_ok, update_eval_progress_bar
 from config.config import Config
 from models.stvqa import VQAModel
 
