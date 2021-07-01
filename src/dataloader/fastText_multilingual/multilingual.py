@@ -44,12 +44,12 @@ class FastVector:
         self.softmax_denominators = None
         
         if transform is not None:
-            print('Applying transformation to embedding')
+            print('Applying transformations to embedding')
             self.apply_transform(transform)
 
     def apply_transform(self, transform):
         """
-        Apply the given transformation to the vector space
+        Apply the given transformations to the vector space
 
         Right-multiplies given transform with embeddings E:
             E = E * transform

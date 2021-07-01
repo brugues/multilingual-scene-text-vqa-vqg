@@ -1,13 +1,9 @@
 import os
 import json
-import numpy as np
-import cv2
-import fasttext
 
 from utils_tf1 import *
 from yolo_utils_tf1 import *
 
-import tensorflow as tf
 
 
 class STVQADataGenerator:

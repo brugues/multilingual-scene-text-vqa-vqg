@@ -6,8 +6,9 @@ from bpemb import BPEmb
 import cv2
 import numpy as np
 
-from utils.utils import print_info, print_ok
-from utils.yolo_utils import yolo_image_preprocess
+from dataloader.utils import print_info, print_ok
+from dataloader.yolo_utils import yolo_image_preprocess
+from dataloader.fastText_multilingual.multilingual import FastVector
 
 
 class STVQADataGenerator:
@@ -73,13 +74,27 @@ class STVQADataGenerator:
                     model_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs200000.model'.format(self.language))
 
                 assert str(self.dim_txt) in bin_file
+                try:
+                    self.txt_model = BPEmb(emb_file=bin_file,
+                                           model_file=model_file,
+                                           dim=self.dim_txt)
+                except:
+                    print("Error loading model. Check that the file exists")
 
-                self.txt_model = BPEmb(emb_file=bin_file,
-                                       model_file=model_file,
-                                       dim=self.dim_txt)
             else:
                 raise AttributeError('Invalid language. Select between English (en), Catalan (ca) or Spanish (es) or '
                                      'All of them (multi)')
+
+        elif self.embedding_type == 'smith':
+            smith_path = os.path.join(config.txt_embeddings_path, 'fasttext', 'wiki_word_vectors')
+            try:
+                self.txt_model = fasttext.load_model(os.path.join(smith_path, 'wiki.{}.bin'.format(self.language)))
+            except:
+                print("Error loading model. Check that the file exists")
+
+            self.transformation = np.loadtxt(os.path.join(config.txt_embeddings_path, 'smith', 'transformations',
+                                                          '{}.txt'.format(self.language)))
+
         else:
             raise AttributeError('Invalid embedding type. Select either fasttext or bpemb')
 
@@ -152,6 +167,11 @@ class STVQADataGenerator:
             gt_boxes = [w['bbox'] for w in self.gt[idx]['ocr_bboxes']]
             if self.embedding_type == 'fasttext':
                 gt_text_vectors = [self.txt_model.get_word_vector(w['text']) for w in self.gt[idx]['ocr_bboxes']]
+
+            elif self.embedding_type == 'smith':
+                gt_text_vectors = [np.matmul(self.txt_model.get_word_vector(w['text']), self.transformation)
+                                   for w in self.gt[idx]['ocr_bboxes']]
+
             else:
                 gt_text_vectors = []
                 for w in self.gt[idx]['ocr_bboxes']:
@@ -208,6 +228,11 @@ class STVQADataGenerator:
                 if self.embedding_type == 'fasttext':
                     batch_x_questions[i, w, :] = self.txt_model.get_word_vector(
                         question[w - (self.max_len - len(question))])
+
+                if self.embedding_type == 'smith':
+                    batch_x_questions[i, w, :] = np.matmul(self.txt_model.get_word_vector(
+                        question[w - (self.max_len - len(question))]), self.transformation)
+
                 else:
                     emb = self.txt_model.embed(question[w - (self.max_len - len(question))])
                     if emb.shape[0] == self.dim_txt:

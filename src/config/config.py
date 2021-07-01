@@ -34,7 +34,7 @@ class Config:
         args.add_argument('--gt_eval_file', type=str, default='data/stvqa_eval.json', help='GT eval file path')
         args.add_argument('--language', type=str, default='en', help='Language of the embeddings to use',
                           choices=['ca', 'en', 'es', 'multi'])  # Multi only available on bpemb
-        args.add_argument('--embedding_type', type=str, default='fasttext', choices=['fasttext', 'bpemb'],
+        args.add_argument('--embedding_type', type=str, default='fasttext', choices=['fasttext', 'bpemb', 'smith'],
                           help='What type of embeddings to use')
         args.add_argument('--fasttext_subtype', type=str, default='wiki-news', help='Subtype of fasttext embeddings',
                           choices=['wiki', 'cc', 'aligned', 'wiki-news'])
