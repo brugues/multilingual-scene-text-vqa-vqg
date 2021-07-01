@@ -8,7 +8,6 @@ import numpy as np
 
 from dataloader.utils import print_info, print_ok
 from dataloader.yolo_utils import yolo_image_preprocess
-from dataloader.fastText_multilingual.multilingual import FastVector
 
 
 class STVQADataGenerator:
