@@ -146,12 +146,12 @@ class STVQADataGenerator:
         batch_y = np.zeros((self.batch_size, 38, 38), dtype=np.int8)
 
         if not self.training:
-            batch_ocr = np.chararray((self.batch_size, 38, 38), itemsize=35)
+            batch_ocr = np.chararray((self.batch_size, 38, 38), itemsize=35, unicode=True)
             batch_ocr[:] = ''
             gt_questions = []
             gt_answers = []
             gt_ids = []
-            batch_ocr_original = np.chararray((self.batch_size, 38, 38), itemsize=35)
+            batch_ocr_original = np.chararray((self.batch_size, 38, 38), itemsize=35, unicode=True)
             batch_ocr_original[:] = ''
 
         # foreach question in batch
@@ -228,7 +228,7 @@ class STVQADataGenerator:
                     batch_x_questions[i, w, :] = self.txt_model.get_word_vector(
                         question[w - (self.max_len - len(question))])
 
-                if self.embedding_type == 'smith':
+                elif self.embedding_type == 'smith':
                     batch_x_questions[i, w, :] = np.matmul(self.txt_model.get_word_vector(
                         question[w - (self.max_len - len(question))]), self.transformation)
 
