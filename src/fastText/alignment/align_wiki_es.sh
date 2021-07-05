@@ -6,8 +6,8 @@
 # LICENSE file in the root directory of this source tree.
 
 set -e
-s=${1:-en}
-t=${2:-es}
+s=${1:-es}
+t=${2:-en}
 echo "Example based on the ${s}->${t} alignment"
 
 if [ ! -d data/ ]; then
