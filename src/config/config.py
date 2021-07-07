@@ -33,11 +33,14 @@ class Config:
         args.add_argument('--gt_file', type=str, default='data/stvqa_train.json', help='GT file path')
         args.add_argument('--gt_eval_file', type=str, default='data/stvqa_eval.json', help='GT eval file path')
         args.add_argument('--language', type=str, default='en', help='Language of the embeddings to use',
-                          choices=['ca', 'en', 'es', 'multi'])  # Multi only available on bpemb
+                          choices=['ca', 'en', 'es'])
         args.add_argument('--embedding_type', type=str, default='fasttext', choices=['fasttext', 'bpemb', 'smith'],
                           help='What type of embeddings to use')
         args.add_argument('--fasttext_subtype', type=str, default='wiki-news', help='Subtype of fasttext embeddings',
-                          choices=['wiki', 'cc', 'aligned', 'wiki-news'])
+                          choices=['wiki', 'cc', 'wiki-news'])
+        args.add_argument('--fasttext_aligned', dest='fasttext_aligned', action='store_true')
+        args.set_defaults(fasttext_aligned=False)
+        args.add_argument('--fasttext_aligned_pair', default='ca-en', help='Pair of languages aligned (source-target)')
         args.add_argument('--bpemb_subtype', type=str, default='wiki', help='Subtype of bpemb embeddings',
                           choices=['wiki', 'multi'])
         args.add_argument('--txt_embeddings_path', type=str, default='models/bin',

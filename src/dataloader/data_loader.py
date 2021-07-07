@@ -1,3 +1,4 @@
+import io
 import os
 import json
 
@@ -10,10 +11,19 @@ from dataloader.utils import print_info, print_ok
 from dataloader.yolo_utils import yolo_image_preprocess
 
 
+def load_fasttext_transform(fname, d1=300, d2=300):
+    fin = io.open(fname, 'r', encoding='utf-8', newline='\n', errors='ignore')
+    R = np.zeros([d1, d2])
+    for i, line in enumerate(fin):
+        tokens = line.split(' ')
+        R[i, :] = np.array(tokens[0:d2], dtype=float)
+    return R
+
+
 class STVQADataGenerator:
 
     def __init__(self, config, training=True):
-
+        self.config = config
         self.training = training
         self.batch_size = config.batch_size
         self.shuffle = config.shuffle
@@ -49,17 +59,17 @@ class STVQADataGenerator:
                                                                           'cc.{}.300.bin'.format(self.language)))
                     except:
                         print("Error loading model. Check that the file exists")
-                elif self.fasttext_subtype == 'aligned':
-                    # TO FIX
-                    try:
-                        self.txt_model = fasttext.load_model(os.path.join(fasttext_path, 'aligned_word_vectors',
-                                                                          'wiki.{}.align.vec'.format(self.language)))
-                    except:
-                        print("Error loading model. Check that the file exists")
                 else:
                     raise AttributeError('Invalid fasttext subtype. Choose between wiki, wiki-news, cc or aligned')
             else:
                 raise AttributeError('Invalid language. Select between English (en), Catalan (ca) or Spanish (es)')
+
+            if self.config.fasttext_aligned:
+                base_path = 'fastText/alignment/res'
+                self.transformation =\
+                    load_fasttext_transform(os.path.join(base_path,
+                                                         '{}.{}.vec'.format(self.fasttext_subtype,
+                                                                            self.config.fasttext_aligned_pair)))
 
         elif self.embedding_type == 'bpemb':
             bpemb_path = os.path.join(config.txt_embeddings_path, 'bpemb')
@@ -167,6 +177,9 @@ class STVQADataGenerator:
             if self.embedding_type == 'fasttext':
                 gt_text_vectors = [self.txt_model.get_word_vector(w['text']) for w in self.gt[idx]['ocr_bboxes']]
 
+                if self.config.fasttext_aligned:
+                    gt_text_vectors = np.dot(gt_text_vectors, self.transformation.T)
+
             elif self.embedding_type == 'smith':
                 gt_text_vectors = [np.matmul(self.txt_model.get_word_vector(w['text']), self.transformation)
                                    for w in self.gt[idx]['ocr_bboxes']]
@@ -227,6 +240,9 @@ class STVQADataGenerator:
                 if self.embedding_type == 'fasttext':
                     batch_x_questions[i, w, :] = self.txt_model.get_word_vector(
                         question[w - (self.max_len - len(question))])
+
+                    if self.config.fasttext_aligned:
+                        batch_x_questions[i, w, :] = np.dot(batch_x_questions[i, w, :], self.transformation.T)
 
                 elif self.embedding_type == 'smith':
                     batch_x_questions[i, w, :] = np.matmul(self.txt_model.get_word_vector(
