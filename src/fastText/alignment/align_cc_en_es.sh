@@ -6,7 +6,7 @@
 # LICENSE file in the root directory of this source tree.
 
 set -e
-s=${1:-ca}
+s=${1:-es}
 t=${2:-en}
 echo "Example based on the ${s}->${t} alignment"
 
@@ -30,19 +30,26 @@ if [ ! -f "${dico_test}" ]; then
   wget -c "https://dl.fbaipublicfiles.com/arrival/dictionaries/${DICO}" -P data/
 fi
 
-src_emb=data/wiki.${s}.vec
+src_emb=data/cc.${s}.300.vec
 if [ ! -f "${src_emb}" ]; then
+  src_emb=data/cc.${s}.300.vec.gz
   EMB=$(basename -- "${src_emb}")
-  wget -c "https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/${EMB}" -P data/
+  echo $EMB
+  wget -c "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/${EMB}" -P data/
+  gunzip data/${EMB}
 fi
 
-tgt_emb=data/wiki.${t}.vec
+tgt_emb=data/cc.${t}.300.vec
 if [ ! -f "${tgt_emb}" ]; then
+  tgt_emb=data/cc.${t}.300.vec.gz
   EMB=$(basename -- "${tgt_emb}")
-  wget -c "https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/${EMB}" -P data/
+  wget -c "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/${EMB}" -P data/
+  gunzip data/${EMB}
 fi
 
-output=res/wiki.${s}-${t}.vec
+src_emb=data/cc.${s}.300.vec
+tgt_emb=data/cc.${t}.300.vec
+output=res/cc.${s}-${t}.vec
 
 python3 align.py --src_emb "${src_emb}" --tgt_emb "${tgt_emb}" \
   --dico_train "${dico_train}" --dico_test "${dico_test}" --output "${output}" \

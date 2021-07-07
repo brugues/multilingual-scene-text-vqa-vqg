@@ -8,5 +8,5 @@ var searchData=
   ['find',['find',['../classfasttext_1_1Dictionary.html#a5ee926831e9b71f7e966efdb40d1ce8f',1,'fasttext::Dictionary']]],
   ['findkbest',['findKBest',['../classfasttext_1_1Model.html#ad95e1ec209c506cf6ec1a5410d6f91d5',1,'fasttext::Model']]],
   ['findnn',['findNN',['../classfasttext_1_1FastText.html#a5c8825c522415d89478a54ecf28642c9',1,'fasttext::FastText']]],
-  ['utils',['utils',['../namespacefasttext_1_1utils.html',1,'fasttext']]]
+  ['testing',['testing',['../namespacefasttext_1_1utils.html',1,'fasttext']]]
 ];

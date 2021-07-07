@@ -22,8 +22,8 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
       [ "QMatrix", "classfasttext_1_1QMatrix.html", "classfasttext_1_1QMatrix" ]
     ] ],
     [ "real.h", "real_8h.html", "real_8h" ],
-    [ "utils.cc", "utils_8cc.html", "utils_8cc" ],
-    [ "utils.h", "utils_8h.html", "utils_8h" ],
+    [ "testing.cc", "utils_8cc.html", "utils_8cc" ],
+    [ "testing.h", "utils_8h.html", "utils_8h" ],
     [ "vector.cc", "vector_8cc.html", "vector_8cc" ],
     [ "vector.h", "vector_8h.html", "vector_8h" ]
 ];
