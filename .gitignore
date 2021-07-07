@@ -5,6 +5,8 @@ src/models/ckpt/
 src/models/pb/
 src/models/fasttext
 src/models/bpemb
+src/fastText/alignment/data
+src/fastText/alignment/res
 src/data
 src/outputs
 src/fastText/data
