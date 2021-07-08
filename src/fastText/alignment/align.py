@@ -140,7 +140,6 @@ if params.output != "":
     print("Saving all aligned vectors at %s" % params.output)
     words_full, x_full = load_vectors(params.src_emb, maxload=-1, center=params.center, verbose=False)
     x = np.dot(x_full, R.T)
-    save_vectors(params.output + '_no_norm', x, words_full)
     x /= np.linalg.norm(x, axis=1)[:, np.newaxis] + 1e-8
     save_vectors(params.output, x, words_full)
     save_matrix(params.output + "-mat",  R)
