@@ -106,5 +106,5 @@ if __name__ == '__main__':
         update_eval_progress_bar(progress_bar, batch, num_batches)
         step += 1
 
-    with open('eval_out_{}.json'.format(config.model_to_evaluate.split('/')[-1]), 'w') as f:
+    with open('eval_out_{}.json'.format(config.output_folder), 'w') as f:
         json.dump(eval_out, f)
