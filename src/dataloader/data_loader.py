@@ -68,7 +68,7 @@ class STVQADataGenerator:
                 base_path = 'fastText/alignment/res'
                 self.transformation =\
                     load_fasttext_transform(os.path.join(base_path,
-                                                         '{}.{}.vec'.format(self.fasttext_subtype,
+                                                         '{}.{}.vec-mat'.format(self.fasttext_subtype,
                                                                             self.config.fasttext_aligned_pair)))
 
         elif self.embedding_type == 'bpemb':
@@ -177,7 +177,7 @@ class STVQADataGenerator:
             if self.embedding_type == 'fasttext':
                 gt_text_vectors = [self.txt_model.get_word_vector(w['text']) for w in self.gt[idx]['ocr_bboxes']]
 
-                if self.config.fasttext_aligned:
+                if self.config.fasttext_aligned and len(gt_text_vectors) > 0:
                     gt_text_vectors = np.dot(gt_text_vectors, self.transformation.T)
 
             elif self.embedding_type == 'smith':
