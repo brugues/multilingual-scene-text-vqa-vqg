@@ -6,7 +6,8 @@
 #SBATCH --mem 16384
 #SBATCH --gres gpu:Pascal:1 # Para pedir Pascales MAX 8
 #SBATCH -o %x_%u_%j.out # File to which STDOUT will be written
-#SBATCH -e %x_%u_%j.err # File to which STDERR will be written
+#SBATCH -e %x_%u_%j.err # File to wh
+# ich STDERR will be written
 python train.py --language en --embedding_type bpemb --bpemb_subtype wiki --output_folder bpemb_en
 python train.py --language ca --embedding_type bpemb --bpemb_subtype wiki --output_folder bpemb_ca
 python train.py --language es --embedding_type bpemb --bpemb_subtype wiki --output_folder bpemb_es
