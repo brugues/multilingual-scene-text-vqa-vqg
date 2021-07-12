@@ -25,6 +25,7 @@ class STVQADataGenerator:
     def __init__(self, config, training=True):
         self.config = config
         self.training = training
+        self.dataset = config.dataset
         self.batch_size = config.batch_size
         self.shuffle = config.shuffle
         self.max_len = config.max_len
@@ -39,7 +40,7 @@ class STVQADataGenerator:
 
         if self.embedding_type == 'fasttext':
             fasttext_path = os.path.join(config.txt_embeddings_path, 'fasttext')
-            if self.language == 'en' or self.language == 'ca' or self.language == 'es':
+            if self.language == 'en' or self.language == 'ca' or self.language == 'es' or self.language == 'zh':
                 if self.fasttext_subtype == 'wiki':
                     try:
                         self.txt_model = fasttext.load_model(os.path.join(fasttext_path, 'wiki_word_vectors',
@@ -109,27 +110,41 @@ class STVQADataGenerator:
 
         # load gt file
         print_info('Loading GT file...')
-        if training:
-            with open(config.gt_file) as f:
-                self.gt_original = json.load(f)
-
-            if self.language != 'en':
-                with open(config.gt_file.replace('train', 'train_{}'.format(self.language))) as f:
-                    self.gt = json.load(f)
-            else:
+        if self.dataset == 'stvqa':
+            if training:
                 with open(config.gt_file) as f:
-                    self.gt = json.load(f)
+                    self.gt_original = json.load(f)
 
-        else:
-            with open(config.gt_eval_file) as f:
-                self.gt_original = json.load(f)
+                if self.language != 'en':
+                    with open(config.gt_file.replace('train', 'train_{}'.format(self.language))) as f:
+                        self.gt = json.load(f)
+                else:
+                    with open(config.gt_file) as f:
+                        self.gt = json.load(f)
 
-            if self.language != 'en':
-                with open(config.gt_eval_file.replace('eval', 'eval_{}'.format(self.language))) as f:
-                    self.gt = json.load(f)
             else:
                 with open(config.gt_eval_file) as f:
+                    self.gt_original = json.load(f)
+
+                if self.language != 'en':
+                    with open(config.gt_eval_file.replace('eval', 'eval_{}'.format(self.language))) as f:
+                        self.gt = json.load(f)
+                else:
+                    with open(config.gt_eval_file) as f:
+                        self.gt = json.load(f)
+
+        elif self.dataset == 'estvqa':
+            if training:
+                with open(config.gt_file) as f:
+                    self.gt_original = json.load(f)
                     self.gt = json.load(f)
+
+            else:
+                with open(config.gt_eval_file) as f:
+                    self.gt_original = json.load(f)
+                    self.gt = json.load(f)
+        else:
+            raise AttributeError('Invalid dataset type. Options are stvqa and estvqa')
 
         print_ok('Done!\n')
 
