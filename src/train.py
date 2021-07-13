@@ -6,7 +6,7 @@ import tensorflow as tf
 from config.config import Config
 from models.stvqa import VQAModel
 from dataloader.utils import print_info, print_ok, update_train_progress_bar
-from dataloader.data_loader import STVQADataGenerator
+from dataloader.data_loader import VQADataGenerator
 
 
 if __name__ == '__main__':
@@ -20,7 +20,8 @@ if __name__ == '__main__':
     print_ok('Done!\n')
 
     print_info('Preparing data generator\n')
-    train_data_generator = STVQADataGenerator(config)
+    train_data_generator = VQADataGenerator(config)
+
     print_ok('Done!\n')
 
     print_info('Starting training \n')

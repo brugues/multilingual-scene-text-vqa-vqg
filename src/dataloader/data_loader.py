@@ -20,7 +20,7 @@ def load_fasttext_transform(fname, d1=300, d2=300):
     return R
 
 
-class STVQADataGenerator:
+class VQADataGenerator:
 
     def __init__(self, config, training=True):
         self.config = config
@@ -143,6 +143,7 @@ class STVQADataGenerator:
                 with open(config.gt_eval_file) as f:
                     self.gt_original = json.load(f)
                     self.gt = json.load(f)
+
         else:
             raise AttributeError('Invalid dataset type. Options are stvqa and estvqa')
 

@@ -4,7 +4,7 @@ import numpy as np
 from tqdm import tqdm
 import tensorflow as tf
 
-from dataloader.data_loader import STVQADataGenerator
+from dataloader.data_loader import VQADataGenerator
 from dataloader.utils import print_info, print_ok, update_eval_progress_bar
 from config.config import Config
 from models.stvqa import VQAModel
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     print_ok('Done!\n')
 
     print_info('Preparing data generator')
-    eval_data_generator = STVQADataGenerator(config, training=False)
+    eval_data_generator = VQADataGenerator(config, training=False)
     print_ok('Done!\n')
 
     print_info('Starting evaluation \n')
