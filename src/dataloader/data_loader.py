@@ -416,43 +416,5 @@ class OLRADataGenerator:
 
             print("")
 
-            # assign fasttext vectors to cells in a 38x38 grid
-            # for w in range(gt_boxes.shape[0]):
-            #     cell_coords = gt_boxes[w, :] // 16  # TODO do not hardcode constants
-            #     batch_x_textual[i, cell_coords[1]:cell_coords[3] + 1, cell_coords[0]:cell_coords[2] + 1, :] = \
-            #         gt_text_vectors[w]
-            #
-            #     if w in gt_ans_idxs:
-            #         batch_y[i, cell_coords[1]:cell_coords[3] + 1, cell_coords[0]:cell_coords[2] + 1] = 1
-            #     if not self.training:
-            #         batch_ocr[i, cell_coords[1]:cell_coords[3] + 1, cell_coords[0]:cell_coords[2] + 1] = gt_texts[w]
-            #
-            #         if self.language in ['ca', 'es']:
-            #             batch_ocr_original[i, cell_coords[1]:cell_coords[3] + 1,
-            #             cell_coords[0]:cell_coords[2] + 1] = gt_texts_original[w]
-            #
-            # # question encode with fasttext or bpemb
-            # question = self.gt[idx]['question']
-            # for w in range(self.max_len - len(question), self.max_len):
-            #     if self.embedding_type == 'fasttext':
-            #         batch_x_questions[i, w, :] = self.txt_model.get_word_vector(
-            #             question[w - (self.max_len - len(question))])
-            #
-            #         if self.config.fasttext_aligned:
-            #             batch_x_questions[i, w, :] = np.dot(batch_x_questions[i, w, :], self.transformation.T)
-            #
-            #     elif self.embedding_type == 'smith':
-            #         batch_x_questions[i, w, :] = np.matmul(self.txt_model.get_word_vector(
-            #             question[w - (self.max_len - len(question))]), self.transformation)
-            #
-            #     else:
-            #         emb = self.txt_model.embed(question[w - (self.max_len - len(question))])
-            #         if emb.shape[0] == self.dim_txt:
-            #             batch_x_questions[i, w, :] = emb
-            #         elif emb.shape[0] > 0:
-            #             batch_x_questions[i, w, :] = emb[-1, :]
-            #         else:
-            #             batch_x_questions[i, w, :] = np.zeros(300)
-
         return [batch_x_image, batch_x_vector, batch_x_position, batch_y_question, batch_y_question_vector]
 
