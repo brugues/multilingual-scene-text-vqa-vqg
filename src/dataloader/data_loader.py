@@ -20,6 +20,125 @@ def load_fasttext_transform(fname, d1=300, d2=300):
     return R
 
 
+def load_embeddings(config):
+    txt_model, transformation = None, None
+
+    if config.embedding_type == 'fasttext':
+        fasttext_path = os.path.join(config.txt_embeddings_path, 'fasttext')
+        if config.language == 'en' or config.language == 'ca' or config.language == 'es' or config.language == 'zh':
+            if config.fasttext_subtype == 'wiki':
+                try:
+                    txt_model = fasttext.load_model(os.path.join(fasttext_path, 'wiki_word_vectors',
+                                                                 'wiki.{}.bin'.format(config.language)))
+                except:
+                    print("Error loading model. Check that the file exists")
+            elif config.fasttext_subtype == 'wiki-news':
+                try:
+                    print("Be aware! This model is only available in english, so the english model is being loaded")
+                    txt_model = fasttext.load_model(os.path.join(config.txt_embeddings_path,
+                                                                 'wiki-news-300d-1M-subword.bin'))
+                except:
+                    print("Error loading model. Check that the file exists. ")
+            elif config.fasttext_subtype == 'cc':
+                try:
+                    txt_model = fasttext.load_model(os.path.join(fasttext_path, 'cc_word_vectors',
+                                                                 'cc.{}.300.bin'.format(config.language)))
+                except:
+                    print("Error loading model. Check that the file exists")
+            else:
+                raise AttributeError('Invalid fasttext subtype. Choose between wiki, wiki-news, cc or aligned')
+        else:
+            raise AttributeError('Invalid language. Select between English (en), Catalan (ca) or Spanish (es)')
+
+        if config.fasttext_aligned:
+            base_path = 'fastText/alignment/res'
+            transformation = \
+                load_fasttext_transform(os.path.join(base_path,
+                                                     '{}.{}.vec-mat'.format(config.fasttext_subtype,
+                                                                            config.fasttext_aligned_pair)))
+
+    elif config.embedding_type == 'bpemb':
+        bpemb_path = os.path.join(config.txt_embeddings_path, 'bpemb')
+        if config.language == 'en' or config.language == 'ca' or config.language == 'es' or config.language == 'multi':
+
+            if config.language == 'multi':
+                bin_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs1000000.d300.w2v.bin'.format(config.language))
+                model_file = os.path.join(bpemb_path, 'multi.wiki.bpe.vs1000000.model')
+            else:
+                bin_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs200000.d300.w2v.bin'.format(config.language))
+                model_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs200000.model'.format(config.language))
+
+            assert str(config.dim_txt) in bin_file
+            try:
+                txt_model = BPEmb(emb_file=bin_file,
+                                  model_file=model_file,
+                                  dim=config.dim_txt)
+            except:
+                print("Error loading model. Check that the file exists")
+
+        else:
+            raise AttributeError('Invalid language. Select between English (en), Catalan (ca) or Spanish (es) or '
+                                 'All of them (multi)')
+
+    elif config.embedding_type == 'smith':
+        smith_path = os.path.join(config.txt_embeddings_path, 'fasttext', 'wiki_word_vectors')
+        try:
+            txt_model = fasttext.load_model(os.path.join(smith_path, 'wiki.{}.bin'.format(config.language)))
+        except:
+            print("Error loading model. Check that the file exists")
+
+        transformation = np.loadtxt(os.path.join(config.txt_embeddings_path, 'smith', 'transformations',
+                                                 '{}.txt'.format(config.language)))
+
+    else:
+        raise AttributeError('Invalid embedding type. Select either fasttext or bpemb')
+
+    return txt_model, transformation
+
+
+def load_gt(config, training):
+    gt_original, gt = None, None
+
+    if config.dataset == 'stvqa':
+        if training:
+            with open(config.gt_file) as f:
+                gt_original = json.load(f)
+
+            if config.language != 'en':
+                with open(config.gt_file.replace('train', 'train_{}'.format(config.language))) as f:
+                    gt = json.load(f)
+            else:
+                with open(config.gt_file) as f:
+                    gt = json.load(f)
+
+        else:
+            with open(config.gt_eval_file) as f:
+                gt_original = json.load(f)
+
+            if config.language != 'en':
+                with open(config.gt_eval_file.replace('eval', 'eval_{}'.format(config.language))) as f:
+                    gt = json.load(f)
+            else:
+                with open(config.gt_eval_file) as f:
+                    gt = json.load(f)
+
+    elif config.dataset == 'estvqa':
+        if training:
+            with open(config.gt_file) as f:
+                gt_original = json.load(f)
+                gt = json.load(f)
+
+        else:
+            with open(config.gt_eval_file) as f:
+                gt_original = json.load(f)
+                gt = json.load(f)
+
+    else:
+        raise AttributeError('Invalid dataset type. Options are stvqa and estvqa')
+
+    return gt_original, gt
+
+
 class VQADataGenerator:
 
     def __init__(self, config, training=True):
@@ -38,115 +157,11 @@ class VQADataGenerator:
         self.fasttext_subtype = config.fasttext_subtype
         self.bpemb_subtype = config.bpemb_subtype
 
-        if self.embedding_type == 'fasttext':
-            fasttext_path = os.path.join(config.txt_embeddings_path, 'fasttext')
-            if self.language == 'en' or self.language == 'ca' or self.language == 'es' or self.language == 'zh':
-                if self.fasttext_subtype == 'wiki':
-                    try:
-                        self.txt_model = fasttext.load_model(os.path.join(fasttext_path, 'wiki_word_vectors',
-                                                                          'wiki.{}.bin'.format(self.language)))
-                    except:
-                        print("Error loading model. Check that the file exists")
-                elif self.fasttext_subtype == 'wiki-news':
-                    try:
-                        print("Be aware! This model is only available in english, so the english model is being loaded")
-                        self.txt_model = fasttext.load_model(os.path.join(config.txt_embeddings_path,
-                                                                          'wiki-news-300d-1M-subword.bin'))
-                    except:
-                        print("Error loading model. Check that the file exists. ")
-                elif self.fasttext_subtype == 'cc':
-                    try:
-                        self.txt_model = fasttext.load_model(os.path.join(fasttext_path, 'cc_word_vectors',
-                                                                          'cc.{}.300.bin'.format(self.language)))
-                    except:
-                        print("Error loading model. Check that the file exists")
-                else:
-                    raise AttributeError('Invalid fasttext subtype. Choose between wiki, wiki-news, cc or aligned')
-            else:
-                raise AttributeError('Invalid language. Select between English (en), Catalan (ca) or Spanish (es)')
-
-            if self.config.fasttext_aligned:
-                base_path = 'fastText/alignment/res'
-                self.transformation =\
-                    load_fasttext_transform(os.path.join(base_path,
-                                                         '{}.{}.vec-mat'.format(self.fasttext_subtype,
-                                                                            self.config.fasttext_aligned_pair)))
-
-        elif self.embedding_type == 'bpemb':
-            bpemb_path = os.path.join(config.txt_embeddings_path, 'bpemb')
-            if self.language == 'en' or self.language == 'ca' or self.language == 'es' or self.language == 'multi':
-
-                if self.language == 'multi':
-                    bin_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs1000000.d300.w2v.bin'.format(self.language))
-                    model_file = os.path.join(bpemb_path, 'multi.wiki.bpe.vs1000000.model')
-                else:
-                    bin_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs200000.d300.w2v.bin'.format(self.language))
-                    model_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs200000.model'.format(self.language))
-
-                assert str(self.dim_txt) in bin_file
-                try:
-                    self.txt_model = BPEmb(emb_file=bin_file,
-                                           model_file=model_file,
-                                           dim=self.dim_txt)
-                except:
-                    print("Error loading model. Check that the file exists")
-
-            else:
-                raise AttributeError('Invalid language. Select between English (en), Catalan (ca) or Spanish (es) or '
-                                     'All of them (multi)')
-
-        elif self.embedding_type == 'smith':
-            smith_path = os.path.join(config.txt_embeddings_path, 'fasttext', 'wiki_word_vectors')
-            try:
-                self.txt_model = fasttext.load_model(os.path.join(smith_path, 'wiki.{}.bin'.format(self.language)))
-            except:
-                print("Error loading model. Check that the file exists")
-
-            self.transformation = np.loadtxt(os.path.join(config.txt_embeddings_path, 'smith', 'transformations',
-                                                          '{}.txt'.format(self.language)))
-
-        else:
-            raise AttributeError('Invalid embedding type. Select either fasttext or bpemb')
+        self.txt_model, self.transformation = load_embeddings(self.config)
 
         # load gt file
         print_info('Loading GT file...')
-        if self.dataset == 'stvqa':
-            if training:
-                with open(config.gt_file) as f:
-                    self.gt_original = json.load(f)
-
-                if self.language != 'en':
-                    with open(config.gt_file.replace('train', 'train_{}'.format(self.language))) as f:
-                        self.gt = json.load(f)
-                else:
-                    with open(config.gt_file) as f:
-                        self.gt = json.load(f)
-
-            else:
-                with open(config.gt_eval_file) as f:
-                    self.gt_original = json.load(f)
-
-                if self.language != 'en':
-                    with open(config.gt_eval_file.replace('eval', 'eval_{}'.format(self.language))) as f:
-                        self.gt = json.load(f)
-                else:
-                    with open(config.gt_eval_file) as f:
-                        self.gt = json.load(f)
-
-        elif self.dataset == 'estvqa':
-            if training:
-                with open(config.gt_file) as f:
-                    self.gt_original = json.load(f)
-                    self.gt = json.load(f)
-
-            else:
-                with open(config.gt_eval_file) as f:
-                    self.gt_original = json.load(f)
-                    self.gt = json.load(f)
-
-        else:
-            raise AttributeError('Invalid dataset type. Options are stvqa and estvqa')
-
+        self.gt_original, self.gt = load_gt(self.config, training)
         print_ok('Done!\n')
 
         # TODO filter questions by max_len?
@@ -286,3 +301,158 @@ class VQADataGenerator:
         else:
             return [batch_x_image, batch_x_textual, batch_x_questions, batch_y, batch_ocr, gt_questions, gt_answers,
                     gt_ids, batch_ocr_original]
+
+
+class OLRADataGenerator:
+    def __init__(self, config, training=True) -> None:
+        self.config = config
+        self.training = training
+        self.dataset = self.config.dataset
+        self.batch_size = self.config.batch_size
+        self.shuffle = self.config.shuffle
+        self.max_len = self.config.max_len
+        self.image_path = self.config.image_path
+        self.dim_txt = self.config.dim_txt
+        self.curr_idx = 0
+        self.input_size = self.config.img_size
+        self.language = self.config.language
+        self.embedding_type = self.config.embedding_type
+        self.fasttext_subtype = self.config.fasttext_subtype
+        self.bpemb_subtype = self.config.bpemb_subtype
+
+        self.txt_model, self.transformation = load_embeddings(self.config)
+
+        # load gt file
+        print_info('Loading GT file...')
+        self.gt_original, self.gt = load_gt(self.config, training)
+        print_ok('Done!\n')
+
+        for i, entry in enumerate(self.gt_original):
+            if len(entry['answer']) > 1:
+                self.gt_original.pop(i)
+                self.gt.pop(i)
+
+    def len(self):
+        """
+        Denotes the number of batches per epoch
+        :return: number of batches per epoch
+        """
+
+        return int(np.floor(len(self.gt) / self.batch_size))
+
+    def next(self):
+        # select next batch idxs
+        if self.shuffle:
+            batch_idxs = np.random.choice(len(self.gt), self.batch_size)
+        else:
+            if self.curr_idx + self.batch_size > len(self.gt): self.curr_idx = 0
+            batch_idxs = range(self.curr_idx, self.curr_idx + self.batch_size)
+            self.curr_idx = (self.curr_idx + self.batch_size) % len(self.gt)
+
+        batch_x_image = []
+        batch_x_vector = np.zeros((self.batch_size, self.dim_txt))
+        batch_x_position = np.zeros((self.batch_size, 4))
+        batch_y_question = np.chararray((self.batch_size, self.max_len), itemsize=35, unicode=True)
+        batch_y_question[:] = ''
+        batch_y_question_vector = np.zeros((self.batch_size, self.max_len, self.dim_txt))
+
+        # foreach question in batch
+        for i, idx in enumerate(batch_idxs):
+            # load image
+            # print os.path.join(self.image_path, self.gt[idx]['file_path'])
+            image = cv2.imread(os.path.join(self.image_path, self.gt[idx]['file_path']))
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
+
+            # store indexes of those bboxes wich are the answer
+            gt_ans_boxes = [w['bbox'] for w in self.gt[idx]['ans_bboxes']]
+
+            image, gt_ans_boxes = yolo_image_preprocess(image,
+                                                        [self.input_size, self.input_size],
+                                                        gt_boxes=np.array(gt_ans_boxes))
+
+            batch_x_image.append(image)
+            batch_x_position[i] = gt_ans_boxes[0]
+
+            if self.embedding_type == 'fasttext':
+                batch_x_vector[i, :] = self.txt_model.get_word_vector(self.gt[idx]['answer'][0])
+
+                if self.config.fasttext_aligned:
+                    batch_x_vector[i, :] = np.dot(batch_x_vector[i, :], self.transformation.T)
+
+            elif self.embedding_type == 'smith':
+                batch_x_vector[i, :] = np.matmul(self.txt_model.get_word_vector(self.gt[idx]['answer'][0]),
+                                                 self.transformation)
+
+            else:
+                emb = self.txt_model.embed(self.gt[idx]['answer'][0])
+                if emb.shape[0] == self.dim_txt:
+                    batch_x_vector[i, :] = emb
+                elif emb.shape[0] > 0:
+                    batch_x_vector[i, :] = emb[-1, :]
+                else:
+                    batch_x_vector[i, :] = np.zeros(300)
+
+            batch_y_question[i, 0:len(self.gt[idx]['question'])] = self.gt[idx]['question']
+
+            for j in range(len(self.gt[idx]['question'])):
+                if self.embedding_type == 'fasttext':
+                    batch_y_question_vector[i][j] = self.txt_model.get_word_vector(batch_y_question[i, j])
+
+                    if self.config.fasttext_aligned:
+                        batch_y_question_vector[i][j] = np.dot(batch_y_question_vector[i][j], self.transformation.T)
+
+                elif self.embedding_type == 'smith':
+                    batch_y_question_vector[i][j] = np.matmul(self.txt_model.get_word_vector(batch_y_question[i, j]),
+                                                              self.transformation)
+
+                else:
+                    emb = self.txt_model.embed(batch_y_question[i, j])
+                    if emb.shape[0] == self.dim_txt:
+                        batch_y_question_vector[i][j] = emb
+                    elif emb.shape[0] > 0:
+                        batch_y_question_vector[i][j] = emb[-1, :]
+                    else:
+                        batch_y_question_vector[i][j] = np.zeros(300)
+
+            print("")
+
+            # assign fasttext vectors to cells in a 38x38 grid
+            # for w in range(gt_boxes.shape[0]):
+            #     cell_coords = gt_boxes[w, :] // 16  # TODO do not hardcode constants
+            #     batch_x_textual[i, cell_coords[1]:cell_coords[3] + 1, cell_coords[0]:cell_coords[2] + 1, :] = \
+            #         gt_text_vectors[w]
+            #
+            #     if w in gt_ans_idxs:
+            #         batch_y[i, cell_coords[1]:cell_coords[3] + 1, cell_coords[0]:cell_coords[2] + 1] = 1
+            #     if not self.training:
+            #         batch_ocr[i, cell_coords[1]:cell_coords[3] + 1, cell_coords[0]:cell_coords[2] + 1] = gt_texts[w]
+            #
+            #         if self.language in ['ca', 'es']:
+            #             batch_ocr_original[i, cell_coords[1]:cell_coords[3] + 1,
+            #             cell_coords[0]:cell_coords[2] + 1] = gt_texts_original[w]
+            #
+            # # question encode with fasttext or bpemb
+            # question = self.gt[idx]['question']
+            # for w in range(self.max_len - len(question), self.max_len):
+            #     if self.embedding_type == 'fasttext':
+            #         batch_x_questions[i, w, :] = self.txt_model.get_word_vector(
+            #             question[w - (self.max_len - len(question))])
+            #
+            #         if self.config.fasttext_aligned:
+            #             batch_x_questions[i, w, :] = np.dot(batch_x_questions[i, w, :], self.transformation.T)
+            #
+            #     elif self.embedding_type == 'smith':
+            #         batch_x_questions[i, w, :] = np.matmul(self.txt_model.get_word_vector(
+            #             question[w - (self.max_len - len(question))]), self.transformation)
+            #
+            #     else:
+            #         emb = self.txt_model.embed(question[w - (self.max_len - len(question))])
+            #         if emb.shape[0] == self.dim_txt:
+            #             batch_x_questions[i, w, :] = emb
+            #         elif emb.shape[0] > 0:
+            #             batch_x_questions[i, w, :] = emb[-1, :]
+            #         else:
+            #             batch_x_questions[i, w, :] = np.zeros(300)
+
+        return [batch_x_image, batch_x_vector, batch_x_position, batch_y_question, batch_y_question_vector]
+
