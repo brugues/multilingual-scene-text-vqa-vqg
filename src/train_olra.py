@@ -1,8 +1,8 @@
+import numpy as np
 import tensorflow as tf
 from config.config_olra import Config
 from models.olra import OLRA
 from dataloader.utils import print_info, print_ok, update_train_progress_bar
-from dataloader.data_loader import OLRADataGenerator
 
 
 if __name__ == '__main__':
@@ -20,9 +20,13 @@ if __name__ == '__main__':
         print_ok('Starting epoch number {}\n'.format(epoch))
 
         for batch in range(num_batches):
-            batch_data = None
+            batch_data = olra_model.data_generator.next()
 
-            losses = olra_model.olra_train_step()
+            # Extract image features from Yolo
+            img_features = olra_model.resnet.predict_on_batch(np.array(batch_data[0]))
+            img_features = tf.keras.layers.GlobalAvgPool2D()(img_features)
+
+            losses = olra_model.olra_train_step(batch_data[1], img_features, batch_data[2], batch_data[3:])
 
             if batch % config.logging_period == 0:
                 olra_model.log_to_tensorboard(step, losses)

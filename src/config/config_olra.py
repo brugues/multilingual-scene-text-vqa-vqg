@@ -21,7 +21,7 @@ class Config:
                                                                      'feature size')
         args.add_argument('--dim_txt', type=int, default=300, help='Size of individual text features')
         args.add_argument('--dim_hidden', type=int, default=1024, help='Size of the common embedding vector')
-        args.add_argument('--dim_attention', type=int, default=512, help='Size of the attention embedding')
+        args.add_argument('--dim_ocr_consistency', type=int, default=512, help='Size of the attention embedding')
         args.add_argument('--text_embedding_dim', type=int, default=300, help='Size of textual features, fasttext'
                                                                               'dimension')
         args.add_argument('--max_len', type=int, default=25, help='Question maximum length')
