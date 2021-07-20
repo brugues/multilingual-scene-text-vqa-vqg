@@ -1,4 +1,4 @@
-from dataloader.run_ocr import GoogleCloudOCR
+from src.utils.run_ocr import GoogleCloudOCR
 from config.config_ocr import ConfigOCR
 
 
