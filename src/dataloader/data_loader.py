@@ -59,10 +59,10 @@ def load_embeddings(config):
 
     elif config.embedding_type == 'bpemb':
         bpemb_path = os.path.join(config.txt_embeddings_path, 'bpemb')
-        if config.language == 'en' or config.language == 'ca' or config.language == 'es' or config.language == 'multi':
+        if config.language == 'en' or config.language == 'ca' or config.language == 'es' or config.language == 'zh':
 
-            if config.language == 'multi':
-                bin_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs1000000.d300.w2v.bin'.format(config.language))
+            if config.bpemb_subtype == 'multi':
+                bin_file = os.path.join(bpemb_path, 'multi.wiki.bpe.vs1000000.d300.w2v.bin')
                 model_file = os.path.join(bpemb_path, 'multi.wiki.bpe.vs1000000.model')
             else:
                 bin_file = os.path.join(bpemb_path, '{}.wiki.bpe.vs200000.d300.w2v.bin'.format(config.language))
@@ -238,6 +238,8 @@ class VQADataGenerator:
             gt_ans_boxes = [w['bbox'] for w in self.gt[idx]['ans_bboxes']]
             gt_ans_idxs = [gt_boxes.index(b) for b in gt_ans_boxes]
             gt_boxes = np.array(gt_boxes)
+
+            #--language zh --batch_size 32 --dataset estvqa --image_path data/EST-VQA-v1.0 --gt_file data/EST-VQA-v1.0/annotations/train_chinese_subsample_all_answers.json --gt_eval_file data/EST-VQA-v1.0/annotations/eval_chinese_subsample_all_answers.json
 
             # TODO data augmentation?
 
