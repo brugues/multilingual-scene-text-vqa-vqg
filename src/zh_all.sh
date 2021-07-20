@@ -9,9 +9,10 @@
 #SBATCH -e %x_%u_%j.err # File to which STDERR will be written
 #
 
-python train.py --language zh --fasttext_subtype cc --output_folder cc_zh
-python train.py --language zh --fasttext_subtype wiki --output_folder wiki_zh
+#python train.py --language zh --fasttext_subtype cc --output_folder cc_zh
+#python train.py --language zh --fasttext_subtype wiki --output_folder wiki_zh
 python train.py --language zh --embedding_type bpemb --bpemb_subtype wiki --output_folder bpemb_zh
 python train.py --language zh --embedding_type bpemb --bpemb_subtype multi --output_folder multi_bpemb_zh
-python train.py --language zh --fasttext_subtype cc --fasttext_aligned_pair zh-en --fasttext_aligned --output_folder aligned_cc_zh
-python train.py --language zh --fasttext_subtype wiki --fasttext_aligned_pair zh-en --fasttext_aligned --output_folder aligned_wiki_zh
+python train.py --language zh --embedding_type smith --output_folder smith_zh
+#python train.py --language zh --fasttext_subtype cc --fasttext_aligned_pair zh-en --fasttext_aligned --output_folder aligned_cc_zh
+#python train.py --language zh --fasttext_subtype wiki --fasttext_aligned_pair zh-en --fasttext_aligned --output_folder aligned_wiki_zh
