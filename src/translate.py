@@ -1,4 +1,4 @@
-from dataloader.translator import GoogleCloudTranslate
+from utils.translator import GoogleCloudTranslate
 from config.config_translate import ConfigTranslate
 
 
