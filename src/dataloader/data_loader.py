@@ -126,6 +126,8 @@ def load_gt(config, training):
         if training:
             with open(config.gt_file) as f:
                 gt_original = json.load(f)
+
+            with open(config.gt_file) as f:
                 gt = json.load(f)
 
         else:
