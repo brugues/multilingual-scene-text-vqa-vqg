@@ -353,6 +353,7 @@ class OLRADataGenerator:
             batch_idxs = range(self.curr_idx, self.curr_idx + self.batch_size)
             self.curr_idx = (self.curr_idx + self.batch_size) % len(self.gt)
 
+        filenames = []
         batch_x_image = []
         batch_x_vector = np.zeros((self.batch_size, self.dim_txt))
         batch_x_position = np.zeros((self.batch_size, 4))
@@ -364,6 +365,7 @@ class OLRADataGenerator:
         for i, idx in enumerate(batch_idxs):
             # load image
             # print os.path.join(self.image_path, self.gt[idx]['file_path'])
+            filenames.append(self.gt[idx]['file_path'])
             image = cv2.imread(os.path.join(self.image_path, self.gt[idx]['file_path']))
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
 
@@ -420,5 +422,5 @@ class OLRADataGenerator:
 
             print("")
 
-        return [batch_x_image, batch_x_vector, batch_x_position, batch_y_question, batch_y_question_vector]
+        return [batch_x_image, batch_x_vector, batch_x_position, batch_y_question, batch_y_question_vector, filenames]
 

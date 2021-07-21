@@ -21,7 +21,7 @@ if __name__ == '__main__':
         for batch in range(num_batches):
             batch_data = olra_model.data_generator.next()
 
-            # Extract image features from Yolo
+            # Extract image features from ResNet
             img_features = olra_model.resnet.predict_on_batch(np.array(batch_data[0]))
             img_features = tf.keras.layers.GlobalAvgPool2D()(img_features)
 
