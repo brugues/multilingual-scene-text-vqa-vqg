@@ -3,14 +3,15 @@ import json
 import numpy as np
 from tqdm import tqdm
 import tensorflow as tf
+from Levenshtein import distance as lev
 
 from dataloader.data_loader import VQADataGenerator
-from dataloader.utils import print_info, print_ok, update_eval_progress_bar
+from src.dataloader.utils import print_info, print_ok, update_eval_progress_bar
 from config.config import Config
 from models.stvqa import VQAModel
 
 
-def evaluate_batch(model, data):
+def run_evaluation_batch(model, data):
     # Extract image features from Yolo
     img_features = model.yolo_model.predict_on_batch(np.array(data[0]))
     img_features = tf.cast(img_features, tf.float64)
@@ -21,6 +22,24 @@ def evaluate_batch(model, data):
                                     data[3])
 
     return out
+
+
+def get_anls_score(gt, predictions, threshold=0.5):
+    scores = []
+
+    for i, prediction in enumerate(predictions):
+        word = prediction['answer']
+        gt_word = gt[i]['answer']
+        l_score = lev(word, gt_word) / (len(word) + len(gt_word))
+
+        if l_score >= threshold:
+            s = 0
+        else:
+            s = 1 - l_score
+
+        scores.append(s)
+
+    return np.mean(scores)
 
 
 if __name__ == '__main__':
@@ -59,7 +78,7 @@ if __name__ == '__main__':
             batch_data[1] = np.resize(batch_data[1], (config.batch_size, 38, 38, config.text_embedding_dim))
             batch_data[2] = np.resize(batch_data[2], (config.batch_size, config.max_len, config.text_embedding_dim))
 
-        stvqa_output = evaluate_batch(stvqa_model, batch_data)
+        stvqa_output = run_evaluation_batch(stvqa_model, batch_data)
         stvqa_output = tf.math.sigmoid(stvqa_output)
         stvqa_output = stvqa_output.numpy()
 
@@ -105,6 +124,10 @@ if __name__ == '__main__':
 
         update_eval_progress_bar(progress_bar, batch, num_batches)
         step += 1
+
+    if not config.server_evaluation:
+        anls = get_anls_score(eval_data_generator.gt, eval_out)
+        eval_out.insert(0, {'anls': anls})
 
     with open('eval_out_{}.json'.format(config.output_folder), 'w') as f:
         json.dump(eval_out, f)
