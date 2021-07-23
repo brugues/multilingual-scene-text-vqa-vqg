@@ -7,6 +7,10 @@
 #SBATCH --gres gpu:Pascal:1 # Para pedir Pascales MAX 8
 #SBATCH -o %x_%u_%j.out # File to which STDOUT will be written
 #SBATCH -e %x_%u_%j.err # File to wh
-python train.py --language en --embedding_type smith --output_folder smith_en
-#python train.py --language ca --embedding_type smith --bpemb_subtype multi --output_folder multi_bpemb_ca
-#python train.py --language es --embedding_type smith --bpemb_subtype multi --output_folder multi_bpemb_es
+
+#python train.py --language en --embedding_type smith --output_folder smith_en
+python train.py --language ca --embedding_type smith --output_folder smith_ca
+python train.py --language es --embedding_type smith --output_folder smith_es
+python train.py --language zh --embedding_type smith --output_folder smith_zh
+
+python train.py --language ca --fasttext_subtype wiki --fasttext_aligned_pair ca-en --fasttext_aligned --output_folder aligned_wiki_ca
