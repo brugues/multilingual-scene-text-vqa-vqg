@@ -66,6 +66,8 @@ class Config:
 
         # ------------------------------  EVALUATION  ----------------------------
         args.add_argument('--model_to_evaluate', type=str, default='./outputs/models/config2')
+        args.add_argument('--no_server_evaluation', dest='server_evaluation', action='store_false')
+        args.set_defaults(server_evaluation=True)
 
         # --------------------------------  PATHS  -------------------------------
         args.add_argument('--image_path', type=str, default='data/ST-VQA', help='Image paths')
