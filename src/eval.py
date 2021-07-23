@@ -82,7 +82,7 @@ if __name__ == '__main__':
         stvqa_output = tf.math.sigmoid(stvqa_output)
         stvqa_output = stvqa_output.numpy()
 
-        if config.language in ['ca', 'es']:
+        if config.language in ['ca', 'es', 'zh']:
             batch_ocr = batch_data[8]
         else:
             batch_ocr = batch_data[4]
