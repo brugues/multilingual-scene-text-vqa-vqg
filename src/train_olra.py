@@ -11,7 +11,6 @@ if __name__ == '__main__':
     print_info('Building OLRA model\n')
     olra_model = OLRA(Config().get_config())
     olra_model.feature_model.summary()
-    olra_model.decoder.summary()
     print_ok('Done\n')
 
     step = 0

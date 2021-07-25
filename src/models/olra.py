@@ -262,8 +262,6 @@ class OLRA:
             self.V = tf.keras.layers.Dense(1)
 
         def call(self, features, hidden):
-            # features(CNN_encoder output) shape == (batch_size, 64, embedding_dim)
-
             # hidden shape == (batch_size, hidden_size)
             # hidden_with_time_axis shape == (batch_size, 1, hidden_size)
             hidden_with_time_axis = tf.expand_dims(hidden, 1)
@@ -285,6 +283,48 @@ class OLRA:
 
             return context_vector, attention_weights
 
+    class RNN_Decoder(tf.keras.Model):
+        def __init__(self, embedding_dim, units, vocab_size):
+            super(OLRA.RNN_Decoder, self).__init__()
+            self.units = units
+
+            self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim)
+            self.lstm = tf.keras.layers.LSTM(self.units,
+                                             return_sequences=True,
+                                             return_state=True,
+                                             recurrent_initializer='glorot_uniform')
+            self.fc1 = tf.keras.layers.Dense(self.units)
+            self.fc2 = tf.keras.layers.Dense(vocab_size)
+
+            self.attention = OLRA.Attention(self.units)
+
+        def call(self, x, features, hidden):
+            # defining attention as a separate model
+            context_vector, attention_weights = self.attention(features, hidden)
+
+            # x shape after passing through embedding == (batch_size, 1, embedding_dim)
+            x = self.embedding(x)
+
+            # x shape after concatenation == (batch_size, 1, embedding_dim + hidden_size)
+            x = tf.concat([tf.expand_dims(context_vector, 1), x], axis=-1)
+
+            # passing the concatenated vector to the GRU
+            output, state, _ = self.lstm(x)
+
+            # shape == (batch_size, max_length, hidden_size)
+            x = self.fc1(output)
+
+            # x shape == (batch_size * max_length, hidden_size)
+            x = tf.reshape(x, (-1, x.shape[2]))
+
+            # output shape == (batch_size * max_length, vocab)
+            x = self.fc2(x)
+
+            return x, state, attention_weights
+
+        def reset_state(self, features):
+            return features
+
     def __init__(self, config, training=True) -> None:
         self.config = config
         self.training = training
@@ -302,7 +342,8 @@ class OLRA:
                                                                   3))
         self.resnet = tf.keras.Model(self.resnet.input,
                                      self.resnet.layers[170].output)
-        self.decoder = self.build_decoder_model()
+        # self.decoder = self.build_decoder_model()
+        self.decoder = self.RNN_Decoder(self.config.dim_hidden, self.config.rnn_size, self.data_generator.top_k + 1)
         self.feature_model = self.build_feature_model()
 
         if not os.path.isdir(self.models_path):
@@ -345,51 +386,6 @@ class OLRA:
             self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.scheduler)
         else:
             self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.config.lr)
-
-    def build_decoder_model(self):
-        """
-
-        @return:
-        """
-
-        tokens = tf.keras.layers.Input(shape=1,
-                                       batch_size=self.config.batch_size)
-
-        features = tf.keras.layers.Input(shape=self.config.rnn_size,
-                                         batch_size=self.config.batch_size)
-
-        hidden = tf.keras.layers.Input(shape=self.config.rnn_size,
-                                       batch_size=self.config.batch_size)
-
-        # defining attention as a separate model
-        context_vector, attention_weights = self.Attention(self.config.rnn_size)(features, hidden)
-
-        # x shape after passing through embedding == (batch_size, 1, embedding_dim)
-        x = tf.keras.layers.Embedding(self.data_generator.top_k + 1, self.config.dim_hidden)(tokens)
-
-        # x shape after concatenation == (batch_size, 1, embedding_dim + hidden_size)
-        x = tf.concat([tf.expand_dims(context_vector, 1), x], axis=-1)
-
-        # passing the concatenated vector to the LSTM
-        output, state, _ = tf.keras.layers.LSTM(self.config.rnn_size,
-                                                return_sequences=True,
-                                                return_state=True,
-                                                recurrent_initializer='glorot_uniform')(x)
-
-        # shape == (batch_size, max_length, hidden_size)
-        x = tf.keras.layers.Dense(self.config.rnn_size)(output)
-
-        # x shape == (batch_size * max_length, hidden_size)
-        x = tf.reshape(x, (-1, x.shape[2]))
-
-        # output shape == (batch_size * max_length, vocab)
-        x = tf.keras.layers.Dense(self.data_generator.top_k + 1)(x)
-
-        return tf.keras.Model(inputs=[tokens, features, hidden],
-                              outputs=[x, state, attention_weights])
-
-    def reset_state(self, features):
-        return features
 
     def build_feature_model(self):
         """
@@ -447,7 +443,7 @@ class OLRA:
 
         return model
 
-    #@tf.function
+    # @tf.function
     def olra_train_step(self, fasttext_features, images, ocr_posistions, questions_input):
         def loss_function(real, pred):
             mask = tf.math.logical_not(tf.math.equal(real, 0))
@@ -465,19 +461,19 @@ class OLRA:
             l2_loss = self.l2_loss(ocr_features, ocr_consistency)
             mle_loss = 0
 
-            dec_input = questions_input[:, 0]
-            hidden = reset_decoder_state(fused_features)
+            dec_input = tf.expand_dims(questions_input[:, 0], 1)
+            hidden = self.decoder.reset_state(fused_features)
 
             for i in range(1, self.config.max_len):
                 # passing the features through the decoder
-                predictions, hidden, _ = self.decoder([dec_input, fused_features, hidden])
+                predictions, hidden, _ = self.decoder(dec_input, fused_features, hidden)
 
                 mle_loss += loss_function(questions_input[:, i], predictions)
 
                 # using teacher forcing
                 dec_input = tf.expand_dims(questions_input[:, i], 1)
 
-            loss = self.config.lambda_loss * l2_loss + mle_loss
+            loss = self.config.lambda_loss * l2_loss + (mle_loss / self.config.batch_size)
 
         trainable_variables = self.feature_model.trainable_variables + self.decoder.trainable_variables
         gradients = tape.gradient(loss, trainable_variables)
