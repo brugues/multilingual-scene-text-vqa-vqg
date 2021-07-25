@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 import tensorflow as tf
 from dataloader.utils import print_info, print_ok
 from tensorflow.python.ops.gen_batch_ops import batch
@@ -161,7 +162,6 @@ class SeqSelfAttention(tf.keras.layers.Layer):
         elif self.attention_type == SeqSelfAttention.ATTENTION_TYPE_MUL:
             e = self._call_multiplicative_emission(inputs)
 
-        print("e {}".format(e.shape))
         if self.attention_activation is not None:
             e = self.attention_activation(e)
         if self.attention_width is not None:
@@ -183,11 +183,9 @@ class SeqSelfAttention(tf.keras.layers.Layer):
         e = tf.math.exp(e - tf.math.reduce_max(e, axis=-1, keepdims=True))
         a = e / tf.math.reduce_sum(e, axis=-1, keepdims=True)
 
-        print("e {}".format(e.shape))
-        print("a {}".format(a.shape))
         # l_t = \sum_{t'} a_{t, t'} x_{t'}
         v = tf.matmul(a, inputs)
-        print("v {}".format(v.shape))
+
         if self.attention_regularizer_weight > 0.0:
             self.add_loss(self._attention_regularizer(a))
 
@@ -203,10 +201,6 @@ class SeqSelfAttention(tf.keras.layers.Layer):
 
         q = tf.expand_dims(tf.matmul(inputs, self.Wt), 2)
         k = tf.expand_dims(tf.matmul(inputs, self.Wx), 1)
-        print("Wt {}".format(self.Wt.shape))
-        print("Wx {}".format(self.Wx.shape))
-        print("q {}".format(q.shape))
-        print("k {}".format(k.shape))
 
         if self.use_additive_bias:
             h = tf.keras.activations.tanh(q + k + self.bh)
@@ -255,7 +249,42 @@ class SeqSelfAttention(tf.keras.layers.Layer):
         return {'SeqSelfAttention': SeqSelfAttention}
 
 
+def reset_decoder_state(features):
+    return features
+
+
 class OLRA:
+    class Attention(tf.keras.Model):
+        def __init__(self, units):
+            super(OLRA.Attention, self).__init__()
+            self.W1 = tf.keras.layers.Dense(units)
+            self.W2 = tf.keras.layers.Dense(units)
+            self.V = tf.keras.layers.Dense(1)
+
+        def call(self, features, hidden):
+            # features(CNN_encoder output) shape == (batch_size, 64, embedding_dim)
+
+            # hidden shape == (batch_size, hidden_size)
+            # hidden_with_time_axis shape == (batch_size, 1, hidden_size)
+            hidden_with_time_axis = tf.expand_dims(hidden, 1)
+
+            # attention_hidden_layer shape == (batch_size, 64, units)
+            attention_hidden_layer = (tf.nn.tanh(self.W1(features) +
+                                                 self.W2(hidden_with_time_axis)))
+
+            # score shape == (batch_size, 64, 1)
+            # This gives you an unnormalized score for each image feature.
+            score = self.V(attention_hidden_layer)
+
+            # attention_weights shape == (batch_size, 64, 1)
+            attention_weights = tf.nn.softmax(score, axis=1)
+
+            # context_vector shape after sum == (batch_size, hidden_size)
+            context_vector = attention_weights * features
+            context_vector = tf.reduce_sum(context_vector, axis=1)
+
+            return context_vector, attention_weights
+
     def __init__(self, config, training=True) -> None:
         self.config = config
         self.training = training
@@ -273,7 +302,8 @@ class OLRA:
                                                                   3))
         self.resnet = tf.keras.Model(self.resnet.input,
                                      self.resnet.layers[170].output)
-        self.keras_model = self.build_model()
+        self.decoder = self.build_decoder_model()
+        self.feature_model = self.build_feature_model()
 
         if not os.path.isdir(self.models_path):
             os.makedirs(self.models_path)
@@ -291,18 +321,21 @@ class OLRA:
             self.logging_path = os.path.join(self.logging_path, self.experiment)
 
             os.makedirs(os.path.join(self.models_path), exist_ok=True)
-            os.makedirs(os.path.join(self.models_path, 'checkpoints'), exist_ok=True)
+            os.makedirs(os.path.join(self.models_path, 'checkpoints_feature'), exist_ok=True)
+            os.makedirs(os.path.join(self.models_path, 'checkpoints_decoder'), exist_ok=True)
             os.makedirs(os.path.join(self.logging_path, 'train'), exist_ok=True)
             os.makedirs(os.path.join(self.logging_path, 'val'), exist_ok=True)
 
         else:
-            self.keras_model.load_weights(os.path.join(config.model_to_evaluate,
-                                                       'checkpoints', 'ckpt'))
+            self.feature_model.load_weights(os.path.join(config.model_to_evaluate,
+                                                         'checkpoints_feature', 'ckpt'))
+            self.decoder.load_weights(self.feature_model.load_weights(os.path.join(config.model_to_evaluate,
+                                                                                   'checkpoints_decoder', 'ckpt')))
 
         self.tensorboard = TensorBoardLogger(self.logging_path)
 
         self.l2_loss = tf.keras.losses.MeanSquaredError()
-        self.mle_loss = None
+        self.mle_loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True, reduction='none')
 
         if self.config.apply_decay:
             self.scheduler = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=config.lr,
@@ -313,7 +346,52 @@ class OLRA:
         else:
             self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.config.lr)
 
-    def build_model(self):
+    def build_decoder_model(self):
+        """
+
+        @return:
+        """
+
+        tokens = tf.keras.layers.Input(shape=1,
+                                       batch_size=self.config.batch_size)
+
+        features = tf.keras.layers.Input(shape=self.config.rnn_size,
+                                         batch_size=self.config.batch_size)
+
+        hidden = tf.keras.layers.Input(shape=self.config.rnn_size,
+                                       batch_size=self.config.batch_size)
+
+        # defining attention as a separate model
+        context_vector, attention_weights = self.Attention(self.config.rnn_size)(features, hidden)
+
+        # x shape after passing through embedding == (batch_size, 1, embedding_dim)
+        x = tf.keras.layers.Embedding(self.data_generator.top_k + 1, self.config.dim_hidden)(tokens)
+
+        # x shape after concatenation == (batch_size, 1, embedding_dim + hidden_size)
+        x = tf.concat([tf.expand_dims(context_vector, 1), x], axis=-1)
+
+        # passing the concatenated vector to the LSTM
+        output, state, _ = tf.keras.layers.LSTM(self.config.rnn_size,
+                                                return_sequences=True,
+                                                return_state=True,
+                                                recurrent_initializer='glorot_uniform')(x)
+
+        # shape == (batch_size, max_length, hidden_size)
+        x = tf.keras.layers.Dense(self.config.rnn_size)(output)
+
+        # x shape == (batch_size * max_length, hidden_size)
+        x = tf.reshape(x, (-1, x.shape[2]))
+
+        # output shape == (batch_size * max_length, vocab)
+        x = tf.keras.layers.Dense(self.data_generator.top_k + 1)(x)
+
+        return tf.keras.Model(inputs=[tokens, features, hidden],
+                              outputs=[x, state, attention_weights])
+
+    def reset_state(self, features):
+        return features
+
+    def build_feature_model(self):
         """
             Builds the OLRA keras model
         """
@@ -331,68 +409,115 @@ class OLRA:
                                                     dtype=tf.float32)
 
         # Get fasttext features from B-LSTM
-        fasttext_features = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(256,
-                                                                               activation='tanh',
-                                                                               recurrent_activation='tanh',
-                                                                               dropout=self.config.dropout)
-                                                          )(tf.expand_dims(fasttext_input, axis=1))
+        ocr_features = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(int(self.config.rnn_size / 2),
+                                                                          activation='tanh',
+                                                                          recurrent_activation='tanh',
+                                                                          dropout=self.config.dropout)
+                                                     )(tf.expand_dims(fasttext_input, axis=1))
 
         # Multimodal Fusion (Based on self attention)
-        fused_features = tf.keras.layers.concatenate([fasttext_features,
+        fused_features = tf.keras.layers.concatenate([ocr_features,
                                                       image_input,
                                                       ocr_positions_input])
-        fused_features = tf.expand_dims(fused_features, axis=1)
-        fused_features = SeqSelfAttention(units=1028,
-                                          attention_type=SeqSelfAttention.ATTENTION_TYPE_MUL,
-                                          attention_activation='softmax')(fused_features)
-        fused_features = tf.keras.layers.Dense(512)(fused_features)
-        fused_features = SeqSelfAttention(units=512,
-                                          attention_type=SeqSelfAttention.ATTENTION_TYPE_MUL,
-                                          attention_activation='softmax')(fused_features)
-        fused_features = tf.reshape(fused_features, (self.config.batch_size, 512))
+
+        if self.config.multimodal_attention:
+            fused_features = tf.expand_dims(fused_features, axis=1)
+            fused_features = SeqSelfAttention(units=1028,
+                                              attention_type=SeqSelfAttention.ATTENTION_TYPE_MUL,
+                                              attention_activation='softmax')(fused_features)
+            fused_features = tf.keras.layers.Dense(512)(fused_features)
+            fused_features = SeqSelfAttention(units=512,
+                                              attention_type=SeqSelfAttention.ATTENTION_TYPE_MUL,
+                                              attention_activation='softmax')(fused_features)
+            fused_features = tf.reshape(fused_features, (self.config.batch_size, 512))
+
+        else:
+            fused_features = tf.keras.layers.Dense(512,
+                                                   activation='tanh')(fused_features)
 
         # OCR consistency module
         ocr_consistency = tf.keras.layers.Dense(self.config.dim_ocr_consistency,
                                                 activation=None)(fused_features)
 
-        # Ask module (Question generator module)
-        lstm = tf.keras.layers.LSTMCell(300)
-
-        output_question = tf.ones(1)
-
         # Create final model
         model = tf.keras.Model(inputs=[fasttext_input,
                                        image_input,
                                        ocr_positions_input],
-                               outputs=[fasttext_features, ocr_consistency]) # Missing question
+                               outputs=[fused_features, ocr_features, ocr_consistency])
 
         return model
 
-    @tf.function
-    def olra_train_step(self, fasttext_features, images, ocr_posistions, labels):
+    #@tf.function
+    def olra_train_step(self, fasttext_features, images, ocr_posistions, questions_input):
+        def loss_function(real, pred):
+            mask = tf.math.logical_not(tf.math.equal(real, 0))
+            loss_ = self.mle_loss(real, pred)
+
+            mask = tf.cast(mask, dtype=loss_.dtype)
+            loss_ *= mask
+
+            return tf.reduce_mean(loss_)
+
         with tf.GradientTape() as tape:
-            ocr_features, ocr_consistency, question = self.keras_model([fasttext_features,
-                                                                        images,
-                                                                        ocr_posistions])
+            fused_features, ocr_features, ocr_consistency = self.feature_model([fasttext_features,
+                                                                                images,
+                                                                                ocr_posistions])
             l2_loss = self.l2_loss(ocr_features, ocr_consistency)
             mle_loss = 0
+
+            dec_input = questions_input[:, 0]
+            hidden = reset_decoder_state(fused_features)
+
+            for i in range(1, self.config.max_len):
+                # passing the features through the decoder
+                predictions, hidden, _ = self.decoder([dec_input, fused_features, hidden])
+
+                mle_loss += loss_function(questions_input[:, i], predictions)
+
+                # using teacher forcing
+                dec_input = tf.expand_dims(questions_input[:, i], 1)
+
             loss = self.config.lambda_loss * l2_loss + mle_loss
 
-        gradients = tape.gradient(loss, self.keras_model.trainable_variables)
-        self.optimizer.apply_gradients(zip(gradients, self.keras_model.trainable_variables))
+        trainable_variables = self.feature_model.trainable_variables + self.decoder.trainable_variables
+        gradients = tape.gradient(loss, trainable_variables)
+        self.optimizer.apply_gradients(zip(gradients, trainable_variables))
 
         return [loss, l2_loss, mle_loss]
 
-    def save_olra_checkpoint(self):
-        path = os.path.join(self.models_path, 'checkpoints', 'ckpt')
-        self.keras_model.save_weights(path)
+    def evaluation_step(self, fasttext_features, images, ocr_posistions, questions_input):
 
-    def save_olra_model(self):
-        self.keras_model.save(os.path.join(self.models_path, 'model.h5'))
+        fused_features, ocr_features, ocr_consistency = self.feature_model([fasttext_features,
+                                                                            images,
+                                                                            ocr_posistions])
+
+        hidden = self.reset_state(fused_features)
+
+        dec_input = tf.expand_dims([self.data_generator.tokenizer.word_index[questions_input[0]]], 0)
+        result = []
+
+        for i in range(self.config.max_len):
+            predictions, hidden, _ = self.decoder(dec_input, fused_features, hidden)
+
+            predicted_id = tf.random.categorical(predictions, 1)[0][0].numpy()
+            result.append(self.data_generator.tokenizer.index_word[predicted_id])
+
+            if self.data_generator.tokenizer.index_word[predicted_id] == '<end>':
+                return result
+
+            dec_input = tf.expand_dims([predicted_id], 0)
+
+        return result
+
+    def save_olra_checkpoint(self):
+        path = os.path.join(self.models_path, 'checkpoints_feature', 'ckpt')
+        self.feature_model.save_weights(path)
+        path = os.path.join(self.models_path, 'checkpoints_decoder', 'ckpt')
+        self.decoder.save_weights(path)
 
     def log_to_tensorboard(self, step, losses, task='train'):
         def _decayed_learning_rate():
-            return self.config.lr * self.config.decay_factor ** (step / self.config.decay_steps)
+            return self.config.lr * self.config.decay_factor ** (step / self.data_generator.len())
 
         with self.tensorboard.train_summary_writer.as_default():
             # Loss

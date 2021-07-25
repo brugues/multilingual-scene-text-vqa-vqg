@@ -6,6 +6,7 @@ import fasttext
 from bpemb import BPEmb
 import cv2
 import numpy as np
+import tensorflow as tf
 
 from dataloader.utils import print_info, print_ok
 from dataloader.yolo_utils import yolo_image_preprocess
@@ -107,9 +108,9 @@ def load_embeddings(config):
 
         languages = config.language.split('-')
         for language in languages:
-            transformations[config.language] = np.loadtxt(os.path.join(config.txt_embeddings_path, 'smith',
-                                                                       'transformations',
-                                                                       '{}.txt'.format(language)))
+            transformations[language] = np.loadtxt(os.path.join(config.txt_embeddings_path, 'smith',
+                                                                'transformations',
+                                                                '{}.txt'.format(language)))
 
     else:
         raise AttributeError('Invalid embedding type. Select either fasttext or bpemb')
@@ -124,7 +125,11 @@ def load_gt(config, training):
                 gt_original = json.load(f)
 
             if config.language != 'en':
-                with open(config.gt_file.replace('train', 'train_{}'.format(config.language))) as f:
+                lang = config.language
+                if '-' in lang:
+                    lang = lang.replace('-', '_')
+
+                with open(config.gt_file.replace('train', 'train_{}'.format(lang))) as f:
                     gt = json.load(f)
             else:
                 with open(config.gt_file) as f:
@@ -135,7 +140,10 @@ def load_gt(config, training):
                 gt_original = json.load(f)
 
             if config.language != 'en':
-                with open(config.gt_eval_file.replace('eval', 'eval_{}'.format(config.language))) as f:
+                lang = config.language
+                if '-' in lang:
+                    lang = lang.replace('-', '_')
+                with open(config.gt_eval_file.replace('eval', 'eval_{}'.format(lang))) as f:
                     gt = json.load(f)
             else:
                 with open(config.gt_eval_file) as f:
@@ -354,9 +362,46 @@ class OLRADataGenerator:
         print_ok('Done!\n')
 
         for i, entry in enumerate(self.gt_original):
-            if len(entry['answer']) > 1:
+            if len(entry['answer']) == 1:
                 self.gt_original.pop(i)
                 self.gt.pop(i)
+
+        self.vocabulary = []
+        for entry in self.gt:
+            sentence = '<{}>'.format(entry['lang'])
+            for word in entry['question']:
+                sentence += ' {}'.format(word)
+            sentence += ' <end>'
+            self.vocabulary.append(sentence)
+
+        self.top_k = 5000
+
+        # Tokenize vocabulary
+        if os.path.isfile(self.config.tokenizer_file):
+            with open(self.config.tokenizer_file, 'r') as f:
+                self.tokenizer = json.load(f)
+            self.tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(self.tokenizer)
+        else:
+            self.tokenizer = tf.keras.preprocessing.text.Tokenizer(num_words=self.top_k,
+                                                                   oov_token="<unk>",
+                                                                   filters='!"#$%&()*+.,-/:;=?@[\]^_`{|}~')
+            self.tokenizer.fit_on_texts(self.vocabulary)
+
+            self.tokenizer.word_index['<pad>'] = 0
+            self.tokenizer.index_word[0] = '<pad>'
+
+            tokenizer_json = self.tokenizer.to_json()
+
+            with open(self.config.tokenizer_file, 'w+') as f:
+                json.dump(tokenizer_json, f)
+
+        # Create the tokenized vectors
+        self.vocabulary_seqs = self.tokenizer.texts_to_sequences(self.vocabulary)
+
+        # Pad each vector to the max_length of the captions
+        # If you do not provide a max_length value, pad_sequences calculates it automatically
+        self.cap_vector = tf.keras.preprocessing.sequence.pad_sequences(self.vocabulary_seqs,
+                                                                        padding='post', maxlen=self.config.max_len)
 
     def len(self):
         """
@@ -380,9 +425,7 @@ class OLRADataGenerator:
         batch_x_vector = np.zeros((self.batch_size, self.dim_txt))
         batch_x_position = np.zeros((self.batch_size, 4))
         batch_x_language = np.zeros((self.batch_size, self.dim_txt))
-        batch_y_question = np.chararray((self.batch_size, self.max_len), itemsize=35, unicode=True)
-        batch_y_question[:] = ''
-        batch_y_question_vector = np.zeros((self.batch_size, self.max_len, self.dim_txt))
+        batch_x_question = np.zeros((self.batch_size, self.max_len))
 
         # foreach question in batch
         for i, idx in enumerate(batch_idxs):
@@ -434,30 +477,10 @@ class OLRADataGenerator:
                 else:
                     batch_x_language[i, :] = np.zeros(300)
 
-            batch_y_question[i, 0:len(self.gt[idx]['question'])] = self.gt[idx]['question']
+            if self.training:
+                batch_x_question[i] = self.cap_vector[idx]
 
-            for j in range(len(self.gt[idx]['question'])):
-                if self.embedding_type == 'fasttext':
-                    batch_y_question_vector[i][j] = \
-                        self.txt_models[self.gt[idx]['lang']].get_word_vector(batch_y_question[i, j])
+            else:
+                batch_x_question[i] = tf.expand_dims([self.tokenizer.word_index[self.gt[idx]['lang']]], 0)
 
-                    if self.config.fasttext_aligned:
-                        batch_y_question_vector[i][j] = np.dot(batch_y_question_vector[i][j],
-                                                               self.transformations[self.gt[idx]['lang']].T)
-
-                elif self.embedding_type == 'smith':
-                    batch_y_question_vector[i][j] = \
-                        np.matmul(self.txt_models[self.gt[idx]['lang']].get_word_vector(batch_y_question[i, j]),
-                                  self.transformations[self.gt[idx]['lang']])
-
-                else:
-                    emb = self.txt_models[self.gt[idx]['lang']].embed(batch_y_question[i, j])
-                    if emb.shape[0] == self.dim_txt:
-                        batch_y_question_vector[i][j] = emb
-                    elif emb.shape[0] > 0:
-                        batch_y_question_vector[i][j] = emb[-1, :]
-                    else:
-                        batch_y_question_vector[i][j] = np.zeros(300)
-
-        return [batch_x_image, batch_x_vector, batch_x_position, batch_x_language, batch_y_question,
-                batch_y_question_vector, filenames]
+        return [batch_x_image, batch_x_vector, batch_x_position, batch_x_language, batch_x_question, filenames]

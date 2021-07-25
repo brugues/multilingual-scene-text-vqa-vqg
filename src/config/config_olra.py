@@ -11,7 +11,7 @@ class Config:
         args = argparse.ArgumentParser()
 
         # -------------------------------- NETWORK --------------------------------
-        args.add_argument('--rnn_size', type=int, default=256, help='Units of the LSTM')
+        args.add_argument('--rnn_size', type=int, default=512, help='Units of the LSTM')
         args.add_argument('--rnn_layer', type=int, default=2, help='Number of LSTM layers')
 
         args.add_argument('--img_size', type=int, default=608, help='Yolo input image size (img_size, img_size)')
@@ -20,17 +20,20 @@ class Config:
         args.add_argument('--dim_image', type=int, default=512, help='Size of visual features. Last element of img '
                                                                      'feature size')
         args.add_argument('--dim_txt', type=int, default=300, help='Size of individual text features')
-        args.add_argument('--dim_hidden', type=int, default=1024, help='Size of the common embedding vector')
+        args.add_argument('--dim_hidden', type=int, default=256, help='Size of the common embedding vector')
         args.add_argument('--dim_ocr_consistency', type=int, default=512, help='Size of the attention embedding')
         args.add_argument('--text_embedding_dim', type=int, default=300, help='Size of textual features, fasttext'
                                                                               'dimension')
         args.add_argument('--max_len', type=int, default=25, help='Question maximum length')
         args.add_argument('--dropout', type=float, default=0.5, help='Dropout rate')
-        args.add_argument('--num_grids', type=int, default=38, help='Num grids per dimension on the image')
+        args.add_argument('--multimodal_attention', dest='multimodal_attention', action='store_true',
+                          help='Whether to use multimodal attention fusion or just concatenation of features')
+        args.set_defaults(mulimodal_attention=False)
 
         # ------------------------------  DATALOADER  -----------------------------
         args.add_argument('--dataset', type=str, default='stvqa', choices=['stvqa', 'estvqa'], help='Dataset to use')
-        args.add_argument('--shuffle', type=bool, default=True, help='Shuffle data')
+        args.add_argument('--no_shuffle', dest='shuffle', help='Shuffle data')
+        args.set_defaults(shuffle=True)
         args.add_argument('--gt_file', type=str, default='data/stvqa_train.json', help='GT file path')
         args.add_argument('--gt_eval_file', type=str, default='data/stvqa_eval.json', help='GT eval file path')
         args.add_argument('--language', type=str, default='en', help='Language of the embeddings to use',
@@ -70,5 +73,6 @@ class Config:
         # --------------------------------  PATHS  -------------------------------
         args.add_argument('--image_path', type=str, default='data/ST-VQA', help='Image paths')
         args.add_argument('--yolo_file', type=str, default='models/bin/yolov4_tf231.h5', help='Yolo weight file')
+        args.add_argument('--tokenizer_file', type=str, default='models/tokenizers/en_stvqa.json')
 
         return args.parse_args()

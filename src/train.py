@@ -58,6 +58,5 @@ if __name__ == '__main__':
             step += 1
 
         stvqa_model.save_attention_checkpoint()
-        stvqa_model.save_attention_model()
         tf.keras.backend.clear_session()  # Just in case there a memory leak or sth
         #del progress_bar
