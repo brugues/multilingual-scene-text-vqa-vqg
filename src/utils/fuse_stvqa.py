@@ -11,6 +11,8 @@ SPANISH_EVAL = '../data/stvqa_eval_es.json'
 ENGLISH_EVAL = '../data/stvqa_eval.json'
 CHINESE_EVAL = '../data/stvqa_eval_zh.json'
 
+ESTVQA_EVAL = '../data/EST-VQA-v1.0/annotations/eval_subsample_all_answers.json'
+
 
 def fuse():
     with open(CATALAN_TRAIN, 'r') as f:
@@ -91,5 +93,18 @@ def add_language_field():
         json.dump(chinese, f)
 
 
+def add_question_id_field():
+    with open(ESTVQA_EVAL, 'r') as f:
+        estvqa = json.load(f)
+
+    counter = 1
+    for entry in estvqa:
+        entry['question_id'] = int(counter)
+        counter += 1
+
+    with open(ESTVQA_EVAL, 'w+') as f:
+        json.dump(estvqa, f)
+
+
 if __name__ == '__main__':
-    add_language_field()
+    add_question_id_field()
