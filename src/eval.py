@@ -6,7 +6,7 @@ import tensorflow as tf
 from Levenshtein import distance as lev
 
 from dataloader.data_loader import VQADataGenerator
-from src.dataloader.utils import print_info, print_ok, update_eval_progress_bar
+from dataloader.utils import print_info, print_ok, update_eval_progress_bar
 from config.config import Config
 from models.stvqa import VQAModel
 
@@ -67,8 +67,7 @@ if __name__ == '__main__':
     progress_bar = tqdm(range(num_batches),
                         total=num_batches, desc='Evaluation Progress')
 
-    #for batch in range(num_batches):
-    for batch in range(5):
+    for batch in range(num_batches):
         batch_data = eval_data_generator.next()
         this_batch_size = len(batch_data[0])
         count += this_batch_size
