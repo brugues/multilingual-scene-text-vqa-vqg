@@ -119,51 +119,42 @@ def load_embeddings(config):
 
 
 def load_gt(config, training):
+
     if config.dataset == 'stvqa':
-        if training:
-            with open(config.gt_file) as f:
-                gt_original = json.load(f)
-
-            if config.language != 'en':
-                lang = config.language
-                if '-' in lang:
-                    lang = lang.replace('-', '_')
-
-                with open(config.gt_file.replace('train', 'train_{}'.format(lang))) as f:
-                    gt = json.load(f)
-            else:
-                with open(config.gt_file) as f:
-                    gt = json.load(f)
-
-        else:
-            with open(config.gt_eval_file) as f:
-                gt_original = json.load(f)
-
-            if config.language != 'en':
-                lang = config.language
-                if '-' in lang:
-                    lang = lang.replace('-', '_')
-                with open(config.gt_eval_file.replace('eval', 'eval_{}'.format(lang))) as f:
-                    gt = json.load(f)
-            else:
-                with open(config.gt_eval_file) as f:
-                    gt = json.load(f)
-
+        pivot_lang = 'en'
     elif config.dataset == 'estvqa':
-        if training:
-            with open(config.gt_file) as f:
-                gt_original = json.load(f)
+        pivot_lang = 'zh'
+    else:
+        raise AttributeError('Invalid dataset type. Options are stvqa and estvqa')
 
-            with open(config.gt_file) as f:
+    if training:
+        with open(config.gt_file) as f:
+            gt_original = json.load(f)
+
+        if config.language != pivot_lang:
+            lang = config.language
+            if '-' in lang:
+                lang = lang.replace('-', '_')
+
+            with open(config.gt_file.replace('train', 'train_{}'.format(lang))) as f:
                 gt = json.load(f)
-
         else:
-            with open(config.gt_eval_file) as f:
-                gt_original = json.load(f)
+            with open(config.gt_file) as f:
                 gt = json.load(f)
 
     else:
-        raise AttributeError('Invalid dataset type. Options are stvqa and estvqa')
+        with open(config.gt_eval_file) as f:
+            gt_original = json.load(f)
+
+        if config.language != pivot_lang:
+            lang = config.language
+            if '-' in lang:
+                lang = lang.replace('-', '_')
+            with open(config.gt_eval_file.replace('eval', 'eval_{}'.format(lang))) as f:
+                gt = json.load(f)
+        else:
+            with open(config.gt_eval_file) as f:
+                gt = json.load(f)
 
     return gt_original, gt
 

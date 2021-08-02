@@ -29,7 +29,7 @@ def get_anls_score(gt, predictions, threshold=0.5):
 
     for i, prediction in enumerate(predictions):
         word = prediction['answer']
-        gt_word = gt[i]['answer']
+        gt_word = gt[i]['answer'][0]
         l_score = lev(word, gt_word) / (len(word) + len(gt_word))
 
         if l_score >= threshold:
@@ -67,8 +67,8 @@ if __name__ == '__main__':
     progress_bar = tqdm(range(num_batches),
                         total=num_batches, desc='Evaluation Progress')
 
-    for batch in range(num_batches):
-
+    #for batch in range(num_batches):
+    for batch in range(5):
         batch_data = eval_data_generator.next()
         this_batch_size = len(batch_data[0])
         count += this_batch_size
@@ -82,10 +82,16 @@ if __name__ == '__main__':
         stvqa_output = tf.math.sigmoid(stvqa_output)
         stvqa_output = stvqa_output.numpy()
 
-        if config.language in ['ca', 'es', 'zh']:
-            batch_ocr = batch_data[8]
+        if config.dataset == 'stvqa':
+            if config.language != 'en':
+                batch_ocr = batch_data[8]
+            else:
+                batch_ocr = batch_data[4]
         else:
-            batch_ocr = batch_data[4]
+            if config.language != 'zh':
+                batch_ocr = batch_data[8]
+            else:
+                batch_ocr = batch_data[4]
 
         gt_ids = batch_data[7]
 
