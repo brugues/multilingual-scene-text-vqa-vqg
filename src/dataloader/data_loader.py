@@ -119,7 +119,6 @@ def load_embeddings(config):
 
 
 def load_gt(config, training):
-
     if config.dataset == 'stvqa':
         pivot_lang = 'en'
     elif config.dataset == 'estvqa':
@@ -407,7 +406,8 @@ class OLRADataGenerator:
         if self.shuffle:
             batch_idxs = np.random.choice(len(self.gt), self.batch_size)
         else:
-            if self.curr_idx + self.batch_size > len(self.gt): self.curr_idx = 0
+            if self.curr_idx + self.batch_size > len(self.gt):
+                self.curr_idx = 0
             batch_idxs = range(self.curr_idx, self.curr_idx + self.batch_size)
             self.curr_idx = (self.curr_idx + self.batch_size) % len(self.gt)
 
@@ -415,8 +415,8 @@ class OLRADataGenerator:
         batch_x_image = []
         batch_x_vector = np.zeros((self.batch_size, self.dim_txt))
         batch_x_position = np.zeros((self.batch_size, 4))
-        batch_x_language = np.zeros((self.batch_size, self.dim_txt))
-        batch_x_question = np.zeros((self.batch_size, self.max_len))
+        batch_x_question = []
+        batch_x_question_embed = np.zeros((self.batch_size, self.max_len))
 
         # foreach question in batch
         for i, idx in enumerate(batch_idxs):
@@ -435,21 +435,19 @@ class OLRADataGenerator:
 
             batch_x_image.append(image)
             batch_x_position[i] = gt_ans_boxes[0]
+            batch_x_question.append(self.gt[idx]['question'])
 
             if self.embedding_type == 'fasttext':
                 batch_x_vector[i, :] = self.txt_models[self.gt[idx]['lang']].get_word_vector(self.gt[idx]['answer'][0])
-                batch_x_language[i, :] = self.txt_models[self.gt[idx]['lang']].get_word_vector(self.gt[idx]['lang'])
 
                 if self.config.fasttext_aligned:
                     batch_x_vector[i, :] = np.dot(batch_x_vector[i, :], self.transformations[self.gt[idx]['lang']].T)
-                    batch_x_language[i, :] = np.dot(batch_x_vector[i, :], self.transformations[self.gt[idx]['lang']].T)
 
             elif self.embedding_type == 'smith':
                 batch_x_vector[i, :] = np.matmul(
                     self.txt_models[self.gt[idx]['lang']].get_word_vector(self.gt[idx]['answer'][0]),
                     self.transformations[self.gt[idx]['lang']])
-                batch_x_language[i, :] = np.matmul(self.txt_models[self.gt[idx]['lang']].get_word_vector(self.language),
-                                                   self.transformations[self.gt[idx]['lang']])
+
 
             else:
                 emb = self.txt_models[self.gt[idx]['lang']].embed(self.gt[idx]['answer'][0])
@@ -460,18 +458,10 @@ class OLRADataGenerator:
                 else:
                     batch_x_vector[i, :] = np.zeros(300)
 
-                emb = self.txt_models[self.gt[idx]['lang']].embed(self.language)
-                if emb.shape[0] == self.dim_txt:
-                    batch_x_language[i, :] = emb
-                elif emb.shape[0] > 0:
-                    batch_x_language[i, :] = emb[-1, :]
-                else:
-                    batch_x_language[i, :] = np.zeros(300)
-
             if self.training:
-                batch_x_question[i] = self.cap_vector[idx]
-
+                batch_x_question_embed[i] = self.cap_vector[idx]
             else:
-                batch_x_question[i] = tf.expand_dims([self.tokenizer.word_index[self.gt[idx]['lang']]], 0)
+                batch_x_question_embed[i] = tf.expand_dims([self.tokenizer.word_index['<{}>'.format(self.gt[idx]['lang'])]],
+                                                     0)
 
-        return [batch_x_image, batch_x_vector, batch_x_position, batch_x_language, batch_x_question, filenames]
+        return [batch_x_image, batch_x_vector, batch_x_position, batch_x_question, batch_x_question_embed, filenames]

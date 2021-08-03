@@ -32,7 +32,7 @@ class Config:
 
         # ------------------------------  DATALOADER  -----------------------------
         args.add_argument('--dataset', type=str, default='stvqa', choices=['stvqa', 'estvqa'], help='Dataset to use')
-        args.add_argument('--no_shuffle', dest='shuffle', help='Shuffle data')
+        args.add_argument('--no_shuffle', dest='shuffle', action='store_false', help='Shuffle data')
         args.set_defaults(shuffle=True)
         args.add_argument('--gt_file', type=str, default='data/stvqa_train.json', help='GT file path')
         args.add_argument('--gt_eval_file', type=str, default='data/stvqa_eval.json', help='GT eval file path')
@@ -54,7 +54,8 @@ class Config:
         args.add_argument('--lr', type=float, default=0.0001, help='Learning rate')
         args.add_argument('--lambda_loss', type=bool, default=0.001, help='Multiplier to l1 loss')
         args.add_argument('--staircase', type=bool, default=True, help='Exponential decay with staircase')
-        args.add_argument('--apply_decay', type=bool, default=True, help='Apply decay rate to learning rate')
+        args.add_argument('--no_apply_decay', dest='apply_decay', action='store_false', help='Apply decay rate to learning rate')
+        args.set_defaults(apply_decay=True)
         args.add_argument('--decay_factor', type=float, default=0.05, help='Learning rate decay factor')
         args.add_argument('--batch_size', type=int, default=32, help='batch size')
         args.add_argument('--n_epochs', type=int, default=10, help='Number of epochs for which to train the net for')

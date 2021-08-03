@@ -370,8 +370,8 @@ class OLRA:
         else:
             self.feature_model.load_weights(os.path.join(config.model_to_evaluate,
                                                          'checkpoints_feature', 'ckpt'))
-            self.decoder.load_weights(self.feature_model.load_weights(os.path.join(config.model_to_evaluate,
-                                                                                   'checkpoints_decoder', 'ckpt')))
+            self.decoder.load_weights(os.path.join(config.model_to_evaluate,
+                                                   'checkpoints_decoder', 'ckpt'))
 
         self.tensorboard = TensorBoardLogger(self.logging_path)
 
@@ -479,7 +479,7 @@ class OLRA:
         gradients = tape.gradient(loss, trainable_variables)
         self.optimizer.apply_gradients(zip(gradients, trainable_variables))
 
-        return [loss, l2_loss, mle_loss]
+        return [loss, l2_loss, (mle_loss / self.config.batch_size)]
 
     def evaluation_step(self, fasttext_features, images, ocr_posistions, questions_input):
 
@@ -487,16 +487,20 @@ class OLRA:
                                                                             images,
                                                                             ocr_posistions])
 
-        hidden = self.reset_state(fused_features)
+        hidden = self.decoder.reset_state(fused_features)
 
-        dec_input = tf.expand_dims([self.data_generator.tokenizer.word_index[questions_input[0]]], 0)
+        dec_input = tf.expand_dims(questions_input[:, 0], 1)
         result = []
 
         for i in range(self.config.max_len):
             predictions, hidden, _ = self.decoder(dec_input, fused_features, hidden)
 
             predicted_id = tf.random.categorical(predictions, 1)[0][0].numpy()
-            result.append(self.data_generator.tokenizer.index_word[predicted_id])
+
+            try:
+                result.append(self.data_generator.tokenizer.index_word[predicted_id])
+            except KeyError:
+                result.append('oov')
 
             if self.data_generator.tokenizer.index_word[predicted_id] == '<end>':
                 return result

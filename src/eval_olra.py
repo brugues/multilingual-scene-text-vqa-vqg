@@ -4,8 +4,9 @@ import tensorflow as tf
 from nltk.translate.bleu_score import sentence_bleu
 
 from src.dataloader.utils import print_info, print_ok, update_eval_progress_bar
-from config.config import Config
+from config.config_olra import Config
 from models.olra import OLRA
+from tqdm import tqdm
 
 
 def calculate_blew_score(candidate, gt):
@@ -21,9 +22,10 @@ def calculate_blew_score(candidate, gt):
 
 if __name__ == "__main__":
     config = Config().get_config()
+    config.shuffle = False
 
     print_info('Building OLRA model')
-    olra_model = OLRA(Config().get_config())
+    olra_model = OLRA(Config().get_config(), training=False)
     print_ok('Done\n')
 
     print_info('Starting evaluation \n')
@@ -35,7 +37,7 @@ if __name__ == "__main__":
     }
     num_batches = olra_model.data_generator.len()
 
-    for batch in range(num_batches):
+    for batch in tqdm(range(num_batches)):
         batch_data = olra_model.data_generator.next()
         this_batch_size = len(batch_data[0])
         count += this_batch_size
@@ -44,17 +46,19 @@ if __name__ == "__main__":
         img_features = olra_model.resnet.predict_on_batch(np.array(batch_data[0]))
         img_features = tf.keras.layers.GlobalAvgPool2D()(img_features)
 
-        output = olra_model.keras_model.predict_on_batch(batch_data[1], img_features, batch_data[2])
-        for i, generated_question in enumerate(output[2]):
-            candidate = [generated_question]
-            bleu_score = calculate_blew_score(candidate, batch_data[i][3])
-            bleu_scores[batch_data[i][5]['bleu']] = bleu_score[0]
-            bleu_scores[batch_data[i][5]['bleu_1']] = bleu_score[1]
-            bleu_scores[batch_data[i][5]['bleu_2']] = bleu_score[2]
-            bleu_scores[batch_data[i][5]['bleu_3']] = bleu_score[3]
-            bleu_scores[batch_data[i][5]['bleu_4']] = bleu_score[4]
+        output = olra_model.evaluation_step(batch_data[1], img_features, batch_data[2], batch_data[4])
 
-            bleu_scores['total_scores'] = bleu_score[0]
+        bleu_score = calculate_blew_score(output, batch_data[3][0])
+        bleu_scores[batch_data[5][0]] = {}
+        bleu_scores[batch_data[5][0]]['gt'] = batch_data[3][0]
+        bleu_scores[batch_data[5][0]]['generated'] = output
+        bleu_scores[batch_data[5][0]]['bleu'] = bleu_score[0]
+        bleu_scores[batch_data[5][0]]['bleu_1'] = bleu_score[1]
+        bleu_scores[batch_data[5][0]]['bleu_2'] = bleu_score[2]
+        bleu_scores[batch_data[5][0]]['bleu_3'] = bleu_score[3]
+        bleu_scores[batch_data[5][0]]['bleu_4'] = bleu_score[4]
+
+        bleu_scores['total_scores'] = bleu_score[0]
 
     bleu_scores['mean_score'] = np.mean(np.array(bleu_scores['total_scores']))
 

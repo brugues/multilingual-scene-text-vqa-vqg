@@ -3,7 +3,7 @@ from tqdm import tqdm
 import tensorflow as tf
 from config.config_olra import Config
 from models.olra import OLRA
-from src.dataloader.utils import print_info, print_ok
+from dataloader.utils import print_info, print_ok
 
 if __name__ == '__main__':
     config = Config().get_config()
