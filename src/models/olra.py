@@ -293,12 +293,16 @@ class OLRA:
                                              return_sequences=True,
                                              return_state=True,
                                              recurrent_initializer='glorot_uniform')
+            self.gru = tf.keras.layers.GRU(self.units,
+                                           return_sequences=True,
+                                           return_state=True,
+                                           recurrent_initializer='glorot_uniform')
             self.fc1 = tf.keras.layers.Dense(self.units)
             self.fc2 = tf.keras.layers.Dense(vocab_size)
 
             self.attention = OLRA.Attention(self.units)
 
-        def call(self, x, features, hidden):
+        def call(self, x, features, hidden, use_lstm=True):
             # defining attention as a separate model
             context_vector, attention_weights = self.attention(features, hidden)
 
@@ -309,7 +313,10 @@ class OLRA:
             x = tf.concat([tf.expand_dims(context_vector, 1), x], axis=-1)
 
             # passing the concatenated vector to the GRU
-            output, state, _ = self.lstm(x)
+            if use_lstm:
+                output, state, _ = self.lstm(x)
+            else:
+                output, state = self.gru(x)
 
             # shape == (batch_size, max_length, hidden_size)
             x = self.fc1(output)
@@ -322,8 +329,8 @@ class OLRA:
 
             return x, state, attention_weights
 
-        def reset_state(self, features):
-            return features
+        def reset_state(self, batch_size):
+            return tf.zeros((batch_size, self.units))
 
     def __init__(self, config, training=True) -> None:
         self.config = config
@@ -462,11 +469,13 @@ class OLRA:
             mle_loss = 0
 
             dec_input = tf.expand_dims(questions_input[:, 0], 1)
-            hidden = self.decoder.reset_state(fused_features)
+            # hidden = self.decoder.reset_state(fused_features)
+            hidden = self.decoder.reset_state(self.config.batch_size)
 
             for i in range(1, self.config.max_len):
                 # passing the features through the decoder
-                predictions, hidden, _ = self.decoder(dec_input, fused_features, hidden)
+
+                predictions, hidden, _ = self.decoder(dec_input, fused_features, hidden, use_lstm=self.config.use_lstm)
 
                 mle_loss += loss_function(questions_input[:, i], predictions)
 
@@ -493,7 +502,10 @@ class OLRA:
         result = []
 
         for i in range(self.config.max_len):
-            predictions, hidden, _ = self.decoder(dec_input, fused_features, hidden)
+            if self.config.use_lstm:
+                predictions, hidden, _ = self.decoder(dec_input, fused_features, hidden)
+            else:
+                predictions, hidden = self.decoder(dec_input, fused_features, hidden, use_lstm=self.config.use_lstm)
 
             predicted_id = tf.random.categorical(predictions, 1)[0][0].numpy()
 

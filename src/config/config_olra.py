@@ -29,6 +29,8 @@ class Config:
         args.add_argument('--multimodal_attention', dest='multimodal_attention', action='store_true',
                           help='Whether to use multimodal attention fusion or just concatenation of features')
         args.set_defaults(mulimodal_attention=False)
+        args.add_argument('--use_gru', dest='use_lstm', action='store_false')
+        args.set_defaults(use_lstm=True)
 
         # ------------------------------  DATALOADER  -----------------------------
         args.add_argument('--dataset', type=str, default='stvqa', choices=['stvqa', 'estvqa'], help='Dataset to use')
