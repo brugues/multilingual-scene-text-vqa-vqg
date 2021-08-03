@@ -29,15 +29,20 @@ def get_anls_score(gt, predictions, threshold=0.5):
 
     for i, prediction in enumerate(predictions):
         word = prediction['answer']
-        gt_word = gt[i]['answer'][0]
-        l_score = lev(word, gt_word) / (len(word) + len(gt_word))
+        gt_words = gt[i]['answer']
+        l_scores = []
 
-        if l_score >= threshold:
-            s = 0
-        else:
-            s = 1 - l_score
+        for gt_word in gt_words:
+            score = lev(word, gt_word) / (len(word) + len(gt_word))
+            if score >= threshold:
+                s = 0
+            else:
+                s = 1 - score
 
-        scores.append(s)
+            l_scores.append(s)
+
+        l_score = max(l_scores)
+        scores.append(l_score)
 
     return np.mean(scores)
 
@@ -126,6 +131,7 @@ if __name__ == '__main__':
                 prediction = ' '.join(one_pred_alt)
 
             eval_out.append({'answer': prediction, 'question_id': int(gt_ids[b])})
+            # eval_out.append({'answer': prediction, 'question_id': int(0)})
 
         update_eval_progress_bar(progress_bar, batch, num_batches)
         step += 1

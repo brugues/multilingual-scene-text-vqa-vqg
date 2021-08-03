@@ -52,11 +52,13 @@ if __name__ == '__main__':
 
             if batch % config.checkpoint_period == 0:
                 stvqa_model.save_attention_checkpoint()
+                stvqa_model.save_attention_model()
 
             #update_train_progress_bar(progress_bar, epoch, config.n_epochs, batch, num_batches, loss)
 
             step += 1
 
         stvqa_model.save_attention_checkpoint()
+        stvqa_model.save_attention_model()
         tf.keras.backend.clear_session()  # Just in case there a memory leak or sth
         #del progress_bar
