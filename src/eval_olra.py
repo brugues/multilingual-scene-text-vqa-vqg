@@ -24,7 +24,6 @@ if __name__ == "__main__":
 
     print_info('Building OLRA model')
     olra_model = OLRA(Config().get_config())
-    olra_model.keras_model.summary()
     print_ok('Done\n')
 
     print_info('Starting evaluation \n')
