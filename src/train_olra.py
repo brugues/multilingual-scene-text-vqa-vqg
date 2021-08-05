@@ -2,7 +2,7 @@ import numpy as np
 from tqdm import tqdm
 import tensorflow as tf
 from config.config_olra import Config
-from models.olra import OLRA
+from models.olra import OLRA, RNN_Decoder
 from dataloader.utils import print_info, print_ok
 
 if __name__ == '__main__':

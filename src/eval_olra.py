@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 from nltk.translate.bleu_score import sentence_bleu
 
-from src.dataloader.utils import print_info, print_ok, update_eval_progress_bar
+from dataloader.utils import print_info, print_ok, update_eval_progress_bar
 from config.config_olra import Config
 from models.olra import OLRA
 from tqdm import tqdm

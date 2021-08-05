@@ -31,6 +31,8 @@ class Config:
         args.set_defaults(mulimodal_attention=False)
         args.add_argument('--use_gru', dest='use_lstm', action='store_false')
         args.set_defaults(use_lstm=True)
+        args.add_argument('--ocr_consistency', action='store_true', dest='use_ocr_consistency')
+        args.set_defaults(use_ocr_consistency=False)
 
         # ------------------------------  DATALOADER  -----------------------------
         args.add_argument('--dataset', type=str, default='stvqa', choices=['stvqa', 'estvqa'], help='Dataset to use')
@@ -58,7 +60,7 @@ class Config:
         args.add_argument('--staircase', type=bool, default=True, help='Exponential decay with staircase')
         args.add_argument('--no_apply_decay', dest='apply_decay', action='store_false', help='Apply decay rate to learning rate')
         args.set_defaults(apply_decay=True)
-        args.add_argument('--decay_factor', type=float, default=0.05, help='Learning rate decay factor')
+        args.add_argument('--decay_factor', type=float, default=0.95, help='Learning rate decay factor')
         args.add_argument('--batch_size', type=int, default=32, help='batch size')
         args.add_argument('--n_epochs', type=int, default=10, help='Number of epochs for which to train the net for')
         args.add_argument('--models_path', type=str, default='outputs/models', help='models directory')

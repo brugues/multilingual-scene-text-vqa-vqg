@@ -9,7 +9,7 @@ import numpy as np
 import tensorflow as tf
 
 from dataloader.utils import print_info, print_ok
-from dataloader.yolo_utils import yolo_image_preprocess
+from dataloader.yolo_utils import vqa_image_preprocess, olra_image_preprocess
 
 
 def load_fasttext_transform(fname, d1=300, d2=300):
@@ -201,7 +201,7 @@ class VQADataGenerator:
             self.curr_idx = (self.curr_idx + self.batch_size) % len(self.gt)
 
         batch_x_image = []
-        batch_x_textual = np.zeros((self.batch_size, 38, 38, self.dim_txt))  # TODO do not hardcode contants
+        batch_x_textual = np.zeros((self.batch_size, 38, 38, self.dim_txt))  # TODO do not hardcode constants
         batch_x_questions = np.zeros((self.batch_size, self.max_len, self.dim_txt))
         batch_y = np.zeros((self.batch_size, 38, 38), dtype=np.int8)
 
@@ -264,11 +264,11 @@ class VQADataGenerator:
 
             # preprocess image
             if len(gt_boxes) > 0:
-                image_data, gt_boxes = yolo_image_preprocess(image,
+                image_data, gt_boxes = vqa_image_preprocess(image,
                                                              [self.input_size, self.input_size],
                                                              gt_boxes=gt_boxes)
             else:
-                image_data = yolo_image_preprocess(image, [self.input_size, self.input_size])
+                image_data = vqa_image_preprocess(image, [self.input_size, self.input_size])
 
                 gt_boxes = np.array(())
             batch_x_image.append(image_data)
@@ -364,7 +364,7 @@ class OLRADataGenerator:
             sentence += ' <end>'
             self.vocabulary.append(sentence)
 
-        self.top_k = 5000
+        self.top_k = 4000
 
         # Tokenize vocabulary
         if os.path.isfile(self.config.tokenizer_file):
@@ -391,7 +391,12 @@ class OLRADataGenerator:
         # Pad each vector to the max_length of the captions
         # If you do not provide a max_length value, pad_sequences calculates it automatically
         self.cap_vector = tf.keras.preprocessing.sequence.pad_sequences(self.vocabulary_seqs,
-                                                                        padding='post', maxlen=self.config.max_len)
+                                                                        padding='post')
+        # Calculates the max_length, which is used to store the attention weights
+        self.max_len = self.calc_max_length(self.vocabulary_seqs)
+
+    def calc_max_length(self, tensor):
+        return max(len(t) for t in tensor)
 
     def len(self):
         """
@@ -429,12 +434,12 @@ class OLRADataGenerator:
             # store indexes of those bboxes wich are the answer
             gt_ans_boxes = [w['bbox'] for w in self.gt[idx]['ans_bboxes']]
 
-            image, gt_ans_boxes = yolo_image_preprocess(image,
+            image, gt_ans_boxes = olra_image_preprocess(image,
                                                         [self.input_size, self.input_size],
                                                         gt_boxes=np.array(gt_ans_boxes))
 
             batch_x_image.append(image)
-            batch_x_position[i] = gt_ans_boxes[0]
+            batch_x_position[i] = gt_ans_boxes[0] / 640.
             batch_x_question.append(self.gt[idx]['question'])
 
             if self.embedding_type == 'fasttext':
@@ -461,7 +466,12 @@ class OLRADataGenerator:
             if self.training:
                 batch_x_question_embed[i] = self.cap_vector[idx]
             else:
-                batch_x_question_embed[i] = tf.expand_dims([self.tokenizer.word_index['<{}>'.format(self.gt[idx]['lang'])]],
-                                                     0)
+                batch_x_question_embed[i] = tf.expand_dims(
+                    [self.tokenizer.word_index['<{}>'.format(self.gt[idx]['lang'])]],
+                    0)
+
+        batch_x = np.array(batch_x_image)
+        batch_x_image = tf.keras.applications.resnet_v2.preprocess_input(batch_x)
+        batch_x_image = batch_x_image.astype(np.float32)
 
         return [batch_x_image, batch_x_vector, batch_x_position, batch_x_question, batch_x_question_embed, filenames]
