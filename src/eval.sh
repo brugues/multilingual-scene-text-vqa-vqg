@@ -48,7 +48,32 @@
 #python eval.py --batch_size 55 --language es --embedding_type smith --output_folder smith_en_es --model_to_evaluate ./outputs/models/smith_en
 #python eval.py --batch_size 55 --language en --embedding_type smith --output_folder smith_en_en --model_to_evaluate ./outputs/models/smith_en
 
-python eval.py --batch_size 55 --language en --fasttext_subtype cc --embedding_type fasttext --fasttext_aligned --fasttext_aligned_pair ca-en --output_folder aligned_cc_en_ca --model_to_evaluate ./outputs/models/cc_en
-python eval.py --batch_size 55 --language en --fasttext_subtype cc --embedding_type fasttext --fasttext_aligned --fasttext_aligned_pair es-en --output_folder aligned_cc_en_es --model_to_evaluate ./outputs/models/cc_en
-python eval.py --batch_size 55 --language en --fasttext_subtype wiki --embedding_type fasttext --fasttext_aligned --fasttext_aligned_pair ca-en --output_folder aligned_wiki_en_ca --model_to_evaluate ./outputs/models/wiki_en
-python eval.py --batch_size 55 --language en --fasttext_subtype wiki --embedding_type fasttext --fasttext_aligned --fasttext_aligned_pair es-en --output_folder aligned_wiki_en_es --model_to_evaluate ./outputs/models/wiki_en
+#python eval.py --batch_size 55 --language ca --fasttext_subtype cc --embedding_type fasttext --fasttext_aligned --fasttext_aligned_pair ca-en --output_folder aligned_cc_en_ca --model_to_evaluate ./outputs/models/cc_en
+#python eval.py --batch_size 55 --language es --fasttext_subtype cc --embedding_type fasttext --fasttext_aligned --fasttext_aligned_pair es-en --output_folder aligned_cc_en_es --model_to_evaluate ./outputs/models/cc_en
+#python eval.py --batch_size 55 --language ca --fasttext_subtype wiki --embedding_type fasttext --fasttext_aligned --fasttext_aligned_pair ca-en --output_folder aligned_wiki_en_ca --model_to_evaluate ./outputs/models/wiki_en
+python eval.py --batch_size 55 --language es --fasttext_subtype wiki --embedding_type fasttext --fasttext_aligned --fasttext_aligned_pair es-en --output_folder aligned_wiki_en_es --model_to_evaluate ./outputs/models/wiki_en
+#python eval.py --batch_size 55 --language en --fasttext_subtype wiki --embedding_type fasttext --output_folder wiki_en --model_to_evaluate ./outputs/models/wiki_en
+
+#python eval.py --batch_size 55 --language en --embedding_type bpemb --bpemb_subtype multi --embedding_type bpemb --fasttext_aligned --output_folder multi_bpemb_en_en --model_to_evaluate ./outputs/models/multi_bpemb_en
+#python eval.py --batch_size 55 --language ca --embedding_type bpemb --bpemb_subtype multi --embedding_type bpemb --fasttext_aligned --output_folder multi_bpemb_en_ca --model_to_evaluate ./outputs/models/multi_bpemb_en
+#python eval.py --batch_size 55 --language es --embedding_type bpemb --bpemb_subtype multi --embedding_type bpemb --fasttext_aligned --output_folder multi_bpemb_en_es --model_to_evaluate ./outputs/models/multi_bpemb_en
+#python eval.py --batch_size 55 --language en --embedding_type bpemb --bpemb_subtype multi --embedding_type bpemb --fasttext_aligned --output_folder multi_bpemb_ca_en --model_to_evaluate ./outputs/models/multi_bpemb_ca
+#python eval.py --batch_size 55 --language ca --embedding_type bpemb --bpemb_subtype multi --embedding_type bpemb --fasttext_aligned --output_folder multi_bpemb_ca_ca --model_to_evaluate ./outputs/models/multi_bpemb_ca
+#python eval.py --batch_size 55 --language es --embedding_type bpemb --bpemb_subtype multi --embedding_type bpemb --fasttext_aligned --output_folder multi_bpemb_ca_es --model_to_evaluate ./outputs/models/multi_bpemb_ca
+#python eval.py --batch_size 55 --language en --embedding_type bpemb --bpemb_subtype multi --embedding_type bpemb --fasttext_aligned --output_folder multi_bpemb_es_en --model_to_evaluate ./outputs/models/multi_bpemb_es
+#python eval.py --batch_size 55 --language ca --embedding_type bpemb --bpemb_subtype multi --embedding_type bpemb --fasttext_aligned --output_folder multi_bpemb_es_ca --model_to_evaluate ./outputs/models/multi_bpemb_es
+#python eval.py --batch_size 55 --language es --embedding_type bpemb --bpemb_subtype multi --embedding_type bpemb --fasttext_aligned --output_folder multi_bpemb_es_es --model_to_evaluate ./outputs/models/multi_bpemb_es
+
+#python eval.py --batch_size 55 --language en --embedding_type fasttext --fasttext_aligned --fasttext_subtype cc --fasttext_aligned --output_folder aligned_cc_ca_en --model_to_evaluate ./outputs/models/aligned_cc_ca
+#python eval.py --batch_size 55 --language ca --embedding_type fasttext --fasttext_aligned --fasttext_subtype cc --fasttext_aligned --output_folder aligned_cc_ca_ca --model_to_evaluate ./outputs/models/aligned_cc_ca
+#python eval.py --batch_size 55 --language es --embedding_type fasttext --fasttext_aligned --fasttext_subtype cc --fasttext_aligned --output_folder aligned_cc_ca_es --model_to_evaluate ./outputs/models/aligned_cc_ca
+#python eval.py --batch_size 55 --language en --embedding_type fasttext --fasttext_aligned --fasttext_subtype cc --fasttext_aligned --output_folder aligned_cc_es_en --model_to_evaluate ./outputs/models/aligned_cc_es
+#python eval.py --batch_size 55 --language ca --embedding_type fasttext --fasttext_aligned --fasttext_subtype cc --fasttext_aligned --output_folder aligned_cc_es_ca --model_to_evaluate ./outputs/models/aligned_cc_es
+#python eval.py --batch_size 55 --language es --embedding_type fasttext --fasttext_aligned --fasttext_subtype cc --fasttext_aligned --output_folder aligned_cc_es_es --model_to_evaluate ./outputs/models/aligned_cc_es
+#
+#python eval.py --batch_size 55 --language en --embedding_type fasttext --fasttext_aligned --fasttext_subtype wiki --output_folder aligned_wiki_ca_en --model_to_evaluate ./outputs/models/aligned_wiki_ca
+#python eval.py --batch_size 55 --language ca --embedding_type fasttext --fasttext_aligned --fasttext_subtype wiki --output_folder aligned_wiki_ca_ca --model_to_evaluate ./outputs/models/aligned_wiki_ca
+#python eval.py --batch_size 55 --language es --embedding_type fasttext --fasttext_aligned --fasttext_subtype wiki --output_folder aligned_wiki_ca_es --model_to_evaluate ./outputs/models/aligned_wiki_ca
+#python eval.py --batch_size 55 --language en --embedding_type fasttext --fasttext_aligned --fasttext_subtype wiki --output_folder aligned_wiki_es_en --model_to_evaluate ./outputs/models/aligned_wiki_es
+#python eval.py --batch_size 55 --language ca --embedding_type fasttext --fasttext_aligned --fasttext_subtype wiki --output_folder aligned_wiki_es_ca --model_to_evaluate ./outputs/models/aligned_wiki_es
+#python eval.py --batch_size 55 --language es --embedding_type fasttext --fasttext_aligned --fasttext_subtype wiki --output_folder aligned_wiki_es_es --model_to_evaluate ./outputs/models/aligned_wiki_es
