@@ -467,7 +467,7 @@ class OLRA:
 
         return model
 
-    # @tf.function
+    #@tf.function
     def olra_train_step(self, fasttext_features, images, ocr_posistions, questions_input):
         def loss_function(real, pred):
             mask = tf.math.logical_not(tf.math.equal(real, 0))
@@ -495,7 +495,7 @@ class OLRA:
                                                                    ocr_posistions])
 
             hidden_h = fused_features
-            hidden_c = fused_features
+            hidden_c = tf.zeros_like(fused_features)
 
             for i in range(1, self.data_generator.max_len):
                 # passing the features through the decoder
