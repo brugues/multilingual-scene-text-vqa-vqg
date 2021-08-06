@@ -11,13 +11,14 @@ from tqdm import tqdm
 
 def calculate_blew_score(candidate, gt):
 
-    bleu = sentence_bleu(gt, candidate)
-    bleu_1 = sentence_bleu(gt, candidate, weights=(1.0, 0, 0, 0))
-    bleu_2 = sentence_bleu(gt, candidate, weights=(0.5, 0.5, 0, 0))
-    bleu_3 = sentence_bleu(gt, candidate, weights=(0.33, 0.33, 0.33, 0))
-    bleu_4 = sentence_bleu(gt, candidate, weights=(0.25, 0.25, 0.25, 0.25))
+    bleu = sentence_bleu(' '.join(gt), ' '.join(candidate), weights=(1.0, 0, 0, 0))
+    # bleu_1 = sentence_bleu(gt, candidate, weights=(1.0, 0, 0, 0))
+    # bleu_2 = sentence_bleu(gt, candidate, weights=(0.5, 0.5, 0, 0))
+    # bleu_3 = sentence_bleu(gt, candidate, weights=(0.33, 0.33, 0.33, 0))
+    # bleu_4 = sentence_bleu(gt, candidate, weights=(0.25, 0.25, 0.25, 0.25))
 
-    return [bleu, bleu_1, bleu_2, bleu_3, bleu_4]
+    # return [bleu, bleu_1, bleu_2, bleu_3, bleu_4]
+    return bleu
 
 
 if __name__ == "__main__":
@@ -52,13 +53,13 @@ if __name__ == "__main__":
         bleu_scores[batch_data[5][0]] = {}
         bleu_scores[batch_data[5][0]]['gt'] = batch_data[3][0]
         bleu_scores[batch_data[5][0]]['generated'] = output
-        bleu_scores[batch_data[5][0]]['bleu'] = bleu_score[0]
-        bleu_scores[batch_data[5][0]]['bleu_1'] = bleu_score[1]
-        bleu_scores[batch_data[5][0]]['bleu_2'] = bleu_score[2]
-        bleu_scores[batch_data[5][0]]['bleu_3'] = bleu_score[3]
-        bleu_scores[batch_data[5][0]]['bleu_4'] = bleu_score[4]
+        bleu_scores[batch_data[5][0]]['bleu'] = bleu_score
+        # bleu_scores[batch_data[5][0]]['bleu_1'] = bleu_score[1]
+        # bleu_scores[batch_data[5][0]]['bleu_2'] = bleu_score[2]
+        # bleu_scores[batch_data[5][0]]['bleu_3'] = bleu_score[3]
+        # bleu_scores[batch_data[5][0]]['bleu_4'] = bleu_score[4]
 
-        bleu_scores['total_scores'] = bleu_score[0]
+        bleu_scores['total_scores'] = bleu_score
 
     bleu_scores['mean_score'] = np.mean(np.array(bleu_scores['total_scores']))
 
