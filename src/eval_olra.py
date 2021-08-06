@@ -1,6 +1,7 @@
 import json
 import numpy as np
 import tensorflow as tf
+import tensorflow_text as text
 from nltk.translate.bleu_score import sentence_bleu
 
 from dataloader.utils import print_info, print_ok, update_eval_progress_bar
@@ -9,16 +10,14 @@ from models.olra import OLRA
 from tqdm import tqdm
 
 
-def calculate_blew_score(candidate, gt):
+def calculate_sentence_similarities(candidate, gt):
 
-    bleu = sentence_bleu(' '.join(gt), ' '.join(candidate), weights=(1.0, 0, 0, 0))
-    # bleu_1 = sentence_bleu(gt, candidate, weights=(1.0, 0, 0, 0))
-    # bleu_2 = sentence_bleu(gt, candidate, weights=(0.5, 0.5, 0, 0))
-    # bleu_3 = sentence_bleu(gt, candidate, weights=(0.33, 0.33, 0.33, 0))
-    # bleu_4 = sentence_bleu(gt, candidate, weights=(0.25, 0.25, 0.25, 0.25))
+    bleu = sentence_bleu([gt], candidate)
+    hypothesis = tf.ragged.constant([candidate])
+    references = tf.ragged.constant([gt])
+    rouge = text.metrics.rouge_l(hypothesis, references)
 
-    # return [bleu, bleu_1, bleu_2, bleu_3, bleu_4]
-    return bleu
+    return [bleu, rouge]
 
 
 if __name__ == "__main__":
@@ -33,8 +32,11 @@ if __name__ == "__main__":
 
     step = 0
     count = 0
-    bleu_scores = {
-        'total_scores': []
+    scores = {
+        'bleu': [],
+        'rouge_p': [],
+        'rouge_f': [],
+        'rouge_r': []
     }
     num_batches = olra_model.data_generator.len()
 
@@ -49,19 +51,20 @@ if __name__ == "__main__":
 
         output = olra_model.evaluation_step(batch_data[1], img_features, batch_data[2], batch_data[4])
 
-        bleu_score = calculate_blew_score(output, batch_data[3][0])
-        bleu_scores[batch_data[5][0]] = {}
-        bleu_scores[batch_data[5][0]]['gt'] = batch_data[3][0]
-        bleu_scores[batch_data[5][0]]['generated'] = output
-        bleu_scores[batch_data[5][0]]['bleu'] = bleu_score
-        # bleu_scores[batch_data[5][0]]['bleu_1'] = bleu_score[1]
-        # bleu_scores[batch_data[5][0]]['bleu_2'] = bleu_score[2]
-        # bleu_scores[batch_data[5][0]]['bleu_3'] = bleu_score[3]
-        # bleu_scores[batch_data[5][0]]['bleu_4'] = bleu_score[4]
+        similarity = calculate_sentence_similarities(output, batch_data[3][0])
+        scores[batch_data[5][0]] = {}
+        scores[batch_data[5][0]]['gt'] = batch_data[3][0]
+        scores[batch_data[5][0]]['generated'] = output
+        scores[batch_data[5][0]]['bleu'] = similarity[0]
+        scores[batch_data[5][0]]['rouge_f'] = similarity[1].f_measure.numpy()[0]
+        scores[batch_data[5][0]]['rouge_p'] = similarity[1].p_measure.numpy()[0]
+        scores[batch_data[5][0]]['rouge_r'] = similarity[1].r_measure.numpy()[0]
+        scores['bleu'].append(scores[batch_data[5][0]]['bleu'])
+        scores['rouge_f'] = scores[batch_data[5][0]]['rouge_f']
+        scores['rouge_p'] = scores[batch_data[5][0]]['rouge_p']
+        scores['rouge_r'] = scores[batch_data[5][0]]['rouge_r']
 
-        bleu_scores['total_scores'] = bleu_score
-
-    bleu_scores['mean_score'] = np.mean(np.array(bleu_scores['total_scores']))
+    scores['bleu'] = np.mean(np.array(scores['bleu']))
 
     with open('eval_out_{}.json'.format(config.output_folder), 'w+') as f:
-        json.dump(bleu_scores, f)
+        json.dump(scores, f)
