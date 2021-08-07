@@ -8,17 +8,24 @@
 #SBATCH -o %x_%u_%j.out # File to which STDOUT will be written
 #SBATCH -e %x_%u_%j.err # File to wh
 
-python train_olra.py --use_gru --n_epochs 15 --fasttext_subtype cc --output_folder olra_b15_no_att
-python train_olra.py --use_gru --n_epochs 30 --fasttext_subtype cc --output_folder olra_b30_no_att
+# TRAIN
+# cc
+python train_olra.py --n_epochs 15 --use_gru --lr 0.001 --no_apply_decay --fasttext_subtype wiki --output_folder olra_wiki_gru_0.001_no_decay
+python train_olra.py --n_epochs 15 --use_gru --lr 0.001 --fasttext_subtype wiki --output_folder olra_wiki_gru_0.001_decay
+python train_olra.py --n_epochs 15 --use_gru --lr 0.0001 --no_apply_decay --fasttext_subtype wiki --output_folder olra_wiki_gru_0.0001_no_decay
+python train_olra.py --n_epochs 15 --use_gru --lr 0.0001 --fasttext_subtype wiki --output_folder olra_wiki_gru_0.0001_decay
+python train_olra.py --n_epochs 15 --lr 0.001 --no_apply_decay --fasttext_subtype wiki --output_folder olra_wiki_lstm_0.001_no_decay
+python train_olra.py --n_epochs 15 --lr 0.001 --fasttext_subtype wiki --output_folder olra_wiki_lstm_0.001_decay
+python train_olra.py --n_epochs 15 --lr 0.0001 --no_apply_decay --fasttext_subtype wiki --output_folder olra_wiki_lstm_0.0001_no_decay
+python train_olra.py --n_epochs 15 --lr 0.0001 --fasttext_subtype wiki --output_folder olra_wiki_lstm_0.0001_decay
 
-python train_olra.py --use_gru --n_epochs 15 --fasttext_subtype cc --multimodal_attention --output_folder olra_b15_att
-python train_olra.py --use_gru --n_epochs 30 --fasttext_subtype cc --multimodal_attention --output_folder olra_b30_att
+# wiki
+python train_olra.py --n_epochs 15 --use_gru --lr 0.001 --no_apply_decay --fasttext_subtype wiki --output_folder olra_wiki_gru_0.001_no_decay
+python train_olra.py --n_epochs 15 --use_gru --lr 0.001 --fasttext_subtype wiki --output_folder olra_wiki_gru_0.001_decay
+python train_olra.py --n_epochs 15 --use_gru --lr 0.0001 --no_apply_decay --fasttext_subtype wiki --output_folder olra_wiki_gru_0.0001_no_decay
+python train_olra.py --n_epochs 15 --use_gru --lr 0.0001 --fasttext_subtype wiki --output_folder olra_wiki_gru_0.0001_decay
+python train_olra.py --n_epochs 15 --lr 0.001 --no_apply_decay --fasttext_subtype wiki --output_folder olra_wiki_lstm_0.001_no_decay
+python train_olra.py --n_epochs 15 --lr 0.001 --fasttext_subtype wiki --output_folder olra_wiki_lstm_0.001_decay
+python train_olra.py --n_epochs 15 --lr 0.0001 --no_apply_decay --fasttext_subtype wiki --output_folder olra_wiki_lstm_0.0001_no_decay
+python train_olra.py --n_epochs 15 --lr 0.0001 --fasttext_subtype wiki --output_folder olra_wiki_lstm_0.0001_decay
 
-python train_olra.py --use_gru --n_epochs 15 --fasttext_subtype cc --multimodal_attention --lr 0.00005 --output_folder olra_b15_att_lrhalf
-python train_olra.py --use_gru --n_epochs 30 --fasttext_subtype cc --multimodal_attention --lr 0.00005 --output_folder olra_b30_att_lrhalf
-
-#python train_olra.py --n_epochs 15 --fasttext_subtype cc --multimodal_attention --lr 0.0002 --output_folder olra_b15_att_lrdouble
-#python train_olra.py --n_epochs 30 --fasttext_subtype cc --multimodal_attention --lr 0.0002 --output_folder olra_b30_att_lrdouble
-#
-#python train_olra.py --n_epochs 15 --fasttext_subtype cc --output_folder olra_b15_no_att_nodecay
-#python train_olra.py --n_epochs 15 --fasttext_subtype cc --multimodal_attention --output_folder olra_b30_att_nodecay

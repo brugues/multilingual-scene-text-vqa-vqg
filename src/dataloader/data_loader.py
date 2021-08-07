@@ -372,6 +372,9 @@ class OLRADataGenerator:
                 self.tokenizer = json.load(f)
             self.tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(self.tokenizer)
         else:
+            tokenizer_path_split = self.config.tokenizer_file.split('/')
+            os.makedirs(os.path.join(tokenizer_path_split[0], tokenizer_path_split[1]), exist_ok=True)
+
             self.tokenizer = tf.keras.preprocessing.text.Tokenizer(num_words=self.top_k,
                                                                    oov_token="<unk>",
                                                                    filters='!"#$%&()*+.,-/:;=?@[\]^_`{|}~')
