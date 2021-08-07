@@ -24,7 +24,7 @@ class GoogleCloudTranslate:
         self.client = translate.Client(credentials=credentials)
 
         # Load dataset json data
-        with open('./data/stvqa_{}.json'.format(self.dataset), 'r') as file:
+        with open('./data/EST-VQA-v1.0/annotations/{}_subsample_all_answers.json'.format(self.dataset), 'r') as file:
             self.dataset_original_data = json.load(file)
 
     def translate_dataset(self):
@@ -115,5 +115,5 @@ class GoogleCloudTranslate:
 
             dataset_new_data.append(new_entry)
 
-        with open('./data/stvqa_{}_{}.json'.format(self.dataset, self.dest_language), 'w+') as file:
+        with open('./data/EST-VQA-v1.0/annotations/{}_{}_subsample_all_answers.json'.format(self.dataset, self.dest_language), 'w+') as file:
             json.dump(dataset_new_data, file, ensure_ascii=False)

@@ -12,8 +12,8 @@ class ConfigTranslate:
 
         args.add_argument('--dataset', type=str, default='train', choices=['train', 'eval'],
                           help='Dataset to translate')
-        args.add_argument('--source_language', type=str, default='en', help='Language to translate from')
-        args.add_argument('--dest_language', type=str, default='zh', choices=['ca', 'es', 'zh'], help='Language to '
+        args.add_argument('--source_language', type=str, default='zh', help='Language to translate from')
+        args.add_argument('--dest_language', type=str, default='en', choices=['ca', 'es', 'zh'], help='Language to '
                                                                                                       'translate to')
         args.add_argument('--json_config_file', type=str, default='config/google_cloud_config.json',
                           help='JSON file containing Google Cloud account info')
