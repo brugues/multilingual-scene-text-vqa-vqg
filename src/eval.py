@@ -24,27 +24,72 @@ def run_evaluation_batch(model, data):
     return out
 
 
-def get_anls_score(gt, predictions, threshold=0.5):
-    scores = []
+def default_evaluation_params():
+    """
+    default_evaluation_params: Default parameters to use for the validation and evaluation.
+    """
+    return {
+        'THRESHOLD': 0.5
+    }
 
-    for i, prediction in enumerate(predictions):
-        word = prediction['answer']
-        gt_words = gt[i]['answer']
-        l_scores = []
 
-        for gt_word in gt_words:
-            score = lev(word, gt_word) / (len(word) + len(gt_word))
-            if score >= threshold:
-                s = 0
+def levenshtein_distance(s1, s2):
+    if len(s1) > len(s2):
+        s1, s2 = s2, s1
+
+    distances = range(len(s1) + 1)
+    for i2, c2 in enumerate(s2):
+        distances_ = [i2 + 1]
+        for i1, c1 in enumerate(s1):
+            if c1 == c2:
+                distances_.append(distances[i1])
             else:
-                s = 1 - score
+                distances_.append(1 + min((distances[i1], distances[i1 + 1], distances_[-1])))
+        distances = distances_
+    return distances[-1]
 
-            l_scores.append(s)
 
-        l_score = max(l_scores)
-        scores.append(l_score)
+def get_anls_score(gt, predictions):
 
-    return np.mean(scores)
+    evaluationParams = default_evaluation_params()
+    res_id_to_index = {int(r['question_id']): ix for ix, r in enumerate(predictions)}
+    perSampleMetrics = {}
+
+    totalScore = 0
+    row = 0
+    for gtObject in gt:
+
+        q_id = int(gtObject['question_id'])
+        res_ix = res_id_to_index[q_id]
+        detObject = predictions[res_ix]
+
+        values = []
+        for answer in gtObject['answer']:
+            dist = levenshtein_distance(answer.lower(), detObject['answer'].lower())
+            length = max(len(answer.upper()), len(detObject['answer'].upper()))
+            values.append(0.0 if length == 0 else float(dist) / float(length))
+
+        question_result = 1 - min(values)
+
+        if question_result < evaluationParams['THRESHOLD']:
+            question_result = 0
+
+        totalScore += question_result
+
+        perSampleMetrics[str(gtObject['question_id'])] = {
+            'score': question_result,
+            'question': gtObject['question'],
+            'gt': gtObject['answer'],
+            'det': detObject['answer']
+        }
+        row = row + 1
+
+    methodMetrics = {
+        'score': 0 if len(gt) == 0 else totalScore / len(gt)
+    }
+
+    resDict = {'calculated': True, 'Message': '', 'method': methodMetrics, 'per_sample': perSampleMetrics}
+    return resDict
 
 
 if __name__ == '__main__':
@@ -138,7 +183,8 @@ if __name__ == '__main__':
 
     if not config.server_evaluation:
         anls = get_anls_score(eval_data_generator.gt, eval_out)
-        eval_out.insert(0, {'anls': anls})
+        eval_out.insert(0, {'anls': anls['method']})
+        eval_out.insert(1, {'anls_per_sample': anls['per_sample']})
 
     with open('eval_out_{}.json'.format(config.output_folder), 'w') as f:
         json.dump(eval_out, f)
