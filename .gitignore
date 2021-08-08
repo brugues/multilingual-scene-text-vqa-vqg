@@ -10,6 +10,8 @@ src/fastText/alignment/res
 src/data
 src/outputs
 src/fastText/data
+src/tensorflow-yolov4-tflite/data
+src/tensorflow-yolov4-tflite/scripts/coco
 
 # Instead of src/models/bin
 *.vec
