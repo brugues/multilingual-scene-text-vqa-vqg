@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 # Copyright (c) 2018-present, Facebook, Inc.
 # All rights reserved.
 #
@@ -6,7 +6,7 @@
 # LICENSE file in the root directory of this source tree.
 
 set -e
-s=${1:-es}
+s=${1:-zh}
 t=${2:-en}
 echo "Example based on the ${s}->${t} alignment"
 

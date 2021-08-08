@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 # Copyright (c) 2018-present, Facebook, Inc.
 # All rights reserved.
 #
@@ -6,7 +6,7 @@
 # LICENSE file in the root directory of this source tree.
 
 set -e
-s=${1:-es}
+s=${1:-zh}
 t=${2:-en}
 echo "Example based on the ${s}->${t} alignment"
 
@@ -30,29 +30,22 @@ if [ ! -f "${dico_test}" ]; then
   wget -c "https://dl.fbaipublicfiles.com/arrival/dictionaries/${DICO}" -P data/
 fi
 
-src_emb=data/cc.${s}.300.vec
+src_emb=data/wiki.${s}.vec
 if [ ! -f "${src_emb}" ]; then
-  src_emb=data/cc.${s}.300.vec.gz
   EMB=$(basename -- "${src_emb}")
-  echo $EMB
-  wget -c "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/${EMB}" -P data/
-  gunzip data/${EMB}
+  wget -c "https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/${EMB}" -P data/
 fi
 
-tgt_emb=data/cc.${t}.300.vec
+tgt_emb=data/wiki.${t}.vec
 if [ ! -f "${tgt_emb}" ]; then
-  tgt_emb=data/cc.${t}.300.vec.gz
   EMB=$(basename -- "${tgt_emb}")
-  wget -c "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/${EMB}" -P data/
-  gunzip data/${EMB}
+  wget -c "https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/${EMB}" -P data/
 fi
 
-src_emb=data/cc.${s}.300.vec
-tgt_emb=data/cc.${t}.300.vec
-output=res/cc.${s}-${t}.vec
+output=res/wiki.${s}-${t}.vec
 
 python3 align.py --src_emb "${src_emb}" --tgt_emb "${tgt_emb}" \
   --dico_train "${dico_train}" --dico_test "${dico_test}" --output "${output}" \
-  --lr 25 --niter 10
+  --lr 50 --niter 10
 python3 eval.py --src_emb "${output}" --tgt_emb "${tgt_emb}" \
   --dico_test "${dico_test}"
