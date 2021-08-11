@@ -34,7 +34,8 @@ class Config:
         args.set_defaults(combined_datasets=False)
         args.add_argument('--no_shuffle', dest='shuffle', help='Shuffle data')
         args.set_defaults(shuffle=True)
-        args.add_argument('--gt_file', type=str, default='data/stvqa_train.json', help='GT file path')
+        args.add_argument('--gt_file', type=str, default='data/ST-VQA/annotations/stvqa_train.json',
+                          help='GT file path')
         args.add_argument('--gt_eval_file', type=str, default='data/stvqa_eval.json', help='GT eval file path')
         args.add_argument('--language', type=str, default='en', help='Language of the embeddings to use',
                           choices=['ca', 'en', 'es', 'zh', 'en-ca', 'en-es', 'en-zh'])

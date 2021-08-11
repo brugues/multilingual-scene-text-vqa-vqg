@@ -3,7 +3,6 @@ import json
 import numpy as np
 from tqdm import tqdm
 import tensorflow as tf
-from Levenshtein import distance as lev
 
 from dataloader.data_loader import VQADataGenerator
 from dataloader.utils import print_info, print_ok, update_eval_progress_bar
