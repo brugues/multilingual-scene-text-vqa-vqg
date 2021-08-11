@@ -24,7 +24,7 @@ class GoogleCloudTranslate:
         self.client = translate.Client(credentials=credentials)
 
         # Load dataset json data
-        with open('./data/EST-VQA-v1.0/annotations/{}_subsample_all_answers.json'.format(self.dataset), 'r') as file:
+        with open('./data/EST-VQA-v1.0/annotations/{}_en_subsample_all_answers.json'.format(self.dataset), 'r') as file:
             self.dataset_original_data = json.load(file)
 
     def translate_dataset(self):
@@ -60,8 +60,7 @@ class GoogleCloudTranslate:
                 response = self.client.translate(text,
                                                  source_language=self.source_language,
                                                  target_language=self.dest_language)
-                # if "&#39;" in response['translatedText']:
-                #     print("A")
+
                 new_box['text'] = response['translatedText']
                 ans_bboxes.append(new_box)
 
