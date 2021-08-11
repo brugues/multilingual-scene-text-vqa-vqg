@@ -33,7 +33,7 @@ def stvqa():
 #     with open(file, 'r') as f:
 #         data = json.load(f)
 #
-#     sample = random.sample(data, int(len(data)*0.075))
+#     sample = random.sample(data, int(len(data)*0.1))
 #
 #     for element in sample:
 #         data.remove(element)

@@ -24,8 +24,8 @@ class GoogleCloudOCR:
         self.base_path = './data/EST-VQA-v1.0'
 
         # Load dataset json data
-        with open(os.path.join(self.base_path, 'annotations',
-                               '{}_chinese.json'.format(self.dataset)), 'r') as file:
+        with open(os.path.join(self.base_path, 'annotations', 'original',
+                               '{}_english.json'.format(self.dataset)), 'r') as file:
             self.dataset_original_data = json.load(file)
 
     def order_texts_on_answer(self):
@@ -38,7 +38,7 @@ class GoogleCloudOCR:
         image = vision.Image(content=content)
 
         response = self.client.text_detection(image=image,
-                                              image_context={"language_hints": ["zh"]})
+                                              image_context={"language_hints": [self.config.language]})
         texts = response.text_annotations
         ocr_boxes = []
 
@@ -99,5 +99,5 @@ class GoogleCloudOCR:
                 dataset_new_data.append(new_entry)
 
         with open(os.path.join(self.base_path, 'annotations',
-                               '{}_chinese_adapted.json'.format(self.dataset)), 'w+') as f:
+                               '{}_english_adapted.json'.format(self.dataset)), 'w+') as f:
             json.dump(dataset_new_data, f, ensure_ascii=False)

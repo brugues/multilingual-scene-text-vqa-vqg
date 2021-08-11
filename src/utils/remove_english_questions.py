@@ -6,6 +6,7 @@ def process_dataset(file):
         train_data = json.load(f)
 
     new_train_data = []
+    new_english_train_data = []
     idx = 0
     for image in train_data:
         chinese = True
@@ -24,14 +25,16 @@ def process_dataset(file):
 
         if chinese:
             new_train_data.append(image)
+        else:
+            new_english_train_data.append(image)
 
-    with open(file.replace('.json', '_chinese.json'), 'w+') as f:
-        json.dump(new_train_data, f, ensure_ascii=False)
+    with open(file.replace('.json', '_english.json'), 'w+') as f:
+        json.dump(new_english_train_data, f, ensure_ascii=False)
 
 
 def main():
-    test_json = "../data/EST-VQA-v1.0/annotations/test.json"
-    train_json = "../data/EST-VQA-v1.0/annotations/train.json"
+    test_json = "../data/EST-VQA-v1.0/annotations/original/test.json"
+    train_json = "../data/EST-VQA-v1.0/annotations/original/train.json"
 
     datasets = [test_json, train_json]
 

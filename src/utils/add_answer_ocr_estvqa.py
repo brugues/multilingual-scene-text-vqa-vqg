@@ -4,8 +4,8 @@ from tqdm import tqdm
 
 
 def main():
-    files = ['../data/EST-VQA-v1.0/annotations/train_chinese_subsample.json',
-             '../data/EST-VQA-v1.0/annotations/eval_chinese_subsample.json']
+    files = ['../data/EST-VQA-v1.0/annotations/train_en_subsample.json',
+             '../data/EST-VQA-v1.0/annotations/eval_en_subsample.json']
 
     for file in files:
         with open(file, 'r') as f:
