@@ -12,7 +12,7 @@ class ConfigOCR:
 
         args.add_argument('--dataset', type=str, default='train', choices=['train', 'test'],
                           help='Dataset to translate')
-        args.add_argument('--language', type=str, default='zh')
+        args.add_argument('--language', type=str, default='en')
         args.add_argument('--json_config_file', type=str, default='config/google_cloud_config.json',
                           help='JSON file containing Google Cloud account info')
 
