@@ -33,15 +33,19 @@ class Config:
         args.set_defaults(use_lstm=True)
         args.add_argument('--ocr_consistency', action='store_true', dest='use_ocr_consistency')
         args.set_defaults(use_ocr_consistency=False)
+        args.add_argument('--vocabulary_size', default=4000, type=int, help='Size of vocabulary. If 0, the size is '
+                                                                            'computed by the dataloader')
 
         # ------------------------------  DATALOADER  -----------------------------
         args.add_argument('--dataset', type=str, default='stvqa', choices=['stvqa', 'estvqa'], help='Dataset to use')
         args.add_argument('--no_shuffle', dest='shuffle', action='store_false', help='Shuffle data')
         args.set_defaults(shuffle=True)
-        args.add_argument('--gt_file', type=str, default='data/stvqa_train.json', help='GT file path')
-        args.add_argument('--gt_eval_file', type=str, default='data/stvqa_eval.json', help='GT eval file path')
+        args.add_argument('--gt_file', type=str, default='data/ST-VQA/annotations/olra/stvqa_train_olra.json',
+                          help='GT file path')
+        args.add_argument('--gt_eval_file', type=str, default='data/ST-VQA/annotations/stvqa_eval_olra.json',
+                          help='GT eval file path')
         args.add_argument('--language', type=str, default='en', help='Language of the embeddings to use',
-                          choices=['ca', 'en', 'es', 'zh'])
+                          choices=['ca', 'en', 'es', 'zh', 'en-ca', 'en-es', 'en-zh', 'ca-es', 'en-ca-es'])
         args.add_argument('--embedding_type', type=str, default='fasttext', choices=['fasttext', 'bpemb', 'smith'],
                           help='What type of embeddings to use')
         args.add_argument('--fasttext_subtype', type=str, default='wiki-news', help='Subtype of fasttext embeddings',
@@ -58,13 +62,14 @@ class Config:
         args.add_argument('--lr', type=float, default=0.0001, help='Learning rate')
         args.add_argument('--lambda_loss', type=bool, default=0.001, help='Multiplier to l1 loss')
         args.add_argument('--staircase', type=bool, default=True, help='Exponential decay with staircase')
-        args.add_argument('--no_apply_decay', dest='apply_decay', action='store_false', help='Apply decay rate to learning rate')
+        args.add_argument('--no_apply_decay', dest='apply_decay', action='store_false',
+                          help='Apply decay rate to learning rate')
         args.set_defaults(apply_decay=True)
         args.add_argument('--decay_factor', type=float, default=0.95, help='Learning rate decay factor')
         args.add_argument('--batch_size', type=int, default=32, help='batch size')
         args.add_argument('--n_epochs', type=int, default=10, help='Number of epochs for which to train the net for')
-        args.add_argument('--models_path', type=str, default='outputs/models', help='models directory')
-        args.add_argument('--logging_path', type=str, default='outputs/logs', help='path to save logs')
+        args.add_argument('--models_path', type=str, default='outputs/models/olra', help='models directory')
+        args.add_argument('--logging_path', type=str, default='outputs/logs/olra', help='path to save logs')
         args.add_argument('--checkpoint_period', type=int, default=200, help='save checkpoint every X steps')
         args.add_argument('--logging_period', type=int, default=50, help='log to tensorboard every X steps')
         args.add_argument('--load_checkpoint', type=bool, default=False, help='Continue last training by loading '
@@ -78,6 +83,6 @@ class Config:
         # --------------------------------  PATHS  -------------------------------
         args.add_argument('--image_path', type=str, default='data/ST-VQA', help='Image paths')
         args.add_argument('--yolo_file', type=str, default='models/bin/yolov4_tf231.h5', help='Yolo weight file')
-        args.add_argument('--tokenizer_file', type=str, default='models/tokenizers/en_stvqa.json')
+        args.add_argument('--tokenizer_path', type=str, default='models/tokenizers')
 
         return args.parse_args()

@@ -12,8 +12,8 @@ from tqdm import tqdm
 
 def calculate_sentence_similarities(candidate, gt):
 
-    bleu = sentence_bleu([gt], candidate)
-    hypothesis = tf.ragged.constant([candidate])
+    bleu = sentence_bleu([gt], candidate[0:-1])
+    hypothesis = tf.ragged.constant([candidate[0:-1]])
     references = tf.ragged.constant([gt])
     rouge = text.metrics.rouge_l(hypothesis, references)
 
@@ -54,17 +54,20 @@ if __name__ == "__main__":
         similarity = calculate_sentence_similarities(output, batch_data[3][0])
         scores[batch_data[5][0]] = {}
         scores[batch_data[5][0]]['gt'] = batch_data[3][0]
-        scores[batch_data[5][0]]['generated'] = output
+        scores[batch_data[5][0]]['generated'] = output[0:-1]
         scores[batch_data[5][0]]['bleu'] = similarity[0]
-        scores[batch_data[5][0]]['rouge_f'] = similarity[1].f_measure.numpy()[0]
-        scores[batch_data[5][0]]['rouge_p'] = similarity[1].p_measure.numpy()[0]
-        scores[batch_data[5][0]]['rouge_r'] = similarity[1].r_measure.numpy()[0]
+        scores[batch_data[5][0]]['rouge_f'] = float(similarity[1].f_measure.numpy()[0])
+        scores[batch_data[5][0]]['rouge_p'] = float(similarity[1].p_measure.numpy()[0])
+        scores[batch_data[5][0]]['rouge_r'] = float(similarity[1].r_measure.numpy()[0])
         scores['bleu'].append(scores[batch_data[5][0]]['bleu'])
-        scores['rouge_f'] = scores[batch_data[5][0]]['rouge_f']
-        scores['rouge_p'] = scores[batch_data[5][0]]['rouge_p']
-        scores['rouge_r'] = scores[batch_data[5][0]]['rouge_r']
+        scores['rouge_f'].append(scores[batch_data[5][0]]['rouge_f'])
+        scores['rouge_p'].append(scores[batch_data[5][0]]['rouge_p'])
+        scores['rouge_r'].append(scores[batch_data[5][0]]['rouge_r'])
 
     scores['bleu'] = np.mean(np.array(scores['bleu']))
+    scores['rouge_f'] = np.mean(np.array(scores['rouge_f']))
+    scores['rouge_p'] = np.mean(np.array(scores['rouge_p']))
+    scores['rouge_r'] = np.mean(np.array(scores['rouge_r']))
 
     with open('eval_out_{}.json'.format(config.output_folder), 'w+') as f:
         json.dump(scores, f)

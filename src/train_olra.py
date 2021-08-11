@@ -7,10 +7,10 @@ from dataloader.utils import print_info, print_ok
 
 if __name__ == '__main__':
     config = Config().get_config()
+    print(config.__str__())
 
     print_info('Building OLRA model\n')
     olra_model = OLRA(Config().get_config())
-    olra_model.feature_model.summary()
     print_ok('Done\n')
 
     step = 0

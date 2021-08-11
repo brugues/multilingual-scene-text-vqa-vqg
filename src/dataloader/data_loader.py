@@ -134,7 +134,6 @@ def load_gt(config, training):
             lang = config.language
             if '-' in lang:
                 lang = lang.replace('-', '_')
-
             with open(config.gt_file.replace('train', 'train_{}'.format(lang))) as f:
                 gt = json.load(f)
         else:
@@ -265,8 +264,8 @@ class VQADataGenerator:
             # preprocess image
             if len(gt_boxes) > 0:
                 image_data, gt_boxes = vqa_image_preprocess(image,
-                                                             [self.input_size, self.input_size],
-                                                             gt_boxes=gt_boxes)
+                                                            [self.input_size, self.input_size],
+                                                            gt_boxes=gt_boxes)
             else:
                 image_data = vqa_image_preprocess(image, [self.input_size, self.input_size])
 
@@ -364,17 +363,19 @@ class OLRADataGenerator:
             sentence += ' <end>'
             self.vocabulary.append(sentence)
 
-        self.top_k = 4000
+        self.top_k = self.config.vocabulary_size
+        os.makedirs(self.config.tokenizer_path, exist_ok=True)
+        tokenizer_file = os.path.join(self.config.tokenizer_path,
+                                      'olra_{}_{}_{}.json'.format(self.config.embedding_type,
+                                                                  self.config.language,
+                                                                  self.top_k))
 
         # Tokenize vocabulary
-        if os.path.isfile(self.config.tokenizer_file):
-            with open(self.config.tokenizer_file, 'r') as f:
+        if os.path.isfile(tokenizer_file):
+            with open(tokenizer_file, 'r') as f:
                 self.tokenizer = json.load(f)
             self.tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(self.tokenizer)
         else:
-            tokenizer_path_split = self.config.tokenizer_file.split('/')
-            os.makedirs(os.path.join(tokenizer_path_split[0], tokenizer_path_split[1]), exist_ok=True)
-
             self.tokenizer = tf.keras.preprocessing.text.Tokenizer(num_words=self.top_k,
                                                                    oov_token="<unk>",
                                                                    filters='!"#$%&()*+.,-/:;=?@[\]^_`{|}~')
@@ -385,7 +386,7 @@ class OLRADataGenerator:
 
             tokenizer_json = self.tokenizer.to_json()
 
-            with open(self.config.tokenizer_file, 'w+') as f:
+            with open(tokenizer_file, 'w+') as f:
                 json.dump(tokenizer_json, f)
 
         # Create the tokenized vectors
