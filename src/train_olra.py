@@ -23,8 +23,11 @@ if __name__ == '__main__':
             batch_data = olra_model.data_generator.next()
 
             # Extract image features from ResNet
-            img_features = olra_model.resnet.predict_on_batch(np.array(batch_data[0]))
-            img_features = tf.keras.layers.GlobalAvgPool2D()(img_features)
+            if batch_data[6]:
+                img_features = batch_data[5]
+            else:
+                img_features = olra_model.resnet.predict_on_batch(np.array(batch_data[0]))
+                img_features = tf.keras.layers.GlobalAvgPool2D()(img_features)
 
             losses = olra_model.olra_train_step(batch_data[1], img_features, batch_data[2], batch_data[4])
 

@@ -426,6 +426,8 @@ class OLRADataGenerator:
         batch_x_position = np.zeros((self.batch_size, 4))
         batch_x_question = []
         batch_x_question_embed = np.zeros((self.batch_size, self.max_len))
+        batch_x_image_features = np.zeros((self.batch_size, 2048))
+        img_features = False
 
         # foreach question in batch
         for i, idx in enumerate(batch_idxs):
@@ -434,6 +436,15 @@ class OLRADataGenerator:
             filenames.append(self.gt[idx]['file_path'])
             image = cv2.imread(os.path.join(self.image_path, self.gt[idx]['file_path']))
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
+
+            if os.path.isfile(os.path.join(self.image_path,
+                                           self.gt[idx]['file_path'].replace(self.gt[idx]['file_path'].split('.')[-1],
+                                                                              'npy'))):
+                img_features = True
+                with open(os.path.join(self.image_path,
+                                           self.gt[idx]['file_path'].replace(self.gt[idx]['file_path'].split('.')[-1],
+                                                                             'npy')), 'rb') as f:
+                    batch_x_image_features[i] = np.load(f)
 
             # store indexes of those bboxes wich are the answer
             gt_ans_boxes = [w['bbox'] for w in self.gt[idx]['ans_bboxes']]
@@ -478,4 +489,5 @@ class OLRADataGenerator:
         batch_x_image = tf.keras.applications.resnet_v2.preprocess_input(batch_x)
         batch_x_image = batch_x_image.astype(np.float32)
 
-        return [batch_x_image, batch_x_vector, batch_x_position, batch_x_question, batch_x_question_embed, filenames]
+        return [batch_x_image, batch_x_vector, batch_x_position, batch_x_question, batch_x_question_embed,
+                batch_x_image_features, img_features, filenames]
