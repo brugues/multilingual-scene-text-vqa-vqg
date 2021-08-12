@@ -42,7 +42,7 @@ class Config:
         args.set_defaults(shuffle=True)
         args.add_argument('--gt_file', type=str, default='data/ST-VQA/annotations/olra/stvqa_train_olra_shuffle.json',
                           help='GT file path')
-        args.add_argument('--gt_eval_file', type=str, default='data/ST-VQA/annotations/stvqa_eval_olra_shuffle.json',
+        args.add_argument('--gt_eval_file', type=str, default='data/ST-VQA/annotations/olra/stvqa_eval_olra_shuffle.json',
                           help='GT eval file path')
         args.add_argument('--language', type=str, default='en', help='Language of the embeddings to use',
                           choices=['ca', 'en', 'es', 'zh', 'en-ca', 'en-es', 'en-zh', 'ca-es', 'en-ca-es'])
