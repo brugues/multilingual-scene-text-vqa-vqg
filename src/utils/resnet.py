@@ -30,7 +30,7 @@ def stvqa():
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
 
             image = olra_image_preprocess(image, [config.img_size, config.img_size])
-
+            image = tf.keras.applications.resnet_v2.preprocess_input(image)
             img_features = olra_model.resnet.predict_on_batch(np.expand_dims(image, axis=0))
             img_features = tf.keras.layers.GlobalAvgPool2D()(img_features)
 
