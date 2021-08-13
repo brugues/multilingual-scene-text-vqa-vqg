@@ -13,6 +13,8 @@ from tqdm import tqdm
 def calculate_sentence_similarities(candidate, gt):
 
     bleu = sentence_bleu([gt], candidate[0:-1])
+    if len(candidate[0:-1]) == 0:
+        candidate = [' ', '<end>']
     hypothesis = tf.ragged.constant([candidate[0:-1]])
     references = tf.ragged.constant([gt])
     rouge = text.metrics.rouge_l(hypothesis, references)
@@ -24,7 +26,7 @@ if __name__ == "__main__":
     config = Config().get_config()
     config.shuffle = False
 
-    print_info('Building OLRA model')
+    print_info('Building OLRA model\n')
     olra_model = OLRA(Config().get_config(), training=False)
     print_ok('Done\n')
 
@@ -40,6 +42,7 @@ if __name__ == "__main__":
     }
     num_batches = olra_model.data_generator.len()
 
+    i = 0
     for batch in tqdm(range(num_batches)):
         batch_data = olra_model.data_generator.next()
         this_batch_size = len(batch_data[0])
@@ -52,17 +55,18 @@ if __name__ == "__main__":
         output = olra_model.evaluation_step(batch_data[1], img_features, batch_data[2], batch_data[4])
 
         similarity = calculate_sentence_similarities(output, batch_data[3][0])
-        scores[batch_data[5][0]] = {}
-        scores[batch_data[5][0]]['gt'] = batch_data[3][0]
-        scores[batch_data[5][0]]['generated'] = output[0:-1]
-        scores[batch_data[5][0]]['bleu'] = similarity[0]
-        scores[batch_data[5][0]]['rouge_f'] = float(similarity[1].f_measure.numpy()[0])
-        scores[batch_data[5][0]]['rouge_p'] = float(similarity[1].p_measure.numpy()[0])
-        scores[batch_data[5][0]]['rouge_r'] = float(similarity[1].r_measure.numpy()[0])
-        scores['bleu'].append(scores[batch_data[5][0]]['bleu'])
-        scores['rouge_f'].append(scores[batch_data[5][0]]['rouge_f'])
-        scores['rouge_p'].append(scores[batch_data[5][0]]['rouge_p'])
-        scores['rouge_r'].append(scores[batch_data[5][0]]['rouge_r'])
+        scores[batch_data[7][0]] = {}
+        scores[batch_data[7][0]]['gt'] = batch_data[3][0]
+        scores[batch_data[7][0]]['generated'] = output[0:-1]
+        scores[batch_data[7][0]]['bleu'] = similarity[0]
+        scores[batch_data[7][0]]['rouge_f'] = float(similarity[1].f_measure.numpy()[0])
+        scores[batch_data[7][0]]['rouge_p'] = float(similarity[1].p_measure.numpy()[0])
+        scores[batch_data[7][0]]['rouge_r'] = float(similarity[1].r_measure.numpy()[0])
+        scores['bleu'].append(scores[batch_data[7][0]]['bleu'])
+        scores['rouge_f'].append(scores[batch_data[7][0]]['rouge_f'])
+        scores['rouge_p'].append(scores[batch_data[7][0]]['rouge_p'])
+        scores['rouge_r'].append(scores[batch_data[7][0]]['rouge_r'])
+        i += 1
 
     scores['bleu'] = np.mean(np.array(scores['bleu']))
     scores['rouge_f'] = np.mean(np.array(scores['rouge_f']))
