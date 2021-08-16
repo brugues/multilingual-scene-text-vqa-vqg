@@ -351,7 +351,7 @@ class OLRADataGenerator:
         print_ok('Done!\n')
 
         for i, entry in enumerate(self.gt_original):
-            if len(entry['answer']) == 1:
+            if len(entry['answer']) != 1:
                 self.gt_original.pop(i)
                 self.gt.pop(i)
 
@@ -467,7 +467,6 @@ class OLRADataGenerator:
                 batch_x_vector[i, :] = np.matmul(
                     self.txt_models[self.gt[idx]['lang']].get_word_vector(self.gt[idx]['answer'][0]),
                     self.transformations[self.gt[idx]['lang']])
-
 
             else:
                 emb = self.txt_models[self.gt[idx]['lang']].embed(self.gt[idx]['answer'][0])
