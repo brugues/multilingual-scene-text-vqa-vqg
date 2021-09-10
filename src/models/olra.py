@@ -443,12 +443,9 @@ class OLRA:
                                               attention_type=SeqSelfAttention.ATTENTION_TYPE_MUL,
                                               attention_activation='softmax')(fused_features)
             fused_features = tf.reshape(fused_features, (self.config.batch_size, 512))
-
-        fused_features = tf.keras.layers.Dense(818)(fused_features)
-        fused_features = tf.keras.layers.Dense(512)(fused_features)
-
-        # else:
-        #     fused_features = tf.keras.layers.Dense(512)(fused_features)
+        else:
+            fused_features = tf.keras.layers.Dense(818)(fused_features)
+            fused_features = tf.keras.layers.Dense(512)(fused_features)
 
         # OCR consistency module
         if self.config.use_ocr_consistency:
@@ -467,7 +464,7 @@ class OLRA:
 
         return model
 
-    #@tf.function
+    @tf.function
     def olra_train_step(self, fasttext_features, images, ocr_posistions, questions_input):
         def loss_function(real, pred):
             mask = tf.math.logical_not(tf.math.equal(real, 0))
