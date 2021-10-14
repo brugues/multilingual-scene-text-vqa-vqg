@@ -29,8 +29,6 @@ class Config:
         args.add_argument('--num_grids', type=int, default=38, help='Num grids per dimension on the image')
 
         # ------------------------------  DATALOADER  -----------------------------
-        args.add_argument('--no_use_default_data_generator', dest='use_default_data_generator', action='store_false')
-        args.set_defaults(use_default_data_generator=True)
         args.add_argument('--dataset', type=str, default='stvqa', choices=['stvqa', 'estvqa'], help='Dataset to use')
         args.add_argument('--combined_datasets', dest='combined_datasets', action='store_true')
         args.set_defaults(combined_datasets=False)
