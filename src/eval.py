@@ -136,10 +136,10 @@ if __name__ == '__main__':
             else:
                 batch_ocr = batch_data[4]
         else:
-            if config.language != 'zh':
-                batch_ocr = batch_data[8]
-            else:
-                batch_ocr = batch_data[4]
+            # if config.language != 'zh':
+            #     batch_ocr = batch_data[8]
+            # else:
+            batch_ocr = batch_data[4]
 
         gt_ids = batch_data[7]
 

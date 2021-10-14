@@ -66,10 +66,15 @@ def load_embeddings(config):
                 if language == 'en':
                     transformations[language] = np.ones((config.dim_txt, config.dim_txt))
                 else:
+                    if 'en' in config.fasttext_aligned_pair and 'ca' in config.fasttext_aligned_pair and 'es' in config.fasttext_aligned_pair:
+                        pair = language + '-en'
+                    else:
+                        pair = config.fasttext_aligned_pair
+
                     transformations[language] = \
                         load_fasttext_transform(os.path.join(base_path,
                                                              '{}.{}.vec-mat'.format(config.fasttext_subtype,
-                                                                                    config.fasttext_aligned_pair)))
+                                                                                    pair)))
 
     elif config.embedding_type == 'bpemb':
         bpemb_path = os.path.join(config.txt_embeddings_path, 'bpemb')
@@ -148,8 +153,13 @@ def load_gt(config, training):
             lang = config.language
             if '-' in lang:
                 lang = lang.replace('-', '_')
-            with open(config.gt_eval_file.replace('eval', 'eval_{}'.format(lang))) as f:
-                gt = json.load(f)
+
+            if 'custom' in config.gt_eval_file:
+                with open(config.gt_eval_file) as f:
+                    gt = json.load(f)
+            else:
+                with open(config.gt_eval_file.replace('eval', 'eval_{}'.format(lang))) as f:
+                    gt = json.load(f)
         else:
             with open(config.gt_eval_file) as f:
                 gt = json.load(f)
@@ -249,15 +259,17 @@ class VQADataGenerator:
                 #                    for w in self.gt[idx]['ocr_bboxes']]
             gt_texts = [w['text'] for w in self.gt[idx]['ocr_bboxes']]
 
-            if self.language in ['ca', 'es', 'zh']:
-                gt_texts_original = [w['text'] for w in self.gt_original[idx]['ocr_bboxes']]
+            if self.config.dataset == 'stvqa':
+                if self.language in ['ca', 'es', 'zh']:
+                    gt_texts_original = [w['text'] for w in self.gt_original[idx]['ocr_bboxes']]
+            # else:
+            #     if self.language in ['ca', 'es', 'en']:
+            #         gt_texts_original = [w['text'] for w in self.gt_original[idx]['ocr_bboxes']]
 
             # store indexes of those bboxes wich are the answer
             gt_ans_boxes = [w['bbox'] for w in self.gt[idx]['ans_bboxes']]
             gt_ans_idxs = [gt_boxes.index(b) for b in gt_ans_boxes]
             gt_boxes = np.array(gt_boxes)
-
-            # --language zh --batch_size 32 --dataset estvqa --image_path data/EST-VQA-v1.0 --gt_file data/EST-VQA-v1.0/annotations/train_chinese_subsample_all_answers.json --gt_eval_file data/EST-VQA-v1.0/annotations/eval_chinese_subsample_all_answers.json
 
             # TODO data augmentation?
 
@@ -283,9 +295,17 @@ class VQADataGenerator:
                 if not self.training:
                     batch_ocr[i, cell_coords[1]:cell_coords[3] + 1, cell_coords[0]:cell_coords[2] + 1] = gt_texts[w]
 
-                    if self.language in ['ca', 'es', 'zh']:
-                        batch_ocr_original[i, cell_coords[1]:cell_coords[3] + 1,
-                        cell_coords[0]:cell_coords[2] + 1] = gt_texts_original[w]
+                    if self.config.dataset == 'stvqa':
+                        if self.language in ['ca', 'es', 'zh']:
+                            batch_ocr_original[i, cell_coords[1]:cell_coords[3] + 1,
+                            cell_coords[0]:cell_coords[2] + 1] = gt_texts_original[w]
+                    # else:
+                    #     if self.language in ['ca', 'es', 'en']:
+                    #         try:
+                    #             batch_ocr_original[i, cell_coords[1]:cell_coords[3] + 1,
+                    #             cell_coords[0]:cell_coords[2] + 1] = gt_texts_original[w]
+                    #         except:
+                    #             print("s")
 
             # question encode with fasttext or bpemb
             question = self.gt[idx]['question']
@@ -350,9 +370,8 @@ class OLRADataGenerator:
         self.gt_original, self.gt = load_gt(self.config, training)
         print_ok('Done!\n')
 
-        for i, entry in enumerate(self.gt_original):
+        for i, entry in enumerate(self.gt):
             if len(entry['answer']) != 1:
-                self.gt_original.pop(i)
                 self.gt.pop(i)
 
         self.vocabulary = []
@@ -367,7 +386,7 @@ class OLRADataGenerator:
         os.makedirs(self.config.tokenizer_path, exist_ok=True)
         tokenizer_file = os.path.join(self.config.tokenizer_path,
                                       'olra_{}_{}_{}.json'.format(self.config.embedding_type,
-                                                                  self.config.language,
+                                                                  self.config.tokenizer_language,
                                                                   self.top_k))
 
         # Tokenize vocabulary

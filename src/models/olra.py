@@ -347,9 +347,10 @@ class OLRA:
         self.logging_path = config.logging_path
         self.models_path = config.models_path
 
-        print_info('Preparing data generator\n')
-        self.data_generator = OLRADataGenerator(config, training=training)
-        print_ok('Done\n')
+        if self.config.use_default_data_generator:
+            print_info('Preparing data generator\n')
+            self.data_generator = OLRADataGenerator(config, training=training)
+            print_ok('Done\n')
 
         self.resnet = tf.keras.applications.ResNet50V2(include_top=False)
         self.resnet = tf.keras.Model(self.resnet.input,

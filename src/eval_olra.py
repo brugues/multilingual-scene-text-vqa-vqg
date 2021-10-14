@@ -75,5 +75,5 @@ if __name__ == "__main__":
     scores['rouge_p'] = np.mean(np.array(scores['rouge_p']))
     scores['rouge_r'] = np.mean(np.array(scores['rouge_r']))
 
-    with open('eval_out_{}.json'.format(config.output_folder), 'w+') as f:
+    with open('olraEVAL/TRAIN_eval_out_{}.json'.format(config.output_folder), 'w+') as f:
         json.dump(scores, f)

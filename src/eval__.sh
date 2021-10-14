@@ -8,6 +8,24 @@
 #SBATCH -o %x_%u_%j.out # File to which STDOUT will be written
 #SBATCH -e %x_%u_%j.err # File to which STDERR will be written
 
+
+#python eval.py --batch_size 55 --language en --embedding_type bpemb --bpemb_subtype multi --output_folder multi_bpemb_en_ca_es_zh_EN --model_to_evaluate ./outputs/models/multi_bpemb_en_ca_es_zh
+#python eval.py --batch_size 55 --language ca --embedding_type bpemb --bpemb_subtype multi --output_folder multi_bpemb_en_ca_es_zh_CA --model_to_evaluate ./outputs/models/multi_bpemb_en_ca_es_zh
+#python eval.py --batch_size 55 --language es --embedding_type bpemb --bpemb_subtype multi --output_folder multi_bpemb_en_ca_es_zh_ES --model_to_evaluate ./outputs/models/multi_bpemb_en_ca_es_zh
+#python eval.py --batch_size 55 --language zh --embedding_type bpemb --bpemb_subtype multi --output_folder multi_bpemb_en_ca_es_zh_ZH --model_to_evaluate ./outputs/models/multi_bpemb_en_ca_es_zh
+
+#python eval.py --batch_size 55 --language en --embedding_type bpemb --bpemb_subtype multi --output_folder bpemb_multi_enzh_EN --model_to_evaluate ./outputs/models/bpemb_multi_enzh
+#python eval.py --batch_size 55 --language ca --embedding_type bpemb --bpemb_subtype multi --output_folder bpemb_multi_enzh_CA --model_to_evaluate ./outputs/models/bpemb_multi_enzh
+#python eval.py --batch_size 55 --language es --embedding_type bpemb --bpemb_subtype multi --output_folder bpemb_multi_enzh_ES --model_to_evaluate ./outputs/models/bpemb_multi_enzh
+#python eval.py --batch_size 55 --language zh --embedding_type bpemb --bpemb_subtype multi --output_folder bpemb_multi_enzh_ZH --model_to_evaluate ./outputs/models/bpemb_multi_enzh
+
+#python eval.py --batch_size 55 --language en --embedding_type bpemb --bpemb_subtype multi --output_folder bpemb_multi_enes_EN --model_to_evaluate ./outputs/models/bpemb_multi_enes
+#python eval.py --batch_size 55 --language ca --embedding_type bpemb --bpemb_subtype multi --output_folder bpemb_multi_enes_CA --model_to_evaluate ./outputs/models/bpemb_multi_enes
+#python eval.py --batch_size 55 --language es --embedding_type bpemb --bpemb_subtype multi --output_folder bpemb_multi_enes_ES --model_to_evaluate ./outputs/models/bpemb_multi_enes
+#python eval.py --batch_size 55 --language zh --embedding_type bpemb --bpemb_subtype multi --output_folder bpemb_multi_enes_ZH --model_to_evaluate ./outputs/models/bpemb_multi_enes
+
+
+
 # ALIGNED.SH
 #python eval.py --batch_size 55 --language en --fasttext_subtype cc --fasttext_aligned_pair en-ca --fasttext_aligned --output_folder en_aligned_cc_en_ca --model_to_evaluate ./outputs/models/aligned_cc_en_ca
 #python eval.py --batch_size 55 --language ca --fasttext_subtype cc --output_folder ca_aligned_cc_en_ca --model_to_evaluate ./outputs/models/aligned_cc_en_ca
@@ -71,6 +89,23 @@
 
 
 # ESTVQA.SH
+#python eval.py --no_server_evaluation --batch_size 1 --language zh --dataset estvqa --embedding_type bpemb --bpemb_subtype multi --output_folder estvqa_bpemb_en_original_evaluatedIn_ZH --model_to_evaluate ./outputs/models/estvqa_bpemb_en_original --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_subsample_all_answers.json
+#python eval.py --no_server_evaluation --batch_size 1 --language zh --dataset estvqa --embedding_type bpemb --bpemb_subtype multi --output_folder estvqa_bpemb_en_original_evaluatedIn_ZH_translated --model_to_evaluate ./outputs/models/estvqa_bpemb_en_original --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_translated_subsample_all_answers.json
+#python eval.py --no_server_evaluation --batch_size 1 --language en --dataset estvqa --embedding_type bpemb --bpemb_subtype multi --output_folder estvqa_bpemb_en_original_evaluatedIn_EN --model_to_evaluate ./outputs/models/estvqa_bpemb_en_original --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_subsample_all_answers.json
+#python eval.py --no_server_evaluation --batch_size 1 --language en --dataset estvqa --embedding_type bpemb --bpemb_subtype multi --output_folder estvqa_bpemb_en_original_evaluatedIn_EN_translated --model_to_evaluate ./outputs/models/estvqa_bpemb_en_original --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_translated_subsample_all_answers.json
+
+#python eval.py --no_server_evaluation --batch_size 1 --language zh --dataset estvqa --embedding_type bpemb --bpemb_subtype multi --output_folder estvqa_bpemb_zh_original_evaluatedIn_ZH --model_to_evaluate ./outputs/models/estvqa_bpemb_zh_original --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_subsample_all_answers.json
+#python eval.py --no_server_evaluation --batch_size 1 --language zh --dataset estvqa --embedding_type bpemb --bpemb_subtype multi --output_folder estvqa_bpemb_zh_original_evaluatedIn_ZH_translated --model_to_evaluate ./outputs/models/estvqa_bpemb_zh_original --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_translated_subsample_all_answers.json
+#python eval.py --no_server_evaluation --batch_size 1 --language en --dataset estvqa --embedding_type bpemb --bpemb_subtype multi --output_folder estvqa_bpemb_zh_original_evaluatedIn_EN --model_to_evaluate ./outputs/models/estvqa_bpemb_zh_original --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_subsample_all_answers.json
+#python eval.py --no_server_evaluation --batch_size 1 --language en --dataset estvqa --embedding_type bpemb --bpemb_subtype multi --output_folder estvqa_bpemb_zh_original_evaluatedIn_EN_translated --model_to_evaluate ./outputs/models/estvqa_bpemb_zh_original --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_translated_subsample_all_answers.json
+
+#python eval.py --no_server_evaluation --batch_size 1 --language zh --dataset estvqa --fasttext_subtype wiki --output_folder estvqa_wiki_zh_translated_evaluatedIn_ZH --model_to_evaluate ./outputs/models/estvqa_wiki_zh_translated --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_subsample_all_answers.json
+#python eval.py --no_server_evaluation --batch_size 1 --language zh --dataset estvqa --fasttext_subtype wiki --output_folder estvqa_wiki_zh_translated_evaluatedIn_ZH_translated --model_to_evaluate ./outputs/models/estvqa_wiki_zh_translated --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_translated_subsample_all_answers.json
+#python eval.py --no_server_evaluation --batch_size 1 --language en --dataset estvqa --fasttext_subtype wiki --output_folder estvqa_wiki_zh_translated_evaluatedIn_EN --model_to_evaluate ./outputs/models/estvqa_wiki_zh_translated --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_subsample_all_answers.json
+#python eval.py --no_server_evaluation --batch_size 1 --language en --dataset estvqa --fasttext_subtype wiki --output_folder estvqa_wiki_zh_translated_evaluatedIn_EN_translated --model_to_evaluate ./outputs/models/estvqa_wiki_zh_translated --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_translated_subsample_all_answers.json
+
+
+
 #python eval.py --no_server_evaluation --batch_size 27 --language zh --dataset estvqa --fasttext_subtype cc --output_folder zh_estvqa_cc_zh --model_to_evaluate ./outputs/models/estvqa_cc_zh --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_subsample_all_answers.json
 #python eval.py --no_server_evaluation --batch_size 27 --language zh --dataset estvqa --fasttext_subtype wiki --output_folder zh_estvqa_wiki_zh --model_to_evaluate ./outputs/models/estvqa_wiki_zh --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_subsample_all_answers.json
 #python eval.py --no_server_evaluation --batch_size 27 --language zh --dataset estvqa --embedding_type smith --output_folder zh_estvqa_smith_zh --model_to_evaluate ./outputs/models/estvqa_smith_zh --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_subsample_all_answers.json
@@ -79,4 +114,4 @@
 #python eval.py --no_server_evaluation --batch_size 27 --language zh --dataset estvqa --embedding_type bpemb --output_folder zh_estvqa_bpemb_zh --model_to_evaluate ./outputs/models/estvqa_bpemb_zh --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_subsample_all_answers.json
 #python eval.py --no_server_evaluation --batch_size 27 --language zh --dataset estvqa --embedding_type bpemb --bpemb_subtype multi --output_folder zh_estvqa_multi_bpemb_zh --model_to_evaluate ./outputs/models/estvqa_multi_bpemb_zh --image_path data/EST-VQA-v1.0 --gt_eval_file data/EST-VQA-v1.0/annotations/eval_subsample_all_answers.json
 
-python eval.py --no_server_evaluation --batch_size 55 --language en --fasttext_subtype cc --output_folder test --model_to_evaluate ./outputs/models/cc_en
+#python eval.py --no_server_evaluation --batch_size 55 --language en --fasttext_subtype cc --output_folder test --model_to_evaluate ./outputs/models/cc_en
